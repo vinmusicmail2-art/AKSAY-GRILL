@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ru"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Аксай Гриль | Искусство живого огня</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#56423a",
+                    "primary-container": "#bb5732",
+                    "tertiary": "#735c00",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#cba72f",
+                    "on-primary-container": "#fffbff",
+                    "surface-container": "#f2ede3",
+                    "on-primary-fixed-variant": "#7f2b08",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-container-high": "#ece8de",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#fef9ef",
+                    "on-primary-fixed": "#390c00",
+                    "surface-container-low": "#f8f3e9",
+                    "inverse-surface": "#32302a",
+                    "surface-container-highest": "#e7e2d8",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#f5f0e6",
+                    "on-surface": "#1d1c16",
+                    "outline": "#897269",
+                    "on-secondary-container": "#794e2e",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffe088",
+                    "tertiary-fixed-dim": "#e9c349",
+                    "on-secondary-fixed": "#301400",
+                    "inverse-primary": "#ffb59c",
+                    "primary-fixed-dim": "#ffb59c",
+                    "primary": "#9b3f1c",
+                    "surface-variant": "#e7e2d8",
+                    "secondary-fixed-dim": "#f4bb92",
+                    "on-secondary-fixed-variant": "#653d1e",
+                    "secondary": "#805533",
+                    "surface-tint": "#9f411e",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#fdc39a",
+                    "outline-variant": "#dcc1b6",
+                    "background": "#fef9ef",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#4e3d00",
+                    "secondary-fixed": "#ffdcc5",
+                    "on-background": "#1d1c16",
+                    "surface-dim": "#dedad0",
+                    "primary-fixed": "#ffdbcf",
+                    "on-tertiary-fixed-variant": "#574500",
+                    "surface": "#fef9ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Montserrat", "sans-serif"],
+                    "body": ["Montserrat", "sans-serif"],
+                    "label": ["Montserrat", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .brand-glow {
+        background: radial-gradient(circle at center, #bb5732 0%, #9b3f1c 100%);
+      }
+      .glass-nav {
+        background: rgba(254, 249, 239, 0.8);
+        backdrop-filter: blur(24px);
+      }
+      /* Apply specific weights for the request */
+      h1, h2, .font-headline {
+        font-weight: 200; /* Montserrat Thin-ish for headings */
+      }
+      body {
+        font-weight: 400; /* Montserrat Regular for body */
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased" data-mode="connect">
+<!-- Top Navigation Shell -->
+<header class="docked full-width top-0 sticky z-50 bg-[#fef9ef]/80 dark:bg-[#1a1614]/80 backdrop-blur-md shadow-sm shadow-[#56423a]/5 border-none">
+<div class="flex justify-between items-center px-8 py-6 w-full max-w-[1440px] mx-auto">
+<nav class="hidden md:flex items-center gap-8 text-sm tracking-wide font-medium">
+<a class="text-[#9b3f1c] border-b-2 border-[#9b3f1c] pb-1 transition-colors duration-300" href="#">О нас</a>
+<a class="text-[#56423a] opacity-80 hover:text-[#9b3f1c] transition-colors duration-300" href="#">Доставка</a>
+<a class="text-[#56423a] opacity-80 hover:text-[#9b3f1c] transition-colors duration-300" href="#">Контакты</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/15">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-medium hover:opacity-90 scale-95 active:opacity-80 transition-all">
+                    Заказать
+                </button>
+</div>
+</div>
+</header>
+<div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-1/4 border-r border-[#dcc1b6]/15 bg-[#f8f3e9] dark:bg-[#25211e] hidden md:block">
+<div class="flex flex-col pt-32 pb-12 w-full h-full">
+<div class="px-8 mb-12 bg-[#fef9ef]">
+<img alt="Aksai Grill Logo" class="w-full h-auto mb-2" src="https://lh3.googleusercontent.com/aida/ADBb0ujAkxYg5jLwVlMD-CcIaf_Us8kaarQUWAV42MlaCimoWX7YI5tU5MWwuVcq6dskDiG0uMG2OopN7HF8AyZkifluMyQt6XaUV2tgRNmRI8m2HC3EfY35M8oQrKSWGbuJz0_MCPZwqXpXdEfG3DX0TEMk49END7YhDiQmwQ0KFWGUedQtIt_nugcYlb8YElwCMWXEN591sc2Sow46ENusSpdKuheadi3wjOsqLvmt0f0AU_HllPsp_D9Ilq4T1pREG7dgBmozO9Oo" style="background-color: transparent; mix-blend-mode: multiply;"/>
+</div>
+<nav class="flex-1 space-y-2 pr-4">
+<a class="flex items-center gap-4 bg-[#fef9ef] dark:bg-[#1a1614] text-[#9b3f1c] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="soup_kitchen">soup_kitchen</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Первые блюда</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="rice_bowl">rice_bowl</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Гарниры</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Вторые блюда</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="local_bar">local_bar</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Напитки</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Выпечка</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="flatware">flatware</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Салаты</span>
+</a>
+</nav>
+<div class="px-8 mt-auto">
+<button class="w-full bg-secondary-container text-on-secondary-container py-4 rounded-lg font-medium text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-base">shopping_cart</span>
+                        Заказать сейчас
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="w-full md:ml-[25%] p-8 lg:p-16">
+<!-- Hero Section -->
+<section class="relative mb-20 overflow-hidden rounded-xl bg-surface-container-low min-h-[400px] flex items-center">
+<div class="absolute inset-0 z-0">
+<img alt="atmospheric kitchen scene" class="w-full h-full object-cover opacity-20 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxCTr8UkoybzUGz7z2xndyS3dSyLNGrtFCDCxZU91jvI5TFpOF1JMhaFZ34L4E9hTluwblUaz4GPW_oNpllHh69RiSohLvXjAmNxF_9LPgi68zpmGz65IkUqs9NT0gtOUYuMjs86YmpM00NFrfLyGNxNXpih3xOHdts6zbZSj3FGZi-wILjgvC2Z8LBftpXMkTC1Nin-Kfp1bzYkcSOGFkOnFhsSV1c_vTPxcF1UyhR8dnKAXYBld_lj1rKvgCWKmPiW0bTNUyBKY"/>
+</div>
+<div class="relative z-10 px-12 max-w-2xl">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Традиции вкуса</span>
+<h1 class="font-headline text-5xl md:text-6xl text-primary leading-tight mb-8 font-[200]">Свежие блюда домашней кухни, приготовленные с заботой</h1>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
+<span class="material-symbols-outlined">delivery_dining</span>
+                            Заказать доставку
+                        </button>
+<button class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm">
+                            Посмотреть отзывы
+                        </button>
+</div>
+</div>
+</section>
+<!-- Menu Content -->
+<section class="mb-16">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Наши первые блюда</h2>
+<p class="text-on-surface-variant max-w-md text-sm">Наваристые супы, приготовленные по старинным рецептам с использованием только свежих ингредиентов.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Item: Борщ -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+<div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+<img alt="borscht" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjCSmq9xbqkPTuFYIKpUKHwRliKVqFmx3Fr1OPYFGrceat2ZhfD0yTm-4IBmdIa5WdJ13wmmfliHSnlnoXRPwL43iYLY5ezloajd-iFTLwRwsRj4oB1QXrxa_LfIkyF8FjvoKsvvTPWzhhaYYcD4gLn4bGchBaSllzz0KjV3mPoqm60GySzluU0CyNi4l2NCVdGYp4SV-nUWLLU7wCp5dQfw636dEgkVXooksa0HW8zcvxfyDAG8LpGpPVrWaiMTba_5Drd67cFYQ"/>
+<div class="absolute top-3 right-3">
+<span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">220р</span>
+</div>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Борщ</h3>
+<p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Классический наваристый борщ со свеклой, нежной говядиной и свежей зеленью.</p>
+<button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                            Добавить в заказ
+                        </button>
+</div>
+<!-- Item: Шурпа -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+<div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+<img alt="shurpa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBl4r9YCeSM84Rt7OforNbYXmJaVqs9tAqWk_bpkupDAgclgTiO_my5Rx4uzlTgEs4old_jQWFA6CdCWF5DwURZHDLSoQp6TPKwdR4oroSpa_Mh8ZN0PRIamTPZQy6iLhompoX34RvtxoZrBrVUHaK7hjvL9FIJAKIemwSAeuIq6UorkR2-eT0AJyz6xjyDibo48b1H5TiC9V9-6IFwwrEwDAbLSyBM_DJnrrM9rR7-Xd3w4rnh1z60Tu77drHHIwkivPoYppKBTM"/>
+<div class="absolute top-3 right-3">
+<span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">250р</span>
+</div>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Шурпа</h3>
+<p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Традиционный восточный суп с крупными кусками баранины и овощами.</p>
+<button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                            Добавить в заказ
+                        </button>
+</div>
+<!-- Item: Медвежья лапа -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+<div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+<img alt="cutlet" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu3lmGGURUw1uV2HuvW5zXFQ177BI-zFyBj3tJDWTu4bKvtp3idv6m-p9XK-5-Auaz_iUjHzCYo2MR-2scEF6oVCVxukT7RSy2JCbwXnLmTRsvVEqx5cvkrKECfdMNWjYtSUvterWx6B9VEvzsXPfloRh1mAXUfABnEf4ggFYOM8ue8yXyKft50YrX6anpcHu7qnToumot0XAx-OMkCihT6Rwq_2FfALoYIluMNvjB04SmRT-HJMtVkyLJRQMAlIkaWN7rWbYjM6E"/>
+<div class="absolute top-3 right-3">
+<span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">250р</span>
+</div>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Медвежья лапа</h3>
+<p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Фирменная мясная котлета в хрустящей панировке с гарниром из картофеля.</p>
+<button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                            Добавить в заказ
+                        </button>
+</div>
+<!-- Signature Feature Card -->
+<div class="lg:col-span-1 bg-primary text-on-primary rounded-xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden shadow-2xl shadow-primary/20">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<img alt="texture" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDymM5PnYPkdaWXbAInmg_-jidi18h1DtApOP0xfGerh-Q-vjLaOu5zJ-1aKeQc31eIuZwp2SbytV_AYXmj92Y1GZUVu-7tPaMaUniczhKzBOnDCozlw0p17J8NnbTbb3P30L9wni6WwTKR3_KFeqYsMYVeaVeHpQY4eIqKHXAXaOpaN8HCGN-OTuhJTsDWvOGGZ3nNGwRMWIxEuVKxt_UyN-jEM57GoWiN3C7A6w9u7ZQHB6KD3NQgU4Sw8szdM8qVBqX2A0gJIKM"/>
+</div>
+<span class="material-symbols-outlined text-6xl mb-6 opacity-80" style="font-variation-settings: 'FILL' 1;">fireplace</span>
+<h3 class="font-headline text-3xl mb-4 font-[200]">Живой огонь</h3>
+<p class="opacity-80 text-xs leading-relaxed mb-8">Готовим на настоящих углях, сохраняя первозданный вкус и сочность продуктов.</p>
+<button class="bg-white text-primary px-6 py-2 rounded-lg font-bold text-xs hover:scale-105 transition-transform">Узнать больше</button>
+</div>
+</div>
+</section>
+<!-- Delivery Info Banner -->
+<section class="bg-surface-container-highest rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10">
+<div class="flex-1">
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Доставим горячим</h2>
+<p class="text-on-surface-variant mb-8 text-lg font-light">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
+<div class="flex flex-wrap gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">speed</span>
+</div>
+<span class="font-bold text-xs">Быстро</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">takeout_dining</span>
+</div>
+<span class="font-bold text-xs">Термо-боксы</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">payments</span>
+</div>
+<span class="font-bold text-xs">Оплата картой</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl">
+<img alt="delivery" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdIjhMsZ3KlTKDg0neRApUv4TiyfB0a7MzFE6F4HS0MYzgdK5sHCue_OivA6r18OS3ucIQkjBxOXNTFygm_C2_CosM3G0YhGrkpMN-Cof9cjGT7fjMhCDQ16B8xYkibFE7MjHTXPcONHrQxFbJf8ndIiamEqCOPz8yKSWKpRqjobl0VZCH5td98pGIONgp_-OR_Oy3CMLzxbRPQdjspWs6Tp2hUJBpA6LG_TiFamsuN8wX08D_S45umlhT4Wubt1B9u8HEt-taB3I"/>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer Section -->
+<footer class="w-full py-12 mt-20 bg-[#e7e2d8] dark:bg-[#12100f] border-none">
+<div class="flex flex-col items-center justify-center gap-6 px-4 md:ml-[25%]">
+<div class="mb-4 bg-[#fef9ef] p-4 rounded-xl">
+<img alt="Aksai Grill Logo Footer" class="h-24 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0ujAkxYg5jLwVlMD-CcIaf_Us8kaarQUWAV42MlaCimoWX7YI5tU5MWwuVcq6dskDiG0uMG2OopN7HF8AyZkifluMyQt6XaUV2tgRNmRI8m2HC3EfY35M8oQrKSWGbuJz0_MCPZwqXpXdEfG3DX0TEMk49END7YhDiQmwQ0KFWGUedQtIt_nugcYlb8YElwCMWXEN591sc2Sow46ENusSpdKuheadi3wjOsqLvmt0f0AU_HllPsp_D9Ilq4T1pREG7dgBmozO9Oo" style="background-color: transparent; mix-blend-mode: multiply;"/>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-headline text-2xl text-[#9b3f1c] font-[200]">Аксай Гриль</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+<p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">Искусство живого огня.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-8 text-[#56423a] opacity-60">
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Политика конфиденциальности</a>
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Условия использования</a>
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
+</nav>
+<div class="pt-8 border-t border-outline-variant/20 w-full max-w-lg text-center">
+<p class="font-body text-[10px] text-on-surface-variant opacity-40">© 2024 Аксай Гриль. Все права защищены. <br/> Сделано с любовью к домашней кухне.</p>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 bg-primary text-on-primary w-16 h-16 rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+<div class="absolute -top-1 -right-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
+            0
+        </div>
+</button>
+</body></html>
