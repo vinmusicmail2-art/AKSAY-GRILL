@@ -580,19 +580,59 @@
     document.getElementById('cart-total').textContent = fmt(totalSum());
     const list = document.getElementById('cart-items');
     const items = Object.values(cart);
-    if(!items.length){ list.innerHTML = '<p id="cart-empty" class="text-center text-on-surface-variant text-sm py-12">Корзина пуста.<br/>Добавьте блюда из меню.</p>'; return; }
-    list.innerHTML = items.map(i => `
-      <div class="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
-        <div class="flex-1 min-w-0 pr-3">
-          <div class="font-medium text-on-surface text-sm truncate">${i.name}</div>
-          <div class="text-xs text-on-surface-variant">${i.price}₽ × ${i.qty}</div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button data-act="dec" data-name="${i.name}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
-          <span class="w-6 text-center text-sm font-bold">${i.qty}</span>
-          <button data-act="inc" data-name="${i.name}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
-        </div>
-      </div>`).join('');
+    if(items.length){
+      list.innerHTML = items.map(i => `
+        <div class="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
+          <div class="flex-1 min-w-0 pr-3">
+            <div class="font-medium text-on-surface text-sm truncate">${i.name}</div>
+            <div class="text-xs text-on-surface-variant">${i.price}₽ × ${i.qty}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-act="dec" data-name="${i.name}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
+            <span class="w-6 text-center text-sm font-bold">${i.qty}</span>
+            <button data-act="inc" data-name="${i.name}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
+          </div>
+        </div>`).join('');
+    } else {
+      list.innerHTML = '<p id="cart-empty" class="text-center text-on-surface-variant text-sm py-12">Корзина пуста.<br/>Добавьте блюда из меню.</p>';
+    }
+    renderDishActions();
+  }
+  function renderDishActions(){
+    document.querySelectorAll('.dish-action-slot').forEach(slot => {
+      const name = slot.dataset.dishName;
+      const price = parseInt(slot.dataset.dishPrice, 10) || 0;
+      const inCart = cart[name];
+      if(inCart && inCart.qty > 0){
+        slot.innerHTML = `
+          <div class="w-full flex items-center justify-between bg-primary text-on-primary py-2 px-3 rounded-lg">
+            <button data-act="dec" data-name="${name}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">−</button>
+            <span class="font-bold text-sm">В заказе: ${inCart.qty}</span>
+            <button data-act="inc" data-name="${name}" data-price="${price}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">+</button>
+          </div>`;
+      } else {
+        slot.innerHTML = `
+          <button data-act="add" data-name="${name}" data-price="${price}" class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Добавить в заказ
+          </button>`;
+      }
+    });
+  }
+  function initDishCards(){
+    document.querySelectorAll('section#pervye .group').forEach(card => {
+      const btn = Array.from(card.querySelectorAll('button')).find(b => /Добавить в заказ/i.test(b.textContent));
+      if(!btn) return;
+      const name = card.querySelector('h3')?.textContent.trim();
+      const priceEl = card.querySelector('span.bg-white\\/90, .price-badge');
+      const price = parseInt((priceEl?.textContent || '0').replace(/\D/g,''), 10) || 0;
+      if(!name) return;
+      const slot = document.createElement('div');
+      slot.className = 'dish-action-slot';
+      slot.dataset.dishName = name;
+      slot.dataset.dishPrice = price;
+      btn.replaceWith(slot);
+    });
   }
   window.openCart = function(){
     document.getElementById('cart-overlay').classList.remove('hidden');
@@ -672,7 +712,12 @@
   document.addEventListener('click', function(e){
     const btn = e.target.closest('button');
     if(!btn) return;
-    if(btn.dataset.act === 'inc'){ add(btn.dataset.name, cart[btn.dataset.name].price); return; }
+    if(btn.dataset.act === 'add'){ add(btn.dataset.name, parseInt(btn.dataset.price,10) || 0); return; }
+    if(btn.dataset.act === 'inc'){
+      const name = btn.dataset.name;
+      const price = (cart[name] && cart[name].price) || parseInt(btn.dataset.price,10) || 0;
+      add(name, price); return;
+    }
     if(btn.dataset.act === 'dec'){ dec(btn.dataset.name); return; }
     if(/Добавить в заказ/i.test(btn.textContent)){
       const card = btn.closest('div.group') || btn.parentElement;
@@ -683,6 +728,7 @@
       if(name) add(name, price);
     }
   });
+  initDishCards();
   render();
 })();
 </script>
