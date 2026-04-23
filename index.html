@@ -114,10 +114,28 @@
 <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
-<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-medium hover:opacity-90 scale-95 active:opacity-80 transition-all">
+<button class="bg-primary text-on-primary px-4 md:px-6 py-2.5 rounded-lg font-medium hover:opacity-90 scale-95 active:opacity-80 transition-all text-sm md:text-base">
                     Заказать
                 </button>
+<button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-surface-container-low text-primary" aria-label="Меню" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+<span class="material-symbols-outlined">menu</span>
+</button>
 </div>
+</div>
+<!-- Mobile dropdown menu -->
+<div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/15 bg-[#fef9ef] dark:bg-[#1a1614]">
+<nav class="flex flex-col px-6 py-4 text-sm font-medium">
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#">Доставка</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#business-lunch">Бизнес-ланчи</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#catering">Кейтеринг</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#events">Мероприятия</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#">Контакты</a>
+<a class="py-3 text-[#9b3f1c] font-semibold" href="#">О нас</a>
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/15 mt-3">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+</div>
+</nav>
 </div>
 </header>
 <div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative">
