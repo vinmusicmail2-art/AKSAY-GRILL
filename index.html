@@ -510,7 +510,22 @@
     closeCart();
     setTimeout(openCheckout, 200);
   });
-  document.getElementById('checkout-form').addEventListener('submit', function(e){
+  // === Заготовка для отправки заказа ===
+  // Подключить позже: Telegram-бот, e-mail или CRM заказчика.
+  // Конфигурация будет храниться здесь:
+  const ORDER_DELIVERY_CONFIG = {
+    channel: 'none', // 'telegram' | 'email' | 'webhook'
+    telegram: { botToken: '', chatId: '' },
+    email:    { to: '', from: '' },
+    webhook:  { url: '' }
+  };
+  async function sendOrder(order){
+    // TODO: реализовать после получения данных от заказчика.
+    // Сейчас заказ только сохраняется локально (см. ниже).
+    return { ok: true, channel: ORDER_DELIVERY_CONFIG.channel };
+  }
+
+  document.getElementById('checkout-form').addEventListener('submit', async function(e){
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
     const order = {
@@ -523,6 +538,7 @@
     const all = JSON.parse(localStorage.getItem('aksay_orders') || '[]');
     all.push(order);
     localStorage.setItem('aksay_orders', JSON.stringify(all));
+    try { await sendOrder(order); } catch(_){}
     Object.keys(cart).forEach(k => delete cart[k]);
     render();
     document.getElementById('checkout-form').classList.add('hidden');
