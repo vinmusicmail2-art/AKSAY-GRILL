@@ -19,6 +19,18 @@
 <style>body{font-family:Montserrat,sans-serif}</style>
 </head>
 <body class="bg-surface text-on-surface min-h-screen">
+<div id="lock-screen" class="fixed inset-0 z-50 bg-surface flex items-center justify-center p-4">
+  <form id="lock-form" class="bg-surface-lowest rounded-2xl border border-outline/20 p-6 sm:p-8 w-full max-w-sm text-center">
+    <div class="w-14 h-14 rounded-full bg-surface-low text-primary flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-3xl">lock</span>
+    </div>
+    <h2 class="text-xl font-[200] mb-1">Доступ к заказам</h2>
+    <p class="text-xs text-on-surface-variant mb-5">Введите пароль, чтобы продолжить</p>
+    <input id="lock-input" type="password" autocomplete="current-password" class="w-full rounded-lg border border-outline/40 bg-white px-4 py-3 text-center mb-3 focus:outline-none focus:border-primary" placeholder="Пароль"/>
+    <p id="lock-error" class="text-xs text-red-600 mb-3 hidden">Неверный пароль</p>
+    <button type="submit" class="w-full bg-primary text-on-primary rounded-lg py-3 font-medium hover:opacity-90">Войти</button>
+  </form>
+</div>
 <header class="bg-surface-low border-b border-outline/30">
 <div class="max-w-5xl mx-auto px-4 sm:px-8 py-5 flex items-center justify-between gap-4">
 <div class="flex items-center gap-3">
@@ -49,6 +61,26 @@
 </div>
 </main>
 <script>
+// SHA-256 пароля по умолчанию: aksay2026 — изменить здесь (https://emn178.github.io/online-tools/sha256.html)
+const PASSWORD_HASH = '75a05b215cfea8865a704a33313cec827cfd86b02c9359d70e9e13e624eacd71';
+async function sha256(s){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function unlock(){ document.getElementById('lock-screen').remove(); render(); }
+if(sessionStorage.getItem('aksay_admin_ok') === '1'){ document.getElementById('lock-screen').remove(); }
+document.getElementById('lock-form')?.addEventListener('submit', async function(e){
+  e.preventDefault();
+  const val = document.getElementById('lock-input').value;
+  const err = document.getElementById('lock-error');
+  if((await sha256(val)) === PASSWORD_HASH){
+    sessionStorage.setItem('aksay_admin_ok','1');
+    unlock();
+  } else {
+    err.classList.remove('hidden');
+    document.getElementById('lock-input').value = '';
+  }
+});
 function getOrders(){ return JSON.parse(localStorage.getItem('aksay_orders') || '[]'); }
 function fmtDate(iso){
   const d = new Date(iso);
