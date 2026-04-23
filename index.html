@@ -398,9 +398,51 @@
 <span class="text-sm text-on-surface-variant uppercase tracking-widest">Итого</span>
 <span id="cart-total" class="text-2xl font-bold text-primary">0₽</span>
 </div>
-<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Оформить заказ</button>
+<button id="cart-checkout-btn" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Оформить заказ</button>
 </footer>
 </aside>
+<!-- Checkout Modal -->
+<div id="checkout-overlay" class="hidden fixed inset-0 bg-black/50 z-[80] items-center justify-center p-4">
+<div class="bg-[#fef9ef] rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+<header class="flex items-center justify-between px-6 py-5 border-b border-outline-variant/20">
+<h2 class="font-headline text-2xl font-[200] text-on-surface">Оформление заказа</h2>
+<button onclick="closeCheckout()" class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<form id="checkout-form" class="px-6 py-5 space-y-4">
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Имя</label>
+<input name="name" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Телефон</label>
+<input name="phone" type="tel" required placeholder="+7 (___) ___-__-__" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Адрес доставки</label>
+<input name="address" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Комментарий <span class="opacity-60 normal-case tracking-normal">(необязательно)</span></label>
+<textarea name="comment" rows="2" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low rounded-lg px-4 py-3">
+<span class="text-sm text-on-surface-variant uppercase tracking-widest">К оплате</span>
+<span id="checkout-total" class="text-xl font-bold text-primary">0₽</span>
+</div>
+<button type="submit" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Подтвердить заказ</button>
+</form>
+<div id="checkout-success" class="hidden px-6 py-10 text-center">
+<div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</div>
+<h3 class="font-headline text-2xl font-[200] text-on-surface mb-2">Спасибо за заказ!</h3>
+<p class="text-on-surface-variant text-sm mb-6">Мы свяжемся с вами в течение 5 минут для подтверждения.</p>
+<button onclick="closeCheckout()" class="bg-primary text-on-primary px-8 py-3 rounded-lg font-medium text-sm">Закрыть</button>
+</div>
+</div>
+</div>
 <script>
 (function(){
   const cart = {};
@@ -449,6 +491,43 @@
     if(cart[name].qty <= 0) delete cart[name];
     render();
   }
+  window.openCheckout = function(){
+    if(!totalQty()) return;
+    document.getElementById('checkout-total').textContent = fmt(totalSum());
+    document.getElementById('checkout-form').classList.remove('hidden');
+    document.getElementById('checkout-success').classList.add('hidden');
+    document.getElementById('checkout-form').reset();
+    const ov = document.getElementById('checkout-overlay');
+    ov.classList.remove('hidden'); ov.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeCheckout = function(){
+    const ov = document.getElementById('checkout-overlay');
+    ov.classList.add('hidden'); ov.classList.remove('flex');
+    document.body.style.overflow = '';
+  };
+  document.getElementById('cart-checkout-btn').addEventListener('click', function(){
+    closeCart();
+    setTimeout(openCheckout, 200);
+  });
+  document.getElementById('checkout-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    const order = {
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
+      customer: data,
+      items: Object.values(cart),
+      total: totalSum()
+    };
+    const all = JSON.parse(localStorage.getItem('aksay_orders') || '[]');
+    all.push(order);
+    localStorage.setItem('aksay_orders', JSON.stringify(all));
+    Object.keys(cart).forEach(k => delete cart[k]);
+    render();
+    document.getElementById('checkout-form').classList.add('hidden');
+    document.getElementById('checkout-success').classList.remove('hidden');
+  });
   document.addEventListener('click', function(e){
     const btn = e.target.closest('button');
     if(!btn) return;
