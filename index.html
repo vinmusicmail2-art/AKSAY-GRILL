@@ -387,10 +387,249 @@
 </div>
 </section>
 <!-- Категории меню (списки блюд) -->
-<section id="vtorye" class="menu-card group mb-12 scroll-mt-32 rounded-xl bg-[#fef9ef] p-8 border border-outline-variant/10 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/10">
-<h2 class="dish-heading font-headline text-4xl text-on-surface mb-4 font-[200] transition-colors duration-300 group-hover:text-primary">ВТОРЫЕ БЛЮДА</h2>
-<p class="text-on-surface-variant text-base leading-relaxed">Шашлык (свинина, баранина, говядина, курица) / Люля-кебаб / Куриные крылья, бедра и ножки / Свиные ребрышки / Стейки / Купаты, колбаски / Плов / Манты / Долма / Медвежья лапа</p>
-</section>
+  <section id="vtorye" class="mt-16 mb-16 scroll-mt-32">
+  <div class="flex justify-between items-end mb-12">
+  <div>
+  <h2 class="dish-heading font-headline text-4xl text-on-surface mb-2 font-[200]">ВТОРЫЕ БЛЮДА</h2>
+  <p class="text-on-surface-variant max-w-md text-sm">Сытные мясные и рыбные блюда домашней кухни — от фирменных котлет до классических вторых блюд.</p>
+  </div>
+  <div class="flex gap-2">
+  <button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+  <span class="material-symbols-outlined">chevron_left</span>
+  </button>
+  <button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+  <span class="material-symbols-outlined">chevron_right</span>
+  </button>
+  </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Item: Куриная котлета -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kuriniaja-kotleta" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kuriniaja-kotleta.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">150р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Куриная котлета</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Сочная куриная котлета с золотистой корочкой и нежным гарниром.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Гуляш из говядины -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="gulyash-govyadina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/gulyash-govyadina.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">220р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Гуляш из говядины</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Тушёная говядина в насыщенном томатном соусе с овощами.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Котлета "По-киевски" -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kotleta-po-kievski" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kotleta-po-kievski.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">170р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Котлета "По-киевски"</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Куриная котлета по-киевски с тающим внутри сливочным маслом.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Медвежья лапа -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="medvezhya-lapa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/medvezhya-lapa.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">250р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Медвежья лапа</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Фирменная мясная котлета в хрустящей панировке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Макароны по-флотски -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="makarony-po-flotski" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/makarony-po-flotski.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">200р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Макароны по-флотски</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Классические макароны по-флотски с фаршем из говядины.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Пельмени домашние со сметаной -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="pelmeni-smetana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/pelmeni-smetana.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">350р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Пельмени домашние со сметаной</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Домашние пельмени с мясной начинкой, поданы со сметаной.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Курица тушеная в сливках -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kuritsa-v-slivkah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kuritsa-v-slivkah.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">170р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Курица тушеная в сливках</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Нежные кусочки курицы в сливочном соусе с зеленью.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Рыба жареная Хек -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="ryba-hek" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/ryba-hek.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">190р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Рыба жареная Хек</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Жареное филе хека в золотистой корочке с долькой лимона.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Отбивная куриная -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="otbivnaja-kurinaja" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/otbivnaja-kurinaja.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">170р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Отбивная куриная</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Куриная отбивная в хрустящей панировке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Вареники со сметаной -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="vareniki-smetana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/vareniki-smetana.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">300р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Вареники со сметаной</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Домашние вареники с начинкой, поданы со сметаной.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Люля-кебаб из курицы -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="lyulya-kuritsa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/lyulya-kuritsa.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">160р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Люля-кебаб из курицы</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Сочный люля-кебаб из куриного фарша на шпажке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Куриное бедро жареное -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kurinoe-bedro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kurinoe-bedro.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">170р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Куриное бедро жареное</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Запечённое куриное бедро с золотистой хрустящей корочкой.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Яичница глазунья натуральная -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="yaichnitsa-glazunja" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/yaichnitsa-glazunja.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">150р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Яичница глазунья натуральная</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Яичница-глазунья из свежих яиц с жидким желтком.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Яичница 2 яйца -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="yaichnitsa-2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/yaichnitsa-2.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">100р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Яичница 2 яйца</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Классическая яичница из двух яиц с зеленью.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Крылья жареные (1 кг) -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="krylya-zharenye" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/krylya-zharenye.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">650р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Крылья жареные (1 кг)</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Хрустящие жареные куриные крылья. Цена за килограмм.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+  </div>
+  </section>
 <section id="garniry" class="menu-card group mb-12 scroll-mt-32 rounded-xl bg-[#fef9ef] p-8 border border-outline-variant/10 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/10">
 <h2 class="dish-heading font-headline text-4xl text-on-surface mb-4 font-[200] transition-colors duration-300 group-hover:text-primary">ГАРНИРЫ</h2>
 <p class="text-on-surface-variant text-base leading-relaxed">Картофель по-деревенски / Картофельное пюре / Рис басмати / Гречка с грибами / Булгур с овощами / Овощи-гриль / Печёный картофель</p>
@@ -620,7 +859,7 @@
     });
   }
   function initDishCards(){
-    document.querySelectorAll('section#pervye .group').forEach(card => {
+    document.querySelectorAll('section#pervye .group, section#vtorye .group, section#garniry .group, section#salaty .group, section#vypechka .group, section#napitki .group').forEach(card => {
       const btn = Array.from(card.querySelectorAll('button')).find(b => /Добавить в заказ/i.test(b.textContent));
       if(!btn) return;
       const name = card.querySelector('h3')?.textContent.trim();

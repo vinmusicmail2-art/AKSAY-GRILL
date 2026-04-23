@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "WYNbJ7gGNXN-nj8PPwKwR"
@@ -54,3 +53,93 @@ id = "voUVGEnhoZymWTOSahv3X"
 uri = "file://assets/dishes/okroshka.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "k1ewfs2PmJWnTUQagV4h7"
+uri = "file://assets/dishes/kuriniaja-kotleta.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BYwCdMVC_-vEsgFWx6gnw"
+uri = "file://assets/dishes/gulyash-govyadina.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "qUeOVIKL4PJWeEwfISr7S"
+uri = "file://assets/dishes/kotleta-po-kievski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tK_dtbhp2zQL0sbC0s1xx"
+uri = "file://assets/dishes/medvezhya-lapa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HwrLdSeyDdg6GSkLgNW86"
+uri = "file://assets/dishes/makarony-po-flotski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BVM00Ti_GY1cjhs47DTUn"
+uri = "file://assets/dishes/pelmeni-smetana.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "CpiuvS1a-KWekk9czdUR4"
+uri = "file://assets/dishes/kuritsa-v-slivkah.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "QJCr6Qch4y5as_WXx17RZ"
+uri = "file://assets/dishes/ryba-hek.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "P_ggK3K2ga5_Wxrv5oEuW"
+uri = "file://assets/dishes/otbivnaja-kurinaja.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-wHIyqvUcx-zs7BBnMUDC"
+uri = "file://assets/dishes/vareniki-smetana.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "DUSJMa7Gleml8PLrLKvQ0"
+uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
+type = "image"
+title = "chicken lyulya kebab grilled skewers"
+
+[[outputs]]
+id = "8YEdee7jGZlfoKSpF6wfH"
+uri = "file://attached_assets/stock_images/kurinoe-bedro.jpg"
+type = "image"
+title = "roasted chicken thigh crispy"
+
+[[outputs]]
+id = "fnR46qAWCK19OqxSQSrzE"
+uri = "file://attached_assets/stock_images/yaichnitsa-glazunja.jpg"
+type = "image"
+title = "sunny side up fried eggs"
+
+[[outputs]]
+id = "t9pUIdU1D9Tk6UKxjAsVL"
+uri = "file://attached_assets/stock_images/yaichnitsa-2.jpg"
+type = "image"
+title = "scrambled eggs plate"
+
+[[outputs]]
+id = "aH3IKwvyaTEfAS5UbGLHP"
+uri = "file://attached_assets/stock_images/krylya-zharenye.jpg"
+type = "image"
+title = "fried chicken wings plate"
