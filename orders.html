@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Заказы | Аксай Гриль</title>
+<link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    primary: '#9b3f1c', 'on-primary': '#ffffff',
+    surface: '#fef9ef', 'surface-low': '#f8f3e9', 'surface-lowest': '#ffffff',
+    'on-surface': '#1d1c16', 'on-surface-variant': '#56423a',
+    outline: '#dcc1b6'
+  }, fontFamily: { sans: ['Montserrat','sans-serif'] } } } };
+</script>
+<style>body{font-family:Montserrat,sans-serif}</style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<header class="bg-surface-low border-b border-outline/30">
+<div class="max-w-5xl mx-auto px-4 sm:px-8 py-5 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<a href="/" class="w-10 h-10 rounded-full bg-white border border-outline/30 flex items-center justify-center text-primary hover:bg-surface" title="На сайт">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<h1 class="text-xl sm:text-2xl font-[200]">Заказы</h1>
+</div>
+<div class="flex items-center gap-2">
+<span id="orders-count" class="text-xs sm:text-sm text-on-surface-variant uppercase tracking-widest">0 заказов</span>
+<button onclick="exportJSON()" class="hidden sm:inline-flex items-center gap-2 bg-white border border-outline/30 text-on-surface text-sm rounded-lg px-3 py-2 hover:bg-surface-low">
+<span class="material-symbols-outlined text-base">download</span>JSON
+</button>
+<button onclick="clearAll()" class="inline-flex items-center gap-2 bg-primary text-on-primary text-sm rounded-lg px-3 py-2 hover:opacity-90">
+<span class="material-symbols-outlined text-base">delete</span><span class="hidden sm:inline">Очистить</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
+<p class="text-xs text-on-surface-variant mb-6">Заказы хранятся в браузере (localStorage) до подключения реального канала отправки.</p>
+<div id="orders-list" class="space-y-4"></div>
+<div id="orders-empty" class="hidden text-center py-20">
+<div class="w-16 h-16 rounded-full bg-surface-low text-on-surface-variant flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-4xl">inbox</span>
+</div>
+<p class="text-on-surface-variant">Пока заказов нет.</p>
+</div>
+</main>
+<script>
+function getOrders(){ return JSON.parse(localStorage.getItem('aksay_orders') || '[]'); }
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function render(){
+  const orders = getOrders().slice().reverse();
+  document.getElementById('orders-count').textContent = orders.length + ' ' +
+    (orders.length % 10 === 1 && orders.length % 100 !== 11 ? 'заказ' :
+     [2,3,4].includes(orders.length % 10) && ![12,13,14].includes(orders.length % 100) ? 'заказа' : 'заказов');
+  const empty = document.getElementById('orders-empty');
+  const list = document.getElementById('orders-list');
+  if(!orders.length){ empty.classList.remove('hidden'); list.innerHTML = ''; return; }
+  empty.classList.add('hidden');
+  list.innerHTML = orders.map(o => `
+    <article class="bg-surface-lowest rounded-xl border border-outline/20 p-4 sm:p-6">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <div>
+          <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-1">Заказ #${o.id}</div>
+          <div class="text-sm text-on-surface-variant">${fmtDate(o.createdAt)}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-1">Сумма</div>
+          <div class="text-xl font-bold text-primary">${o.total}₽</div>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div><span class="text-on-surface-variant">Имя:</span> <strong>${escapeHTML(o.customer.name||'')}</strong></div>
+        <div><span class="text-on-surface-variant">Телефон:</span> <strong>${escapeHTML(o.customer.phone||'')}</strong></div>
+        <div class="sm:col-span-2"><span class="text-on-surface-variant">Адрес:</span> <strong>${escapeHTML(o.customer.address||'')}</strong></div>
+        ${o.customer.comment ? `<div class="sm:col-span-2"><span class="text-on-surface-variant">Комментарий:</span> ${escapeHTML(o.customer.comment)}</div>` : ''}
+      </div>
+      <div class="border-t border-outline/20 pt-3">
+        <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Состав</div>
+        <ul class="space-y-1 text-sm">
+          ${o.items.map(i => `<li class="flex justify-between"><span>${escapeHTML(i.name)} × ${i.qty}</span><span class="text-on-surface-variant">${i.price*i.qty}₽</span></li>`).join('')}
+        </ul>
+      </div>
+    </article>
+  `).join('');
+}
+function escapeHTML(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function clearAll(){
+  if(!getOrders().length) return;
+  if(confirm('Удалить все заказы?')){ localStorage.removeItem('aksay_orders'); render(); }
+}
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(getOrders(), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'aksay-orders-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+render();
+</script>
+</body>
+</html>
