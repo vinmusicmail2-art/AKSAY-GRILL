@@ -381,4 +381,23 @@
             0
         </div>
 </button>
+<!-- Mobile bottom action bar -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#fef9ef]/95 backdrop-blur-md border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(155,63,28,0.08)]">
+<div class="grid grid-cols-3 gap-1 px-2 py-2">
+<button onclick="document.getElementById('mobile-menu').classList.toggle('hidden'); window.scrollTo({top:0,behavior:'smooth'})" class="flex flex-col items-center justify-center py-2 gap-1 text-on-surface-variant active:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">menu</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Меню</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 gap-1 text-on-surface-variant active:text-primary transition-colors relative">
+<span class="material-symbols-outlined text-2xl">shopping_basket</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Корзина</span>
+<span class="absolute top-1 right-6 bg-primary text-on-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 gap-1 bg-primary text-on-primary rounded-lg shadow-md shadow-primary/20 active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-2xl">delivery_dining</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Заказать</span>
+</button>
+</div>
+</nav>
+<div class="md:hidden h-20"></div>
 </body></html>
