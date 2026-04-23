@@ -123,8 +123,8 @@
 </div>
 </div>
 <!-- Mobile dropdown menu -->
-<div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/15 bg-[#fef9ef] dark:bg-[#1a1614]">
-<nav class="flex flex-col px-6 py-4 text-sm font-medium">
+<div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/15 bg-[#fef9ef] dark:bg-[#1a1614] max-h-[80vh] overflow-y-auto">
+<nav class="flex flex-col px-6 py-4 text-sm font-medium" onclick="if(event.target.tagName==='A'){document.getElementById('mobile-menu').classList.add('hidden')}">
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#">Доставка</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#business-lunch">Бизнес-ланчи</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#catering">Кейтеринг</a>
