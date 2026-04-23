@@ -114,6 +114,48 @@ uri = "file://assets/dishes/vareniki-smetana.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "kRbznQV-GS2imHvyjdCSF"
+uri = "file://assets/dishes/pure-maslo.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "zdzOzoz6tbRsFq8W9cNOW"
+uri = "file://assets/dishes/grechka.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JyPzDLmbJK-VhN_Y-0EG2"
+uri = "file://assets/dishes/makarony-otvar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "kX2YJfrsCwiPcIPs5ZGuR"
+uri = "file://assets/dishes/ris-ovoshhi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OC7QmelQWbYQONiHvsCVn"
+uri = "file://assets/dishes/kartofel-derevenski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9W0-D_XoAzkwJGPxcSSg-"
+uri = "file://assets/dishes/kapusta-tushenaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "mJCvBvF52K-JorHkqY43d"
+uri = "file://assets/dishes/kasha-pshenichnaya.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
