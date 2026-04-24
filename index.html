@@ -156,7 +156,7 @@
 <body class="bg-background text-on-surface font-body antialiased" data-mode="connect">
 <!-- Top Navigation Shell -->
 <header class="docked full-width top-0 sticky z-50 bg-[#cbc7bf]/80 dark:bg-[#1a1614]/80 backdrop-blur-md shadow-sm shadow-[#56423a]/5 border-none">
-<div class="flex justify-end items-center gap-6 px-8 py-6 w-full max-w-[1440px] mx-auto">
+<div class="flex justify-end items-center gap-6 pl-8 pr-4 py-6 w-full max-w-[1440px] mx-auto" style="padding-right: 0.5rem;">
 <nav class="hidden md:flex items-center gap-6 text-sm tracking-wide font-medium">
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#">Доставка</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#business-lunch">Бизнес-ланчи</a>
@@ -166,11 +166,11 @@
 <a class="inline-block text-[#56423a] opacity-80 border-b-2 border-[#9b3f1c] pb-1 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#">О нас</a>
 </nav>
 <div class="flex items-center gap-4">
-<div class="hidden lg:flex items-center bg-[#e3dfd6] px-4 py-2 rounded-full border border-outline-variant/15">
+<div class="hidden lg:flex items-center bg-[#e3dfd6] px-4 py-2 rounded-full border border-outline-variant/15" style="transform: scale(0.85); transform-origin: right center;">
 <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
 <input id="dish-search" class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
-<button onclick="openCart()" class="bg-primary text-on-primary px-4 md:px-5 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-105 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base flex items-center gap-2">
+<button onclick="openCart()" style="transform: scale(0.85); transform-origin: right center;" class="bg-primary text-on-primary px-4 md:px-5 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-105 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base flex items-center gap-2">
 <span class="material-symbols-outlined text-xl leading-none">shopping_basket</span>
 <span id="cart-header-summary">Заказать</span>
 </button>
