@@ -127,9 +127,10 @@
 <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
-<button class="bg-primary text-on-primary px-4 md:px-6 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-110 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base">
-                    Заказать
-                </button>
+<button onclick="openCart()" class="bg-primary text-on-primary px-4 md:px-5 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-105 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base flex items-center gap-2">
+<span class="material-symbols-outlined text-xl leading-none">shopping_basket</span>
+<span id="cart-header-summary">Заказать</span>
+</button>
 <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-surface-container-low text-primary" aria-label="Меню" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
 <span class="material-symbols-outlined">menu</span>
 </button>
@@ -1478,12 +1479,18 @@
 (function(){
   const cart = {};
   function fmt(n){ return n + '₽'; }
+  function plural(n, forms){ const n10 = n % 10, n100 = n % 100; if(n10===1 && n100!==11) return forms[0]; if(n10>=2 && n10<=4 && (n100<10||n100>=20)) return forms[1]; return forms[2]; }
   function totalQty(){ return Object.values(cart).reduce((s,i)=>s+i.qty,0); }
   function totalSum(){ return Object.values(cart).reduce((s,i)=>s+i.qty*i.price,0); }
   function render(){
     const qty = totalQty();
+    const sum = totalSum();
     document.querySelectorAll('#cart-badge-mobile, #cart-badge-fab').forEach(b => b.textContent = qty);
-    document.getElementById('cart-total').textContent = fmt(totalSum());
+    document.getElementById('cart-total').textContent = fmt(sum);
+    const hdr = document.getElementById('cart-header-summary');
+    if(hdr){
+      hdr.textContent = qty > 0 ? `${qty} ${plural(qty,['блюдо','блюда','блюд'])} · ${fmt(sum)}` : 'Заказать';
+    }
     const list = document.getElementById('cart-items');
     const items = Object.values(cart);
     if(items.length){
