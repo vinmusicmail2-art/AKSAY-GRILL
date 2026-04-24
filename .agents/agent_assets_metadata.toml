@@ -324,6 +324,12 @@ uri = "file://assets/dishes/sous.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "YD00A2k--BMmbQklYSy3h"
+uri = "file://assets/dishes/lyulya-kuritsa.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
