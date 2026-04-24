@@ -1272,6 +1272,47 @@
   </div>
   </div>
   </section>
+<section id="extras" class="mt-16 mb-16 scroll-mt-32">
+  <div class="flex justify-between items-end mb-12">
+  <div>
+  <h2 class="dish-heading font-headline text-4xl text-on-surface mb-2 font-[200]">ДОПОЛНИТЕЛЬНО</h2>
+  <p class="text-on-surface-variant max-w-md text-sm">Контейнеры для еды на вынос и дополнительные порции соусов.</p>
+  </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Item: Контейнер -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="konteiner" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/konteiner.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">10р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Контейнер</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Одноразовый контейнер для еды на вынос.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Соус к блюду -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="sous" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/sous.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">10р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Соус к блюду</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Дополнительная порция соуса (чесночный, томатный или сметанный).</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+  </div>
+  </section>
+  
 <!-- Delivery Info Banner -->
 <section class="bg-surface-container-highest rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10">
 <div class="flex-1">
@@ -1485,7 +1526,7 @@
     });
   }
   function initDishCards(){
-    document.querySelectorAll('section#pervye .group, section#vtorye .group, section#garniry .group, section#salaty .group, section#vypechka .group, section#napitki .group').forEach(card => {
+    document.querySelectorAll('section#pervye .group, section#vtorye .group, section#garniry .group, section#salaty .group, section#vypechka .group, section#napitki .group, section#extras .group').forEach(card => {
       const btn = Array.from(card.querySelectorAll('button')).find(b => /Добавить в заказ/i.test(b.textContent));
       if(!btn) return;
       const name = card.querySelector('h3')?.textContent.trim();

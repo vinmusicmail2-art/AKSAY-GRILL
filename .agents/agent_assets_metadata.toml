@@ -312,6 +312,18 @@ uri = "file://assets/dishes/kubay.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "rx-w1bCmMf-u6yVN0jK8Q"
+uri = "file://assets/dishes/konteiner.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_qn0PHL8m7eDPRY7Jr4AK"
+uri = "file://assets/dishes/sous.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
