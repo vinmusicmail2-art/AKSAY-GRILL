@@ -414,6 +414,12 @@ uri = "file://assets/dishes/griby-grill.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "Y6TU2cXMpeILcmozcPaVb"
+uri = "file://attached_assets/generated_images/generated_image.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
