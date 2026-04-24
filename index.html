@@ -99,6 +99,15 @@
       body {
         font-weight: 400; /* Montserrat Regular for body */
       }
+      /* Equalize dish card heights so "Добавить в заказ" buttons line up */
+      section[id] .grid > .group {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      section[id] .grid > .group > button:last-child {
+        margin-top: auto;
+      }
       .dish-heading {
         font-family: 'Yanone Kaffeesatz', sans-serif !important;
         font-optical-sizing: auto;
