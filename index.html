@@ -105,6 +105,22 @@
         flex-direction: column;
         height: 100%;
       }
+      /* Reserve consistent space for title (up to 2 lines) and description (up to 3 lines)
+         so buttons line up across rows, not only within a single row. */
+      section[id] .grid > .group > h3 {
+        min-height: 3.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      section[id] .grid > .group > p {
+        min-height: 3.6rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
       section[id] .grid > .group > button:last-child {
         margin-top: auto;
       }
