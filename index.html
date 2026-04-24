@@ -152,11 +152,11 @@
         background-repeat: repeat, repeat;
       }
       @keyframes attention-blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.55; }
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(0.78); }
       }
       .attention-blink {
-        animation: attention-blink 1.6s ease-in-out infinite;
+        animation: attention-blink 3.2s ease-in-out infinite;
       }
     </style>
 </head>
