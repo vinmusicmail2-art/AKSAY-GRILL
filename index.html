@@ -125,7 +125,7 @@
 <div class="flex items-center gap-4">
 <div class="hidden lg:flex items-center bg-[#e3dfd6] px-4 py-2 rounded-full border border-outline-variant/15">
 <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+<input id="dish-search" class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
 <button onclick="openCart()" class="bg-primary text-on-primary px-4 md:px-5 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-105 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base flex items-center gap-2">
 <span class="material-symbols-outlined text-xl leading-none">shopping_basket</span>
@@ -1643,6 +1643,44 @@
   });
   initDishCards();
   render();
+
+  // Live dish search
+  const searchInput = document.getElementById('dish-search');
+  if(searchInput){
+    const sectionIds = ['pervye','vtorye','garniry','salaty','vypechka','napitki','extras'];
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    let emptyMsg = null;
+    function applyFilter(){
+      const q = searchInput.value.trim().toLowerCase();
+      let totalShown = 0;
+      sections.forEach(sec => {
+        const cards = sec.querySelectorAll('.group');
+        let shown = 0;
+        cards.forEach(card => {
+          const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+          const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
+          const match = !q || title.includes(q) || desc.includes(q);
+          card.style.display = match ? '' : 'none';
+          if(match) shown++;
+        });
+        sec.style.display = shown ? '' : 'none';
+        totalShown += shown;
+      });
+      if(q && totalShown === 0){
+        if(!emptyMsg){
+          emptyMsg = document.createElement('div');
+          emptyMsg.id = 'search-empty';
+          emptyMsg.className = 'text-center text-on-surface-variant py-12 text-sm';
+          emptyMsg.textContent = 'Ничего не найдено. Попробуйте изменить запрос.';
+          sections[0]?.parentNode?.insertBefore(emptyMsg, sections[0]);
+        }
+        emptyMsg.style.display = '';
+      } else if(emptyMsg){
+        emptyMsg.style.display = 'none';
+      }
+    }
+    searchInput.addEventListener('input', applyFilter);
+  }
 })();
 </script>
 <!-- Mobile bottom action bar -->
