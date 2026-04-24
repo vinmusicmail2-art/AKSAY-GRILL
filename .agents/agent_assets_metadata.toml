@@ -252,6 +252,66 @@ uri = "file://assets/dishes/oladi.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "sQHr81RR277A16bXYAN51"
+uri = "file://assets/dishes/kompot.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SBFHhsramBAjIxtNMN1mn"
+uri = "file://assets/dishes/kola-05.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "6ThlhZVnFCslGPB3_lLHA"
+uri = "file://assets/dishes/chay-paket.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "K_qMJPbfKEfdkmR0sR156"
+uri = "file://assets/dishes/kofe-rastvor.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "AvmouPcRX9B29GoMWBEKD"
+uri = "file://assets/dishes/kofe-3v1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EOS8qdhKcXkWxHnVx3Gyc"
+uri = "file://assets/dishes/burn.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "MRsMI3_jX1CaHpNWr7W24"
+uri = "file://assets/dishes/flesh.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "THv8srav1L-adiPHNBKfs"
+uri = "file://assets/dishes/adrenalin.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "cm4VQW2r91tsr4pkGiYi6"
+uri = "file://assets/dishes/voda-05.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Xn-kKSQT8xwse_XxPysR4"
+uri = "file://assets/dishes/kubay.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
@@ -281,3 +341,33 @@ id = "aH3IKwvyaTEfAS5UbGLHP"
 uri = "file://attached_assets/stock_images/krylya-zharenye.jpg"
 type = "image"
 title = "fried chicken wings plate"
+
+[[outputs]]
+id = "GkmkGKzSdhjzZWeWXPNii"
+uri = "file://attached_assets/stock_images/kola-1l.jpg"
+type = "image"
+title = "cola plastic bottle 1 liter"
+
+[[outputs]]
+id = "AKG4ucT5-dN509iODBGeF"
+uri = "file://attached_assets/stock_images/limonad-steklo.jpg"
+type = "image"
+title = "lemonade glass bottle homemade"
+
+[[outputs]]
+id = "5qkRGvmTvmrMSMbKimkEj"
+uri = "file://attached_assets/stock_images/voda-5l.jpg"
+type = "image"
+title = "water large plastic bottle 5 liter"
+
+[[outputs]]
+id = "g4WYVQrqSV5yI-q39AE_b"
+uri = "file://attached_assets/stock_images/ice-tea.jpg"
+type = "image"
+title = "iced tea bottle cold drink"
+
+[[outputs]]
+id = "Vpo_hhhFMhr6naNTVHAk3"
+uri = "file://attached_assets/stock_images/chaynik-chay.jpg"
+type = "image"
+title = "teapot black tea ceramic"

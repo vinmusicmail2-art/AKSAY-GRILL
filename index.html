@@ -1029,10 +1029,249 @@
   </div>
   </div>
   </section>
-<section id="napitki" class="menu-card group mb-12 scroll-mt-32 rounded-xl bg-[#fef9ef] p-8 border border-outline-variant/10 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/10">
-<h2 class="dish-heading font-headline text-4xl text-on-surface mb-4 font-[200] transition-colors duration-300 group-hover:text-primary">НАПИТКИ</h2>
-<p class="text-on-surface-variant text-base leading-relaxed">Морс ягодный / Компот из сухофруктов / Лимонад домашний / Чай чёрный / Чай зелёный / Кофе американо / Кофе эспрессо / Минеральная вода</p>
-</section>
+<section id="napitki" class="mt-16 mb-16 scroll-mt-32">
+  <div class="flex justify-between items-end mb-12">
+  <div>
+  <h2 class="dish-heading font-headline text-4xl text-on-surface mb-2 font-[200]">НАПИТКИ</h2>
+  <p class="text-on-surface-variant max-w-md text-sm">Горячие и прохладительные напитки — компоты, чай, кофе, газировка и вода.</p>
+  </div>
+  <div class="flex gap-2">
+  <button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+  <span class="material-symbols-outlined">chevron_left</span>
+  </button>
+  <button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+  <span class="material-symbols-outlined">chevron_right</span>
+  </button>
+  </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Item: Компот из сухофруктов -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kompot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kompot.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">50р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Компот из сухофруктов</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Домашний ароматный компот из сушёных яблок и кураги.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Кока-кола 0,5 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kola-05" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kola-05.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">120р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Кока-кола 0,5 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Газированный напиток в стеклянной бутылке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Чай в пакетиках -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="chay-paket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/chay-paket.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">50р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Чай в пакетиках</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Свежезаваренный чёрный чай в чашке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Кофе растворимый -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kofe-rastvor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kofe-rastvor.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">50р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Кофе растворимый</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Классический растворимый кофе.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Кофе 3 в 1 -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kofe-3v1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kofe-3v1.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">50р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Кофе 3 в 1</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Сливочный кофе со сливками и сахаром.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: BURN 0,5 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="burn" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/burn.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">150р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">BURN 0,5 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Энергетический напиток.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Флеш 0,5 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="flesh" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/flesh.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">110р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Флеш 0,5 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Энергетический напиток.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Адреналин Раш 0,5 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="adrenalin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/adrenalin.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">190р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Адреналин Раш 0,5 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Энергетический напиток.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Вода 0,5 л Аквадон -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="voda-05" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/voda-05.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">50р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Вода 0,5 л Аквадон</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Питьевая негазированная вода.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Кубай 1,5 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kubay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kubay.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">90р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Кубай 1,5 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Газированная минеральная вода в большой бутылке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Кока-кола 1 л -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="kola-1l" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/kola-1l.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">150р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Кока-кола 1 л</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Газированный напиток в большой бутылке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Лимонад в стекле -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="limonad-steklo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/limonad-steklo.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">110р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Лимонад в стекле</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Домашний лимонад в стеклянной бутылке.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Вода 5 л питьевая -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="voda-5l" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/voda-5l.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">160р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Вода 5 л питьевая</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Питьевая вода в большой бутылке для всей семьи.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Холодный чай LIPTON зелёный персик -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="ice-tea" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/ice-tea.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">150р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Холодный чай LIPTON зелёный персик</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Прохладительный холодный чай со вкусом персика.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+<!-- Item: Чай чёрный в чайнике -->
+  <div class="group bg-surface-container-lowest rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+  <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+  <img alt="chaynik-chay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/assets/dishes/chaynik-chay.png"/>
+  <div class="absolute top-3 right-3">
+  <span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">300р</span>
+  </div>
+  </div>
+  <h3 class="font-headline text-xl text-on-surface mb-2 font-medium">Чай чёрный в чайнике</h3>
+  <p class="text-on-surface-variant text-xs mb-6 leading-relaxed">Свежезаваренный чёрный чай в чайнике на компанию.</p>
+  <button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs">
+  <span class="material-symbols-outlined text-lg">add_circle</span>
+                              Добавить в заказ
+                          </button>
+  </div>
+  </div>
+  </section>
 <!-- Delivery Info Banner -->
 <section class="bg-surface-container-highest rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10">
 <div class="flex-1">
