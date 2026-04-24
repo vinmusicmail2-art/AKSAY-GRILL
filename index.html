@@ -158,7 +158,7 @@
 <header class="docked full-width top-0 sticky z-50 bg-[#cbc7bf]/80 dark:bg-[#1a1614]/80 backdrop-blur-md shadow-sm shadow-[#56423a]/5 border-none">
 <div class="flex justify-end items-center gap-6 pl-8 pr-4 py-6 w-full max-w-[1440px] mx-auto" style="padding-right: 0.5rem;">
 <nav class="hidden md:flex items-center gap-6 text-sm tracking-wide font-medium">
-<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#">Доставка</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#dostavka">Доставка</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#business-lunch">Бизнес-ланчи</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#catering">Кейтеринг</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#events">Мероприятия</a>
@@ -182,7 +182,7 @@
 <!-- Mobile dropdown menu -->
 <div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/15 bg-[#cbc7bf] dark:bg-[#1a1614] max-h-[80vh] overflow-y-auto">
 <nav class="flex flex-col px-6 py-4 text-sm font-medium" onclick="if(event.target.tagName==='A'){document.getElementById('mobile-menu').classList.add('hidden')}">
-<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#">Доставка</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#dostavka">Доставка</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#business-lunch">Бизнес-ланчи</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#catering">Кейтеринг</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#events">Мероприятия</a>
@@ -1533,7 +1533,7 @@
   </section>
   
 <!-- Delivery Info Banner -->
-<section class="rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10" style="background-color: #9B3F1C;">
+<section id="dostavka" class="scroll-mt-32 rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10" style="background-color: #9B3F1C;">
 <div class="flex-1">
 <h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Доставим горячим</h2>
 <p class="mb-8 text-lg font-light" style="color: #FEF9EF;">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
