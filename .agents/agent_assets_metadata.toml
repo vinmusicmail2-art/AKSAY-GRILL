@@ -198,6 +198,60 @@ uri = "file://assets/dishes/morkov-chesnok.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "ZIQl5TfegGr6VgL1O6pMG"
+uri = "file://assets/dishes/hleb-pshenichnyj.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "L2wMIU0RcoE1OsAtKd0XP"
+uri = "file://assets/dishes/pirozhok-zharenyj.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5oeTS2BkoBkrfXRg-Y27X"
+uri = "file://assets/dishes/sosiska-v-teste.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "1UK-BiTMSoTUI01lQ7o8Z"
+uri = "file://assets/dishes/belyashi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "nVn0K9MKo1-NViG-AQzpB"
+uri = "file://assets/dishes/syrniki.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BgqSI_52qYkCP6K_oSNxE"
+uri = "file://assets/dishes/bulochka-chesnochnaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5Qaq-IpxhX2JJvl0gJEYj"
+uri = "file://assets/dishes/blinchiki-myaso.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JD02nQ5O0cdgvedlGtl7v"
+uri = "file://assets/dishes/samsa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "t4NK8vR4LdZLBxvElkWo3"
+uri = "file://assets/dishes/oladi.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
