@@ -354,6 +354,66 @@ uri = "file://assets/dishes/limonad-steklo.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "ZqC-q2ZsCFvbY_Kk7c4gl"
+uri = "file://assets/dishes/shashlyk-mix.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w_JIqKR6JF5DFqN0XgNNt"
+uri = "file://assets/dishes/kurinye-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fTyAkD0j9ebAb0H2xGXxJ"
+uri = "file://assets/dishes/rebryshki-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "uYfw0MuUw9vGwhRKGbQaQ"
+uri = "file://assets/dishes/steiki-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EzIu1rNuKuiiPgQssfL9h"
+uri = "file://assets/dishes/kupaty-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SmSIQfGH8Jxwyms8Uy5Mw"
+uri = "file://assets/dishes/adzhapsandal.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_Ye2HDJJBBFS_65bB6EbA"
+uri = "file://assets/dishes/ovoshi-shpazhki.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "KrTAhbTjDo01r2lPpIKp_"
+uri = "file://assets/dishes/perci-baklazhany.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "IcqofDhT-OfOBn2BIGcSv"
+uri = "file://assets/dishes/ovoshnaya-ikra.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3XjAPzW5nO_nuELb1EqPM"
+uri = "file://assets/dishes/griby-grill.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
