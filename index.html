@@ -1623,7 +1623,7 @@
 <p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">Вкусно, как дома</p>
 </div>
 <nav class="flex flex-wrap justify-center gap-8 text-[#56423a] opacity-60">
-<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Политика конфиденциальности</a>
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="/privacy.html">Политика конфиденциальности</a>
 <a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Условия использования</a>
 <a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
 </nav>
@@ -1689,6 +1689,10 @@
 <span class="text-sm text-on-surface-variant uppercase tracking-widest">К оплате</span>
 <span id="checkout-total" class="text-xl font-bold text-primary">0₽</span>
 </div>
+<label class="flex items-start gap-3 text-xs text-on-surface-variant leading-snug cursor-pointer">
+<input id="checkout-consent" name="consent" type="checkbox" required class="mt-0.5 w-4 h-4 accent-[#9b3f1c] flex-shrink-0"/>
+<span>Я согласен на <a href="/privacy.html" target="_blank" class="text-[#9b3f1c] underline">обработку персональных данных</a> в соответствии с 152-ФЗ.</span>
+</label>
 <button type="submit" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Подтвердить заказ</button>
 </form>
 <div id="checkout-success" class="hidden px-6 py-10 text-center">
@@ -1941,6 +1945,28 @@
       window.scrollBy({ top: dir * window.innerHeight, left: 0, behavior: 'smooth' });
     });
   });
+})();
+</script>
+
+<!-- Cookie consent banner -->
+<div id="cookie-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-[90] bg-[#56423a] text-[#FEF9EF] rounded-xl shadow-2xl p-5 border border-[#9b3f1c]/40">
+  <p class="text-sm leading-snug mb-4">Сайт использует cookies для работы и аналитики. Продолжая просмотр, вы соглашаетесь с <a href="/privacy.html" target="_blank" class="underline text-[#FDC39A]">Политикой конфиденциальности</a>.</p>
+  <div class="flex gap-2">
+    <button id="cookie-accept" class="flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90" style="background-color: #FDC39A; color: #56423A;">Принять</button>
+    <a href="/privacy.html" target="_blank" class="px-4 py-2 rounded-lg font-medium text-sm border border-[#FEF9EF]/40 hover:bg-white/10 transition-all flex items-center">Подробнее</a>
+  </div>
+</div>
+<script>
+(function(){
+  try {
+    if (!localStorage.getItem('cookie-consent')) {
+      document.getElementById('cookie-banner').classList.remove('hidden');
+    }
+    document.getElementById('cookie-accept').addEventListener('click', function(){
+      localStorage.setItem('cookie-consent', '1');
+      document.getElementById('cookie-banner').classList.add('hidden');
+    });
+  } catch(e){}
 })();
 </script>
 </body></html>
