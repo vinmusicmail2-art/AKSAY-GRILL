@@ -1,11 +1,11 @@
 modules = ["web", "python-3.11"]
 [agent]
 expertMode = true
-stack = "BEST_EFFORT_FALLBACK"
+stack = "FLASK_VANILLA_JS"
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "libiconv", "rustc"]
+packages = ["cargo", "libiconv", "openssl", "postgresql", "rustc"]
 
 [workflows]
 runButton = "Project"
@@ -36,5 +36,6 @@ localPort = 5000
 externalPort = 80
 
 [deployment]
-deploymentTarget = "static"
+deploymentTarget = "autoscale"
 publicDir = "."
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
