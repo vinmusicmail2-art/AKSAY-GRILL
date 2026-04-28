@@ -185,7 +185,7 @@
 </div>
 <!-- Contact strip (средние экраны md..xl) — компактная полоса снизу шапки.
      position:absolute + bottom-1 => тоже не влияет на высоту шапки -->
-<div class="hidden md:flex 2xl:hidden absolute left-0 right-0 bottom-1 px-4 items-center justify-center gap-x-4 text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none">
+<div class="hidden md:flex 2xl:hidden absolute inset-y-0 items-center justify-center gap-x-4 text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 360px; right: 16px;">
 <span class="flex items-center gap-1 pointer-events-auto">
 <span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
 <span class="font-semibold">{{ texts.contact_address }}</span>
