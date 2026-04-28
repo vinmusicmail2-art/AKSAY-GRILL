@@ -159,6 +159,31 @@ SITE_TEXT_CATALOG: list[dict] = [
         "kind": "text",
         "default": "10:00 – 22:00",
     },
+    # ----- Блок «Как нас найти» (Яндекс-карта) -----
+    {
+        "key": "map_address_text",
+        "label": "Карта: адрес под картой (отображается над картой)",
+        "kind": "text",
+        "default": "улица Авиаторов, Аксай, Ростовская область",
+    },
+    {
+        "key": "map_lat",
+        "label": "Карта: широта (latitude). Пример: 47.288037",
+        "kind": "text",
+        "default": "47.288037",
+    },
+    {
+        "key": "map_lng",
+        "label": "Карта: долгота (longitude). Пример: 39.863328",
+        "kind": "text",
+        "default": "39.863328",
+    },
+    {
+        "key": "map_zoom",
+        "label": "Карта: масштаб (zoom 0–19, обычно 17)",
+        "kind": "text",
+        "default": "17",
+    },
 ]
 
 

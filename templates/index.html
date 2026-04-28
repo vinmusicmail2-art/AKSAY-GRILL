@@ -1640,17 +1640,17 @@
 <section id="map" class="mb-16 mt-[20px] scroll-mt-24">
 <div class="bg-primary text-on-primary rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
 <div class="px-8 pt-6 pb-4 text-center">
-<p class="opacity-80 text-xs leading-relaxed mt-[32px]">улица Авиаторов, Аксай, Ростовская область</p>
+<p class="opacity-80 text-xs leading-relaxed mt-[32px]">{{ texts.map_address_text }}</p>
 </div>
 <div class="w-full" style="height: 380px;">
 <iframe
-  src="https://yandex.ru/map-widget/v1/?ll=39.863328%2C47.288037&z=17&pt=39.863328%2C47.288037%2Cpm2rdm&l=map"
+  src="https://yandex.ru/map-widget/v1/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm&l=map"
   width="100%" height="100%" frameborder="0" allowfullscreen="true"
   style="border:0; display:block;"
   title="Аксай Гриль на Яндекс-картах"></iframe>
 </div>
 <div class="px-8 pb-4 text-center" style="padding-top: 31px;">
-<a href="https://yandex.ru/maps?whatshere%5Bpoint%5D=39.86332825706677%2C47.288037468712766&whatshere%5Bzoom%5D=17.463709&ll=39.86332825706677%2C47.28780226955105&z=17.463709&si=1n8aut5yjw84tvcx31574ek48r"
+<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm"
    target="_blank" rel="noopener"
    class="inline-block bg-white text-primary px-6 py-2 rounded-lg font-bold text-xs hover:scale-105 transition-transform">
   Открыть в Яндекс-картах
