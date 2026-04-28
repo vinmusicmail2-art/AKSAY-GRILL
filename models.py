@@ -157,7 +157,7 @@ SITE_TEXT_CATALOG: list[dict] = [
         "key": "contact_hours",
         "label": "Шапка-контакты: часы работы",
         "kind": "text",
-        "default": "Ежедневно 10:00 – 22:00",
+        "default": "10:00 – 22:00",
     },
 ]
 
