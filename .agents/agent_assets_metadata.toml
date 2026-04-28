@@ -485,3 +485,9 @@ id = "OsYof1LGLbkrexZSCnkn7"
 uri = "file://CHANGELOG_FOR_CLIENT.txt"
 type = "text"
 title = "Отчёт для заказчика — этапы 1–3"
+
+[[outputs]]
+id = "nG1pdo81eqXuGO02shuFd"
+uri = "file://CHANGES.txt"
+type = "text"
+title = "Все изменения сайта"
