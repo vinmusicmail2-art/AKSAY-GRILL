@@ -4,16 +4,31 @@
 из статического HTML в полноценное Flask-приложение с SQLite.
 
 ## Текущий этап
-**Этап 1 — бэкенд Flask поднят, сайт перенесён в шаблоны Jinja.**
+**Этап 2 — авторизация админки и журнал входов.**
 
 ## Структура
-- `app.py` — точка входа Flask (роуты, инициализация БД)
-- `templates/` — Jinja-шаблоны (`index.html`, `privacy.html`)
+- `app.py` — точка входа Flask (роуты сайта, админки, инициализация БД, Flask-Login, CSRF)
+- `models.py` — ORM-модели: `Admin` (UserMixin, bcrypt-пароль), `LoginLog`
+- `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`
+- `templates/` — Jinja-шаблоны
+  - `index.html`, `privacy.html` — публичный сайт
+  - `admin/base.html`, `admin/setup.html`, `admin/login.html`, `admin/dashboard.html`
 - `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
 - `uploads/` — пользовательские загрузки (создаётся при необходимости)
 - `data.db` — SQLite-база (создаётся при первом запуске, в .gitignore)
 - `DESIGN.md` — дизайн-система «Terracotta Hearth»
 - `screen.png` — референс дизайна
+
+## Админка
+- `/admin/setup` — одноразовая страница создания первого администратора.
+  Доступна только пока в БД нет ни одного админа, после этого отдаёт 404.
+- `/admin/login` — вход. Если админов ещё нет, редиректит на `/admin/setup`.
+- `/admin/logout` — выход (POST + CSRF).
+- `/admin` — кабинет (защищён `@login_required`), показывает журнал входов.
+- Все попытки входа (успех/отказ) пишутся в `login_logs` с IP и User-Agent
+  (требование 152-ФЗ — ведём аудит доступа).
+- Пароли хранятся как bcrypt-хеши (`Admin.password_hash`).
+- CSRF включён через Flask-WTF на всех формах.
 
 ## Стек
 - Python 3.11
@@ -31,7 +46,7 @@ Workflow `Start application` запускает `python app.py` на порту 
 
 ## План этапов
 1. ✅ Перевод на Flask + SQLite (завершён)
-2. ⏳ Авторизация админки (`/admin/login`, лог входов)
+2. ✅ Авторизация админки (`/admin/login`, лог входов) — завершён
 3. ⏳ Редактирование текстов сайта через админку
 4. ⏳ Загрузка картинок через админку
 5. ⏳ Управление меню (CRUD блюд)

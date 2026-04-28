@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}Админка{% endblock %} | Аксай Гриль</title>
+<link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;500;700&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: "#9b3f1c",
+          "primary-container": "#bb5732",
+          "on-primary": "#ffffff",
+          surface: "#cbc7bf",
+          "surface-low": "#dedad0",
+          "surface-lowest": "#f8f3e9",
+          "surface-card": "#ffffff",
+          "on-surface": "#1d1c16",
+          "on-surface-variant": "#56423a",
+          outline: "#897269",
+          tertiary: "#cba72f",
+          error: "#ba1a1a",
+          "error-container": "#ffdad6",
+          success: "#2d6a4f",
+          "success-container": "#d8f3dc"
+        },
+        fontFamily: { sans: ["Montserrat", "sans-serif"] },
+        borderRadius: { DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem" }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Montserrat', sans-serif; background: #cbc7bf; color: #1d1c16; }
+</style>
+</head>
+<body class="min-h-screen">
+  <header class="bg-surface-low/80 backdrop-blur-xl border-b border-outline/20">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 hover:opacity-80">
+        <img src="/assets/logo.jpg" alt="Аксай Гриль" class="w-10 h-10 rounded-full object-cover"/>
+        <div>
+          <div class="text-xs uppercase tracking-widest text-on-surface-variant">Аксай Гриль</div>
+          <div class="text-sm font-medium">Админка</div>
+        </div>
+      </a>
+      {% if current_user.is_authenticated %}
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-on-surface-variant hidden sm:inline">
+          {{ current_user.username }}
+        </span>
+        <form method="POST" action="{{ url_for('admin_logout') }}" class="m-0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <button type="submit"
+            class="px-4 py-2 rounded-lg bg-primary text-on-primary text-sm font-medium hover:bg-primary-container transition-colors shadow-md">
+            Выйти
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-6">
+        {% for category, message in messages %}
+          <div class="px-4 py-3 rounded-lg text-sm
+            {% if category == 'error' %}bg-error-container text-error
+            {% elif category == 'success' %}bg-success-container text-success
+            {% else %}bg-surface-low text-on-surface-variant{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="max-w-5xl mx-auto px-6 py-8 text-center text-xs text-on-surface-variant/70">
+    © Аксай Гриль · служебная панель
+  </footer>
+</body>
+</html>

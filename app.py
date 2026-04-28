@@ -1,17 +1,41 @@
 """
 Аксай Гриль — Flask backend.
 
-Этап 1: перевод статичного сайта на Flask + SQLite.
-Контент пока статичный (рендерится из templates/), база заведена,
-но ещё не используется. Следующие этапы добавят админку и
-редактируемый контент.
+Этап 2: добавлена админка с авторизацией и журналом входов.
+- /admin/setup — одноразовое создание первого администратора
+- /admin/login — вход
+- /admin/logout — выход
+- /admin — кабинет администратора (заглушка с журналом входов)
 """
+import logging
 import os
+from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
-from flask import Flask, render_template, send_from_directory
+from flask import (
+    Flask,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from flask_wtf import CSRFProtect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+logging.basicConfig(level=logging.DEBUG)
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "data.db"
@@ -22,17 +46,59 @@ app = Flask(
     static_folder="assets",
     static_url_path="/assets",
 )
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+app.secret_key = os.environ.get("SESSION_SECRET") or os.environ.get(
+    "SECRET_KEY", "dev-secret-change-me"
+)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 МБ для загрузок
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 engine = create_engine(f"sqlite:///{DB_PATH}", future=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, future=True)
 Base = declarative_base()
 
+csrf = CSRFProtect(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "admin_login"
+login_manager.login_message = "Сначала войдите в админку."
+login_manager.login_message_category = "warning"
+
 
 def init_db() -> None:
     """Создать таблицы при первом запуске."""
+    import models  # noqa: F401  — регистрируем модели в Base.metadata
+
     Base.metadata.create_all(bind=engine)
+
+
+@login_manager.user_loader
+def load_user(user_id: str):
+    from models import Admin
+
+    session = SessionLocal()
+    try:
+        return session.get(Admin, int(user_id))
+    finally:
+        session.close()
+
+
+def _client_ip() -> str:
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr or ""
+
+
+def _is_safe_next(target: str) -> bool:
+    """Разрешаем только относительные внутренние пути."""
+    if not target:
+        return False
+    parsed = urlparse(target)
+    return not parsed.netloc and not parsed.scheme and target.startswith("/")
+
+
+# ----------------------------- публичные роуты -----------------------------
 
 
 @app.route("/")
@@ -55,6 +121,116 @@ def uploads(filename: str):
 @app.route("/healthz")
 def healthz():
     return {"status": "ok"}
+
+
+# ------------------------------- админка ----------------------------------
+
+
+@app.route("/admin/setup", methods=["GET", "POST"])
+def admin_setup():
+    """Одноразовое создание первого администратора.
+
+    Доступно только пока в БД нет ни одного администратора.
+    """
+    from forms import SetupForm
+    from models import Admin, admins_count
+
+    session = SessionLocal()
+    try:
+        if admins_count(session) > 0:
+            abort(404)
+
+        form = SetupForm()
+        if form.validate_on_submit():
+            admin = Admin(username=form.username.data.strip())
+            admin.set_password(form.password.data)
+            session.add(admin)
+            session.commit()
+            flash("Администратор создан. Войдите в систему.", "success")
+            return redirect(url_for("admin_login"))
+
+        return render_template("admin/setup.html", form=form)
+    finally:
+        session.close()
+
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    from forms import LoginForm
+    from models import Admin, LoginLog, admins_count
+
+    session = SessionLocal()
+    try:
+        if admins_count(session) == 0:
+            return redirect(url_for("admin_setup"))
+
+        if current_user.is_authenticated:
+            return redirect(url_for("admin_dashboard"))
+
+        form = LoginForm()
+        if form.validate_on_submit():
+            username = form.username.data.strip()
+            password = form.password.data
+            admin = (
+                session.query(Admin)
+                .filter(Admin.username == username, Admin.is_active.is_(True))
+                .first()
+            )
+            success = bool(admin and admin.check_password(password))
+
+            log = LoginLog(
+                username_attempted=username,
+                success=success,
+                ip_address=_client_ip(),
+                user_agent=(request.user_agent.string or "")[:1024],
+            )
+            session.add(log)
+
+            if success:
+                admin.last_login_at = datetime.utcnow()
+                session.commit()
+                login_user(admin)
+                next_url = request.args.get("next")
+                if _is_safe_next(next_url):
+                    return redirect(next_url)
+                return redirect(url_for("admin_dashboard"))
+
+            session.commit()
+            flash("Неверный логин или пароль.", "error")
+
+        return render_template("admin/login.html", form=form)
+    finally:
+        session.close()
+
+
+@app.route("/admin/logout", methods=["POST"])
+@login_required
+def admin_logout():
+    logout_user()
+    flash("Вы вышли из админки.", "success")
+    return redirect(url_for("admin_login"))
+
+
+@app.route("/admin")
+@app.route("/admin/")
+@login_required
+def admin_dashboard():
+    from models import LoginLog
+
+    session = SessionLocal()
+    try:
+        recent_logs = (
+            session.query(LoginLog)
+            .order_by(LoginLog.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        return render_template(
+            "admin/dashboard.html",
+            recent_logs=recent_logs,
+        )
+    finally:
+        session.close()
 
 
 with app.app_context():

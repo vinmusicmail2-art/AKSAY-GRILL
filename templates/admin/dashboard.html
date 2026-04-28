@@ -1,0 +1,96 @@
+{% extends "admin/base.html" %}
+{% block title %}Кабинет{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-light text-primary mb-1">Кабинет администратора</h1>
+        <p class="text-on-surface-variant">
+          Здравствуйте, <strong>{{ current_user.username }}</strong>.
+        </p>
+        {% if current_user.last_login_at %}
+          <p class="text-xs text-on-surface-variant/70 mt-1">
+            Прошлый вход: {{ current_user.last_login_at.strftime('%d.%m.%Y %H:%M') }} (UTC)
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <h2 class="text-xl font-light text-primary mb-4">Разделы</h2>
+    <p class="text-sm text-on-surface-variant mb-6">
+      На этом этапе доступна только авторизация. Дальнейшие разделы появятся
+      по плану: тексты сайта, изображения, меню, заказы, реквизиты, SEO,
+      юридические страницы, безопасность.
+    </p>
+    <div class="grid sm:grid-cols-2 gap-4">
+      {% set sections = [
+        ('Тексты сайта', 'Редактирование контента главной'),
+        ('Меню', 'CRUD блюд и категорий'),
+        ('Заказы', 'Список заказов и e-mail'),
+        ('Реквизиты', 'ИП/ООО, ИНН, контакты'),
+        ('SEO', 'Метатеги и Я.Метрика'),
+        ('Юридические страницы', 'Политика, оферта, cookies')
+      ] %}
+      {% for title, desc in sections %}
+      <div class="p-4 rounded-lg bg-surface-lowest border border-outline/20 opacity-60">
+        <div class="font-medium text-on-surface">{{ title }}</div>
+        <div class="text-xs text-on-surface-variant mt-1">{{ desc }}</div>
+        <div class="text-xs text-tertiary mt-2">скоро</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <h2 class="text-xl font-light text-primary mb-4">Журнал входов</h2>
+    <p class="text-xs text-on-surface-variant mb-4">
+      Последние 50 попыток входа. Журнал ведётся для соответствия 152-ФЗ.
+    </p>
+
+    {% if recent_logs %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-left text-xs uppercase tracking-wider text-on-surface-variant border-b border-outline/30">
+          <tr>
+            <th class="py-2 pr-4">Время (UTC)</th>
+            <th class="py-2 pr-4">Логин</th>
+            <th class="py-2 pr-4">Результат</th>
+            <th class="py-2 pr-4">IP</th>
+            <th class="py-2 pr-4">User-Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+          <tr class="border-b border-outline/10">
+            <td class="py-2 pr-4 whitespace-nowrap font-mono text-xs">
+              {{ log.created_at.strftime('%d.%m.%Y %H:%M:%S') }}
+            </td>
+            <td class="py-2 pr-4">{{ log.username_attempted }}</td>
+            <td class="py-2 pr-4">
+              {% if log.success %}
+                <span class="px-2 py-0.5 rounded-full text-xs bg-success-container text-success">успех</span>
+              {% else %}
+                <span class="px-2 py-0.5 rounded-full text-xs bg-error-container text-error">отказ</span>
+              {% endif %}
+            </td>
+            <td class="py-2 pr-4 font-mono text-xs">{{ log.ip_address or '—' }}</td>
+            <td class="py-2 pr-4 text-xs text-on-surface-variant max-w-[20rem] truncate" title="{{ log.user_agent }}">
+              {{ log.user_agent or '—' }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm text-on-surface-variant">Записей пока нет.</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
