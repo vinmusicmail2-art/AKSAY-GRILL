@@ -13,8 +13,112 @@ from flask_login import UserMixin
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import Session
 
-from app import Base
+from db import Base
 
+# ---------------------------------------------------------------------------
+# Каталог редактируемых текстов сайта.
+# Описывается на уровне Python: ключ → (метка, тип поля, значение по умолчанию).
+# При первом запуске значения по умолчанию записываются в БД,
+# дальше админ редактирует их через /admin/texts.
+# ---------------------------------------------------------------------------
+
+SITE_TEXT_CATALOG: list[dict] = [
+    {
+        "key": "site_title",
+        "label": "Заголовок вкладки браузера (<title>)",
+        "kind": "text",
+        "default": "Аксай Гриль | Вкусно, как дома",
+    },
+    {
+        "key": "tagline",
+        "label": "Слоган под логотипом",
+        "kind": "text",
+        "default": "Вкусно, как дома",
+    },
+    {
+        "key": "hero_badge",
+        "label": "Бейдж над заголовком героя",
+        "kind": "text",
+        "default": "Накормим вкусно, как дома!",
+    },
+    {
+        "key": "hero_title",
+        "label": "Заголовок героя",
+        "kind": "textarea",
+        "default": "Мясные и овощные блюда приготовленные на мангале или гриле:",
+    },
+    {
+        "key": "hero_meat_text",
+        "label": "Список мясных блюд героя (HTML, можно <br/>)",
+        "kind": "html",
+        "default": (
+            "Шашлык (свинина, баранина, говядина, курица) / Люля-кебаб / "
+            "Куриные крылья, бедра и ножки<br/>/ Свиные ребрышки / Стейки / "
+            "Купаты, колбаски"
+        ),
+    },
+    {
+        "key": "hero_veg_text",
+        "label": "Список овощных блюд героя (HTML, можно <br/>)",
+        "kind": "html",
+        "default": (
+            "Аджапсандал / Овощи-гриль на шпажках / Запечённые перцы и "
+            "баклажаны с чесноком и зеленью<br/>/ Овощная икра с дымком / "
+            "Запеченные грибы"
+        ),
+    },
+    {
+        "key": "hero_cta_primary",
+        "label": "Текст основной кнопки героя",
+        "kind": "text",
+        "default": "Заказать доставку",
+    },
+    {
+        "key": "hero_cta_secondary",
+        "label": "Текст второй кнопки героя",
+        "kind": "text",
+        "default": "Посмотреть отзывы",
+    },
+    {
+        "key": "footer_copyright",
+        "label": "Текст копирайта в подвале (HTML, можно <br/>)",
+        "kind": "html",
+        "default": (
+            "© 2024 Аксай Гриль. Все права защищены. <br/> "
+            "Сделано с любовью к домашней кухне."
+        ),
+    },
+]
+
+
+class SiteText(Base):
+    __tablename__ = "site_texts"
+
+    id = Column(Integer, primary_key=True)
+    key = Column(String(64), unique=True, nullable=False, index=True)
+    value = Column(Text, nullable=False, default="")
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
+                        nullable=False)
+
+
+def seed_site_texts(session: Session) -> None:
+    """Создать недостающие тексты со значениями по умолчанию."""
+    existing = {t.key for t in session.query(SiteText.key).all()}
+    added = False
+    for item in SITE_TEXT_CATALOG:
+        if item["key"] not in existing:
+            session.add(SiteText(key=item["key"], value=item["default"]))
+            added = True
+    if added:
+        session.commit()
+
+
+def load_site_texts(session: Session) -> dict[str, str]:
+    """Вернуть {key: value} для всех текстов (с подстановкой defaults
+    на случай, если запись ещё не сидирована)."""
+    rows = {t.key: t.value for t in session.query(SiteText).all()}
+    return {item["key"]: rows.get(item["key"], item["default"])
+            for item in SITE_TEXT_CATALOG}
 
 class Admin(Base, UserMixin):
     __tablename__ = "admins"

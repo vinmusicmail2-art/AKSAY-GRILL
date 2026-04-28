@@ -479,3 +479,9 @@ id = "Vpo_hhhFMhr6naNTVHAk3"
 uri = "file://attached_assets/stock_images/chaynik-chay.jpg"
 type = "image"
 title = "teapot black tea ceramic"
+
+[[outputs]]
+id = "OsYof1LGLbkrexZSCnkn7"
+uri = "file://CHANGELOG_FOR_CLIENT.txt"
+type = "text"
+title = "Отчёт для заказчика — этапы 1–3"

@@ -4,15 +4,16 @@
 из статического HTML в полноценное Flask-приложение с SQLite.
 
 ## Текущий этап
-**Этап 2 — авторизация админки и журнал входов.**
+**Этап 3 — редактирование текстов сайта через админку.**
 
 ## Структура
-- `app.py` — точка входа Flask (роуты сайта, админки, инициализация БД, Flask-Login, CSRF)
-- `models.py` — ORM-модели: `Admin` (UserMixin, bcrypt-пароль), `LoginLog`
+- `app.py` — точка входа Flask (роуты сайта, админки, Flask-Login, CSRF, context-processor)
+- `db.py` — engine, SessionLocal, Base (вынесено отдельно — без циклических импортов)
+- `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText` + каталог `SITE_TEXT_CATALOG`
 - `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`
 - `templates/` — Jinja-шаблоны
   - `index.html`, `privacy.html` — публичный сайт
-  - `admin/base.html`, `admin/setup.html`, `admin/login.html`, `admin/dashboard.html`
+  - `admin/base.html`, `admin/setup.html`, `admin/login.html`, `admin/dashboard.html`, `admin/texts.html`
 - `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
 - `uploads/` — пользовательские загрузки (создаётся при необходимости)
 - `data.db` — SQLite-база (создаётся при первом запуске, в .gitignore)
@@ -25,10 +26,18 @@
 - `/admin/login` — вход. Если админов ещё нет, редиректит на `/admin/setup`.
 - `/admin/logout` — выход (POST + CSRF).
 - `/admin` — кабинет (защищён `@login_required`), показывает журнал входов.
+- `/admin/texts` — редактирование текстов главной страницы.
 - Все попытки входа (успех/отказ) пишутся в `login_logs` с IP и User-Agent
   (требование 152-ФЗ — ведём аудит доступа).
 - Пароли хранятся как bcrypt-хеши (`Admin.password_hash`).
 - CSRF включён через Flask-WTF на всех формах.
+
+## Тексты сайта
+- Каталог редактируемых текстов описан в `models.SITE_TEXT_CATALOG` (key, label,
+  kind, default). Значения хранятся в таблице `site_texts`.
+- При первом запуске недостающие записи сидируются дефолтами.
+- Context-processor `inject_site_texts` кладёт словарь `texts` во все шаблоны;
+  в `index.html` нужные места заменены на `{{ texts.KEY }}`.
 
 ## Стек
 - Python 3.11
@@ -47,7 +56,7 @@ Workflow `Start application` запускает `python app.py` на порту 
 ## План этапов
 1. ✅ Перевод на Flask + SQLite (завершён)
 2. ✅ Авторизация админки (`/admin/login`, лог входов) — завершён
-3. ⏳ Редактирование текстов сайта через админку
+3. ✅ Редактирование текстов сайта через админку — завершён
 4. ⏳ Загрузка картинок через админку
 5. ⏳ Управление меню (CRUD блюд)
 6. ⏳ Учёт заказов + e-mail-уведомления

@@ -31,14 +31,11 @@ from flask_login import (
     logout_user,
 )
 from flask_wtf import CSRFProtect
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-logging.basicConfig(level=logging.DEBUG)
+from db import BASE_DIR, Base, SessionLocal, engine
 
-BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "data.db"
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(
     __name__,
@@ -52,10 +49,6 @@ app.secret_key = os.environ.get("SESSION_SECRET") or os.environ.get(
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 МБ для загрузок
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-engine = create_engine(f"sqlite:///{DB_PATH}", future=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, future=True)
-Base = declarative_base()
-
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
@@ -66,10 +59,28 @@ login_manager.login_message_category = "warning"
 
 
 def init_db() -> None:
-    """Создать таблицы при первом запуске."""
+    """Создать таблицы при первом запуске и засеять дефолтные тексты."""
     import models  # noqa: F401  — регистрируем модели в Base.metadata
 
     Base.metadata.create_all(bind=engine)
+
+    session = SessionLocal()
+    try:
+        models.seed_site_texts(session)
+    finally:
+        session.close()
+
+
+@app.context_processor
+def inject_site_texts():
+    """Кладём словарь текстов сайта во все шаблоны как `texts`."""
+    from models import load_site_texts
+
+    session = SessionLocal()
+    try:
+        return {"texts": load_site_texts(session)}
+    finally:
+        session.close()
 
 
 @login_manager.user_loader
@@ -209,6 +220,43 @@ def admin_logout():
     logout_user()
     flash("Вы вышли из админки.", "success")
     return redirect(url_for("admin_login"))
+
+
+@app.route("/admin/texts", methods=["GET", "POST"])
+@login_required
+def admin_texts():
+    """Редактирование текстов главной страницы."""
+    from models import SITE_TEXT_CATALOG, SiteText
+
+    session = SessionLocal()
+    try:
+        # Подтянем существующие записи
+        rows = {t.key: t for t in session.query(SiteText).all()}
+
+        if request.method == "POST":
+            # CSRF проверится автоматически (CSRFProtect+скрытое поле в форме)
+            for item in SITE_TEXT_CATALOG:
+                key = item["key"]
+                value = request.form.get(key, "")
+                if key in rows:
+                    rows[key].value = value
+                else:
+                    session.add(SiteText(key=key, value=value))
+            session.commit()
+            flash("Тексты сохранены.", "success")
+            return redirect(url_for("admin_texts"))
+
+        # GET — соберём текущие значения с подстановкой defaults
+        values = {item["key"]: rows[item["key"]].value if item["key"] in rows
+                  else item["default"]
+                  for item in SITE_TEXT_CATALOG}
+        return render_template(
+            "admin/texts.html",
+            catalog=SITE_TEXT_CATALOG,
+            values=values,
+        )
+    finally:
+        session.close()
 
 
 @app.route("/admin")

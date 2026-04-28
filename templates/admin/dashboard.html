@@ -22,14 +22,16 @@
 
   <section class="bg-surface-card rounded-xl shadow-lg p-8">
     <h2 class="text-xl font-light text-primary mb-4">Разделы</h2>
-    <p class="text-sm text-on-surface-variant mb-6">
-      На этом этапе доступна только авторизация. Дальнейшие разделы появятся
-      по плану: тексты сайта, изображения, меню, заказы, реквизиты, SEO,
-      юридические страницы, безопасность.
-    </p>
     <div class="grid sm:grid-cols-2 gap-4">
+      <a href="{{ url_for('admin_texts') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block">
+        <div class="font-medium text-primary">Тексты сайта</div>
+        <div class="text-xs text-on-surface-variant mt-1">
+          Редактирование заголовков, бейджа героя, кнопок, копирайта
+        </div>
+        <div class="text-xs text-success mt-2">доступно</div>
+      </a>
       {% set sections = [
-        ('Тексты сайта', 'Редактирование контента главной'),
         ('Меню', 'CRUD блюд и категорий'),
         ('Заказы', 'Список заказов и e-mail'),
         ('Реквизиты', 'ИП/ООО, ИНН, контакты'),
@@ -37,7 +39,7 @@
         ('Юридические страницы', 'Политика, оферта, cookies')
       ] %}
       {% for title, desc in sections %}
-      <div class="p-4 rounded-lg bg-surface-lowest border border-outline/20 opacity-60">
+      <div class="p-5 rounded-lg bg-surface-lowest border border-outline/20 opacity-60">
         <div class="font-medium text-on-surface">{{ title }}</div>
         <div class="text-xs text-on-surface-variant mt-1">{{ desc }}</div>
         <div class="text-xs text-tertiary mt-2">скоро</div>

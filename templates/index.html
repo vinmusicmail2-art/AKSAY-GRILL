@@ -3,7 +3,7 @@
 <html class="light" lang="ru"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Аксай Гриль | Вкусно, как дома</title>
+<title>{{ texts.site_title }}</title>
 <link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
@@ -272,20 +272,20 @@
 <div class="absolute inset-0 bg-black/60"></div>
 </div>
 <div class="relative z-10 px-12 max-w-5xl">
-<span class="attention-blink inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6" style="position:relative; top:-20px;">Накормим вкусно, как дома!</span>
-<h1 class="font-normal text-2xl md:text-3xl text-[#FEF9EF] leading-tight mb-6 whitespace-nowrap" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">Мясные и овощные блюда приготовленные на мангале или гриле:</h1>
+<span class="attention-blink inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6" style="position:relative; top:-20px;">{{ texts.hero_badge }}</span>
+<h1 class="font-normal text-2xl md:text-3xl text-[#FEF9EF] leading-tight mb-6 whitespace-nowrap" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">{{ texts.hero_title }}</h1>
 <p class="font-normal text-[1.15rem] md:text-[1.29rem] text-[#FEF9EF] leading-relaxed mb-8" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">
-Шашлык (свинина, баранина, говядина, курица) / Люля-кебаб / Куриные крылья, бедра и ножки<br/>/ Свиные ребрышки / Стейки / Купаты, колбаски<br/>
+{{ texts.hero_meat_text|safe }}<br/>
 <span style="display:inline-block;width:100%;height:1px;background:#FEF9EF;opacity:0.5;vertical-align:middle;"></span><br/>
-Аджапсандал / Овощи-гриль на шпажках / Запечённые перцы и баклажаны с чесноком и зеленью<br/>/ Овощная икра с дымком / Запеченные грибы
+{{ texts.hero_veg_text|safe }}
 </p>
 <div class="flex gap-4" style="position:relative; top:15px;">
 <button class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
 <span class="material-symbols-outlined">delivery_dining</span>
-                            Заказать доставку
+                            {{ texts.hero_cta_primary }}
                         </button>
 <button class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm">
-                            Посмотреть отзывы
+                            {{ texts.hero_cta_secondary }}
                         </button>
 </div>
 </div>
@@ -1620,7 +1620,7 @@
 <div class="flex items-center gap-3">
 <span class="font-headline text-2xl text-[#9b3f1c] font-[200]">Аксай Гриль</span>
 <span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-<p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">Вкусно, как дома</p>
+<p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">{{ texts.tagline }}</p>
 </div>
 <nav class="flex flex-wrap justify-center gap-8 text-[#56423a] opacity-60">
 <a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="/privacy.html">Политика конфиденциальности</a>
@@ -1628,7 +1628,7 @@
 <a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
 </nav>
 <div class="pt-8 border-t border-outline-variant/20 w-full max-w-lg text-center">
-<p class="font-body text-[10px] text-on-surface-variant opacity-40">© 2024 Аксай Гриль. Все права защищены. <br/> Сделано с любовью к домашней кухне.</p>
+<p class="font-body text-[10px] text-on-surface-variant opacity-40">{{ texts.footer_copyright|safe }}</p>
 </div>
 </div>
 </footer>
