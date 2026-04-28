@@ -145,7 +145,7 @@ SITE_TEXT_CATALOG: list[dict] = [
         "key": "contact_address",
         "label": "Шапка-контакты: адрес",
         "kind": "text",
-        "default": "г. Ростов-на-Дону",
+        "default": "г. Аксай",
     },
     {
         "key": "contact_phone",
