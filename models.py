@@ -151,7 +151,7 @@ SITE_TEXT_CATALOG: list[dict] = [
         "key": "contact_phone",
         "label": "Шапка-контакты: телефон (отображается жирным)",
         "kind": "text",
-        "default": "+7 (863) 000-00-00",
+        "default": "+7 (908) 513-78-80",
     },
     {
         "key": "contact_hours",
