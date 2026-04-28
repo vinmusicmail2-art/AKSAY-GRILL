@@ -28,24 +28,28 @@ SITE_TEXT_CATALOG: list[dict] = [
         "label": "Заголовок вкладки браузера (<title>)",
         "kind": "text",
         "default": "Аксай Гриль | Вкусно, как дома",
+        "section": "Главная страница",
     },
     {
         "key": "tagline",
         "label": "Слоган под логотипом",
         "kind": "text",
         "default": "Вкусно, как дома",
+        "section": "Главная страница",
     },
     {
         "key": "hero_badge",
         "label": "Бейдж над заголовком героя",
         "kind": "text",
         "default": "Накормим вкусно, как дома!",
+        "section": "Главная страница",
     },
     {
         "key": "hero_title",
         "label": "Заголовок героя",
         "kind": "textarea",
         "default": "Мясные и овощные блюда приготовленные на мангале или гриле:",
+        "section": "Главная страница",
     },
     {
         "key": "hero_meat_text",
@@ -56,6 +60,7 @@ SITE_TEXT_CATALOG: list[dict] = [
             "Куриные крылья, бедра и ножки<br/>/ Свиные ребрышки / Стейки / "
             "Купаты, колбаски"
         ),
+        "section": "Главная страница",
     },
     {
         "key": "hero_veg_text",
@@ -66,18 +71,21 @@ SITE_TEXT_CATALOG: list[dict] = [
             "баклажаны с чесноком и зеленью<br/>/ Овощная икра с дымком / "
             "Запеченные грибы"
         ),
+        "section": "Главная страница",
     },
     {
         "key": "hero_cta_primary",
         "label": "Текст основной кнопки героя",
         "kind": "text",
         "default": "Заказать доставку",
+        "section": "Главная страница",
     },
     {
         "key": "hero_cta_secondary",
         "label": "Текст второй кнопки героя",
         "kind": "text",
         "default": "Посмотреть отзывы",
+        "section": "Главная страница",
     },
     {
         "key": "footer_copyright",
@@ -87,6 +95,7 @@ SITE_TEXT_CATALOG: list[dict] = [
             "© 2024 Аксай Гриль. Все права защищены. <br/> "
             "Сделано с любовью к домашней кухне."
         ),
+        "section": "Главная страница",
     },
     # ----- Реквизиты оператора (ИП) — для подвала и политики -----
     {
@@ -94,30 +103,35 @@ SITE_TEXT_CATALOG: list[dict] = [
         "label": "Реквизиты: наименование оператора",
         "kind": "text",
         "default": "ИП Секретёв Алексей Сергеевич",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_inn",
         "label": "Реквизиты: ИНН",
         "kind": "text",
         "default": "614200356558",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_ogrnip",
         "label": "Реквизиты: ОГРНИП",
         "kind": "text",
         "default": "324619600091280",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_reg_date",
         "label": "Реквизиты: дата регистрации ИП",
         "kind": "text",
         "default": "17.04.2024",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_address",
         "label": "Реквизиты: адрес для корреспонденции",
         "kind": "textarea",
         "default": "344000, г. Ростов-на-Дону, пер. Журавлева, д. 150, кв. 31",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_tax_authority",
@@ -127,18 +141,21 @@ SITE_TEXT_CATALOG: list[dict] = [
             "Межрайонная инспекция Федеральной налоговой службы № 25 "
             "по Ростовской области"
         ),
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_email",
         "label": "Реквизиты: контактный e-mail (заполнить позже)",
         "kind": "text",
         "default": "",
+        "section": "Реквизиты оператора (ИП)",
     },
     {
         "key": "operator_phone",
         "label": "Реквизиты: контактный телефон (заполнить позже)",
         "kind": "text",
         "default": "",
+        "section": "Реквизиты оператора (ИП)",
     },
     # ----- Контактная строка в шапке сайта -----
     {
@@ -146,18 +163,21 @@ SITE_TEXT_CATALOG: list[dict] = [
         "label": "Шапка-контакты: адрес",
         "kind": "text",
         "default": "г. Аксай",
+        "section": "Контакты в шапке",
     },
     {
         "key": "contact_phone",
         "label": "Шапка-контакты: телефон (отображается жирным)",
         "kind": "text",
         "default": "+7 (908) 513-78-80",
+        "section": "Контакты в шапке",
     },
     {
         "key": "contact_hours",
         "label": "Шапка-контакты: часы работы",
         "kind": "text",
         "default": "10:00 – 22:00",
+        "section": "Контакты в шапке",
     },
     # ----- Блок «Как нас найти» (Яндекс-карта) -----
     {
@@ -165,26 +185,43 @@ SITE_TEXT_CATALOG: list[dict] = [
         "label": "Карта: адрес под картой (отображается над картой)",
         "kind": "text",
         "default": "улица Авиаторов, Аксай, Ростовская область",
+        "section": "Карта и адрес",
     },
     {
         "key": "map_lat",
         "label": "Карта: широта (latitude). Пример: 47.288037",
         "kind": "text",
         "default": "47.288037",
+        "section": "Карта и адрес",
     },
     {
         "key": "map_lng",
         "label": "Карта: долгота (longitude). Пример: 39.863328",
         "kind": "text",
         "default": "39.863328",
+        "section": "Карта и адрес",
     },
     {
         "key": "map_zoom",
         "label": "Карта: масштаб (zoom 0–19, обычно 17)",
         "kind": "text",
         "default": "17",
+        "section": "Карта и адрес",
     },
 ]
+
+
+def get_catalog_grouped() -> list[tuple[str, list[dict]]]:
+    """Вернуть каталог, сгруппированный по разделам, с сохранением порядка."""
+    groups: dict[str, list[dict]] = {}
+    order: list[str] = []
+    for item in SITE_TEXT_CATALOG:
+        section = item.get("section", "Прочее")
+        if section not in groups:
+            groups[section] = []
+            order.append(section)
+        groups[section].append(item)
+    return [(name, groups[name]) for name in order]
 
 
 class SiteText(Base):

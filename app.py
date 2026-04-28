@@ -226,7 +226,7 @@ def admin_logout():
 @login_required
 def admin_texts():
     """Редактирование текстов главной страницы."""
-    from models import SITE_TEXT_CATALOG, SiteText
+    from models import SITE_TEXT_CATALOG, SiteText, get_catalog_grouped
 
     session = SessionLocal()
     try:
@@ -253,6 +253,7 @@ def admin_texts():
         return render_template(
             "admin/texts.html",
             catalog=SITE_TEXT_CATALOG,
+            grouped_catalog=get_catalog_grouped(),
             values=values,
         )
     finally:
