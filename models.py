@@ -140,6 +140,25 @@ SITE_TEXT_CATALOG: list[dict] = [
         "kind": "text",
         "default": "",
     },
+    # ----- Контактная строка в шапке сайта -----
+    {
+        "key": "contact_address",
+        "label": "Шапка-контакты: адрес",
+        "kind": "text",
+        "default": "г. Ростов-на-Дону",
+    },
+    {
+        "key": "contact_phone",
+        "label": "Шапка-контакты: телефон (отображается жирным)",
+        "kind": "text",
+        "default": "+7 (863) 000-00-00",
+    },
+    {
+        "key": "contact_hours",
+        "label": "Шапка-контакты: часы работы",
+        "kind": "text",
+        "default": "Ежедневно 10:00 – 22:00",
+    },
 ]
 
 
