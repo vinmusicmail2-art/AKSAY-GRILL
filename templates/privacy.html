@@ -27,11 +27,14 @@
 <p>Используя Сайт и/или отправляя свои данные через формы Сайта, пользователь подтверждает согласие с условиями настоящей Политики.</p>
 
 <h2>2. Оператор персональных данных</h2>
-<p><strong>Наименование оператора:</strong> [укажите ИП / ООО]<br/>
-<strong>ИНН:</strong> [укажите]<br/>
-<strong>Адрес:</strong> [укажите юридический адрес]<br/>
-<strong>Контактный e-mail:</strong> [укажите]<br/>
-<strong>Телефон:</strong> [укажите]</p>
+<p><strong>Наименование оператора:</strong> {{ texts.operator_name }}<br/>
+<strong>ИНН:</strong> {{ texts.operator_inn }}<br/>
+<strong>ОГРНИП:</strong> {{ texts.operator_ogrnip }}<br/>
+<strong>Дата регистрации:</strong> {{ texts.operator_reg_date }}<br/>
+<strong>Налоговый орган:</strong> {{ texts.operator_tax_authority }}<br/>
+<strong>Адрес для корреспонденции:</strong> {{ texts.operator_address }}<br/>
+{% if texts.operator_email %}<strong>Контактный e-mail:</strong> <a href="mailto:{{ texts.operator_email }}">{{ texts.operator_email }}</a><br/>{% endif %}
+{% if texts.operator_phone %}<strong>Телефон:</strong> {{ texts.operator_phone }}{% endif %}</p>
 
 <h2>3. Какие данные собираются</h2>
 <ul>
@@ -80,7 +83,9 @@
 <p>Оператор вправе вносить изменения в настоящую Политику. Актуальная редакция всегда доступна на этой странице. Существенные изменения публикуются с указанием новой даты обновления.</p>
 
 <h2>12. Контакты</h2>
-<p>По всем вопросам, связанным с обработкой персональных данных, обращайтесь по e-mail: [укажите] или по телефону: [укажите].</p>
+<p>По всем вопросам, связанным с обработкой персональных данных, обращайтесь к Оператору ({{ texts.operator_name }}) по реквизитам, указанным в разделе&nbsp;2.
+{% if texts.operator_email %}E-mail: <a href="mailto:{{ texts.operator_email }}">{{ texts.operator_email }}</a>.{% endif %}
+{% if texts.operator_phone %}Телефон: {{ texts.operator_phone }}.{% endif %}</p>
 
 </div>
 </body>
