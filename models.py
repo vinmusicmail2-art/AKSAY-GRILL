@@ -159,12 +159,6 @@ SITE_TEXT_CATALOG: list[dict] = [
         "kind": "text",
         "default": "Ежедневно 10:00 – 22:00",
     },
-    {
-        "key": "map_query",
-        "label": "Карта: адрес/запрос для Яндекс.Карт",
-        "kind": "text",
-        "default": "Ростов-на-Дону",
-    },
 ]
 
 
