@@ -167,37 +167,37 @@
 <!-- Contact strip (широкие экраны ≥1536px) — в одной строке с навигацией;
      position:absolute + inset-y-0 + items-center => вертикально по центру.
      НЕ влияет на высоту шапки и ничего не сдвигает -->
-<div class="hidden 2xl:flex absolute inset-y-0 items-center justify-center gap-x-4 text-[13px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 230px; right: 700px;">
+<div class="hidden 2xl:flex absolute inset-y-0 items-center justify-center gap-x-4 text-[26px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 230px; right: 700px;">
 <span class="flex items-center gap-1.5 pointer-events-auto">
-<span class="material-symbols-outlined text-[18px] text-[#9b3f1c]">location_on</span>
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">location_on</span>
 <span class="font-semibold">{{ texts.contact_address }}</span>
 </span>
 <span class="opacity-30 pointer-events-auto">•</span>
 <a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1.5 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
-<span class="material-symbols-outlined text-[18px] text-[#9b3f1c]">call</span>
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">call</span>
 <span>{{ texts.contact_phone }}</span>
 </a>
 <span class="opacity-30 pointer-events-auto">•</span>
 <span class="flex items-center gap-1.5 pointer-events-auto">
-<span class="material-symbols-outlined text-[18px] text-[#9b3f1c]">schedule</span>
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">schedule</span>
 <span class="font-semibold">{{ texts.contact_hours }}</span>
 </span>
 </div>
 <!-- Contact strip (средние экраны md..xl) — компактная полоса снизу шапки.
      position:absolute + bottom-1 => тоже не влияет на высоту шапки -->
-<div class="hidden md:flex 2xl:hidden absolute left-0 right-0 bottom-1 px-4 items-center justify-center gap-x-4 text-[12px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none">
+<div class="hidden md:flex 2xl:hidden absolute left-0 right-0 bottom-1 px-4 items-center justify-center gap-x-4 text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none">
 <span class="flex items-center gap-1 pointer-events-auto">
-<span class="material-symbols-outlined text-[15px] text-[#9b3f1c]">location_on</span>
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
 <span class="font-semibold">{{ texts.contact_address }}</span>
 </span>
 <span class="opacity-30 pointer-events-auto">•</span>
 <a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
-<span class="material-symbols-outlined text-[15px] text-[#9b3f1c]">call</span>
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">call</span>
 <span>{{ texts.contact_phone }}</span>
 </a>
 <span class="opacity-30 pointer-events-auto">•</span>
 <span class="flex items-center gap-1 pointer-events-auto">
-<span class="material-symbols-outlined text-[15px] text-[#9b3f1c]">schedule</span>
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">schedule</span>
 <span class="font-semibold">{{ texts.contact_hours }}</span>
 </span>
 </div>
