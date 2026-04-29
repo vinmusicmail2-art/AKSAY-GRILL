@@ -14,7 +14,17 @@
 - `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`, `BusinessLunchOrderForm`
 - `templates/` — Jinja-шаблоны
   - `index.html`, `privacy.html`, `business-lunch.html` — публичный сайт
-  - `admin/base.html`, `admin/setup.html`, `admin/login.html`, `admin/dashboard.html`, `admin/texts.html`
+  - `admin/base.html`, `admin/setup.html`, `admin/login.html`,
+    `admin/dashboard.html`, `admin/texts.html`, `admin/business_lunches.html`
+
+## Бизнес-ланчи
+- Публичная страница `/business-lunch` — каталог `BUSINESS_LUNCH_MENU` (4 комплекса)
+  и форма корпоративного заказа (`BusinessLunchOrderForm`).
+- Заявки сохраняются в таблицу `business_lunch_orders` с IP клиента.
+- Админка `/admin/business-lunches` — список заявок с фильтром
+  «В работе / Обработанные / Все», кнопка «Отметить обработанной» (POST + CSRF),
+  фиксируется `processed_at` и `processed_by`.
+- На дашборде админки бейдж с числом необработанных заявок.
 - `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
 - `uploads/` — пользовательские загрузки (создаётся при необходимости)
 - `data.db` — SQLite-база (создаётся при первом запуске, в .gitignore)

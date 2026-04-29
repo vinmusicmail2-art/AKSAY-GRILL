@@ -31,6 +31,23 @@
         </div>
         <div class="text-xs text-success mt-2">доступно</div>
       </a>
+      <a href="{{ url_for('admin_business_lunches') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block relative">
+        {% if pending_orders and pending_orders > 0 %}
+          <span class="absolute top-3 right-3 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-2 rounded-full bg-primary text-on-primary text-xs font-bold">
+            {{ pending_orders }}
+          </span>
+        {% endif %}
+        <div class="font-medium text-primary">Заявки на бизнес-ланчи</div>
+        <div class="text-xs text-on-surface-variant mt-1">
+          Корпоративные заказы со страницы /business-lunch
+        </div>
+        <div class="text-xs text-success mt-2">
+          {% if pending_orders and pending_orders > 0 %}
+            {{ pending_orders }} в работе
+          {% else %}доступно{% endif %}
+        </div>
+      </a>
       {% set sections = [
         ('Меню', 'CRUD блюд и категорий'),
         ('Заказы', 'Список заказов и e-mail'),

@@ -64,6 +64,30 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
 
+    # Лёгкая миграция SQLite: добавим недостающие колонки в business_lunch_orders.
+    # SQLite не поддерживает «add if not exists», поэтому сверяемся с PRAGMA.
+    from sqlalchemy import text as sql_text
+
+    with engine.begin() as conn:
+        try:
+            cols = {row[1] for row in conn.exec_driver_sql(
+                "PRAGMA table_info(business_lunch_orders)").fetchall()}
+            if "is_processed" not in cols:
+                conn.exec_driver_sql(
+                    "ALTER TABLE business_lunch_orders "
+                    "ADD COLUMN is_processed BOOLEAN NOT NULL DEFAULT 0")
+            if "processed_at" not in cols:
+                conn.exec_driver_sql(
+                    "ALTER TABLE business_lunch_orders "
+                    "ADD COLUMN processed_at DATETIME")
+            if "processed_by" not in cols:
+                conn.exec_driver_sql(
+                    "ALTER TABLE business_lunch_orders "
+                    "ADD COLUMN processed_by VARCHAR(64)")
+        except Exception as exc:  # pragma: no cover
+            logging.getLogger(__name__).warning(
+                "business_lunch_orders migration skipped: %s", exc)
+
     session = SessionLocal()
     try:
         models.seed_site_texts(session)
@@ -308,7 +332,7 @@ def admin_texts():
 @app.route("/admin/")
 @login_required
 def admin_dashboard():
-    from models import LoginLog
+    from models import BusinessLunchOrder, LoginLog
 
     session = SessionLocal()
     try:
@@ -318,12 +342,79 @@ def admin_dashboard():
             .limit(50)
             .all()
         )
+        pending_orders = (
+            session.query(BusinessLunchOrder)
+            .filter(BusinessLunchOrder.is_processed.is_(False))
+            .count()
+        )
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
+            pending_orders=pending_orders,
         )
     finally:
         session.close()
+
+
+@app.route("/admin/business-lunches")
+@login_required
+def admin_business_lunches():
+    """Список заявок на бизнес-ланчи."""
+    from models import BUSINESS_LUNCH_MENU, BusinessLunchOrder
+
+    show = request.args.get("show", "pending")  # pending|all|processed
+
+    session = SessionLocal()
+    try:
+        q = session.query(BusinessLunchOrder)
+        if show == "pending":
+            q = q.filter(BusinessLunchOrder.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(BusinessLunchOrder.is_processed.is_(True))
+        orders = q.order_by(BusinessLunchOrder.created_at.desc()).limit(200).all()
+
+        combo_titles = {item["key"]: item["title"] for item in BUSINESS_LUNCH_MENU}
+        combo_prices = {item["key"]: item["price"] for item in BUSINESS_LUNCH_MENU}
+
+        return render_template(
+            "admin/business_lunches.html",
+            orders=orders,
+            show=show,
+            combo_titles=combo_titles,
+            combo_prices=combo_prices,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/business-lunches/<int:order_id>/toggle", methods=["POST"])
+@login_required
+def admin_business_lunch_toggle(order_id: int):
+    """Отметить заявку обработанной / снять отметку."""
+    from models import BusinessLunchOrder
+
+    session = SessionLocal()
+    try:
+        order = session.get(BusinessLunchOrder, order_id)
+        if order is None:
+            abort(404)
+        if order.is_processed:
+            order.is_processed = False
+            order.processed_at = None
+            order.processed_by = None
+            flash(f"Заявка #{order.id} возвращена в работу.", "success")
+        else:
+            order.is_processed = True
+            order.processed_at = datetime.utcnow()
+            order.processed_by = current_user.username
+            flash(f"Заявка #{order.id} отмечена как обработанная.", "success")
+        session.commit()
+    finally:
+        session.close()
+
+    return redirect(
+        request.referrer or url_for("admin_business_lunches")
+    )
 
 
 with app.app_context():
