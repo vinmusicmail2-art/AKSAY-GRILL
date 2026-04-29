@@ -237,6 +237,114 @@ def send_order_notification_async(order_data: dict, base_url: str = "") -> None:
     threading.Thread(target=_run, daemon=True, name="order-notify").start()
 
 
+def _format_catering_email(req, base_url: str = "") -> Tuple[str, str, str]:
+    """Сформировать subject + plain + html для письма по заявке на кейтеринг."""
+    from models import CATERING_FORMATS
+
+    formats = {f["key"]: f["title"] for f in CATERING_FORMATS}
+    fmt_title = formats.get(req.event_format, req.event_format)
+
+    subject = (
+        f"Новая заявка на кейтеринг #{req.id}"
+        f" — {fmt_title}, {req.guests} гостей, {req.event_date}"
+    )
+    admin_link = f"{base_url}/admin/catering" if base_url else "/admin/catering"
+
+    budget_line = (
+        f"Бюджет на гостя: {req.budget_per_guest}₽"
+        f" (≈ {req.budget_per_guest * req.guests}₽ на всех)"
+        if req.budget_per_guest else "Бюджет на гостя: не указан"
+    )
+
+    plain_lines = [
+        f"Получена новая заявка на кейтеринг #{req.id}.",
+        "",
+        f"Контактное лицо: {req.contact_name}",
+        f"Компания / организатор: {req.company or '—'}",
+        f"Телефон: {req.phone}",
+        f"E-mail: {req.email or '—'}",
+        "",
+        f"Формат: {fmt_title}",
+        f"Дата мероприятия: {req.event_date}"
+        + (f", время: {req.event_time}" if req.event_time else ""),
+        f"Площадка: {req.venue}",
+        f"Количество гостей: {req.guests}",
+        budget_line,
+        "",
+        f"Комментарий: {req.comment or '—'}",
+        "",
+        f"Открыть в админке: {admin_link}",
+    ]
+    plain = "\n".join(plain_lines)
+
+    html = f"""\
+<!doctype html>
+<html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d1c16;background:#f5f1e8;padding:24px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
+    <tr><td style="background:#9b3f1c;color:#fff;padding:18px 24px;">
+      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · кейтеринг</div>
+      <div style="font-size:20px;font-weight:600;margin-top:4px;">Новая заявка #{req.id}</div>
+    </td></tr>
+    <tr><td style="padding:20px 24px;">
+      <p style="margin:0 0 14px;">Получена новая заявка на обслуживание мероприятия.</p>
+      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
+        <tr><td style="color:#56423a;width:40%;">Контактное лицо</td><td><strong>{req.contact_name}</strong></td></tr>
+        <tr><td style="color:#56423a;">Компания</td><td>{req.company or '—'}</td></tr>
+        <tr><td style="color:#56423a;">Телефон</td><td><a href="tel:{req.phone}" style="color:#9b3f1c;">{req.phone}</a></td></tr>
+        <tr><td style="color:#56423a;">E-mail</td><td>{req.email or '—'}</td></tr>
+        <tr><td style="color:#56423a;">Формат</td><td><strong>{fmt_title}</strong></td></tr>
+        <tr><td style="color:#56423a;">Дата / время</td><td>{req.event_date}{', ' + req.event_time if req.event_time else ''}</td></tr>
+        <tr><td style="color:#56423a;">Площадка</td><td>{req.venue}</td></tr>
+        <tr><td style="color:#56423a;">Гостей</td><td><strong>{req.guests}</strong></td></tr>
+        <tr><td style="color:#56423a;">Бюджет на гостя</td><td>{(str(req.budget_per_guest) + '₽ (≈ ' + str(req.budget_per_guest * req.guests) + '₽ на всех)') if req.budget_per_guest else '<em>не указан</em>'}</td></tr>
+      </table>
+      {f'<div style="margin-top:18px;"><div style="font-size:12px;color:#56423a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Комментарий</div><div style="white-space:pre-wrap;">{req.comment}</div></div>' if req.comment else ''}
+      <div style="margin-top:24px;">
+        <a href="{admin_link}" style="display:inline-block;background:#9b3f1c;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Открыть в админке</a>
+      </div>
+    </td></tr>
+    <tr><td style="background:#f5f1e8;padding:14px 24px;font-size:11px;color:#56423a;">
+      Это автоматическое уведомление. На него отвечать не нужно.
+    </td></tr>
+  </table>
+</body></html>"""
+
+    return subject, plain, html
+
+
+def send_catering_notification(req, base_url: str = "") -> Tuple[bool, str]:
+    """Отправить уведомление о новой заявке на кейтеринг."""
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
+    subject, plain, html = _format_catering_email(req, base_url=base_url)
+    return _send_smtp(subject, plain, html, recipient)
+
+
+def send_catering_notification_async(data: dict, base_url: str = "") -> None:
+    """Фоновая отправка уведомления о заявке на кейтеринг."""
+    class _Shim:
+        pass
+
+    o = _Shim()
+    for k, v in data.items():
+        setattr(o, k, v)
+
+    def _run():
+        try:
+            ok, msg = send_catering_notification(o, base_url=base_url)
+            if ok:
+                logger.info("Catering notification sent: %s", msg)
+            else:
+                logger.warning("Catering notification skipped: %s", msg)
+        except Exception:  # noqa: BLE001
+            logger.exception("Catering notification crashed")
+
+    threading.Thread(target=_run, daemon=True, name="catering-notify").start()
+
+
 def send_test_email(to_addr: str) -> Tuple[bool, str]:
     """Отправить тестовое письмо для проверки настроек SMTP."""
     subject = "Тест уведомлений · Аксай Гриль"

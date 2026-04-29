@@ -396,3 +396,44 @@ class BusinessLunchOrder(Base):
     created_at = Column(
         DateTime, default=datetime.utcnow, nullable=False, index=True
     )
+
+
+# ---------------------------------------------------------------------------
+# Кейтеринг: форматы мероприятий и заявки.
+# ---------------------------------------------------------------------------
+
+CATERING_FORMATS: list[dict] = [
+    {"key": "banquet",    "title": "Банкет (рассадка)"},
+    {"key": "buffet",     "title": "Фуршет"},
+    {"key": "outdoor",    "title": "Выездной мангал"},
+    {"key": "coffee",     "title": "Кофе-брейк"},
+    {"key": "memorial",   "title": "Поминальный обед"},
+    {"key": "wedding",    "title": "Свадьба / юбилей"},
+    {"key": "other",      "title": "Другое (опишу в комментарии)"},
+]
+
+
+class CateringRequest(Base):
+    """Заявка на кейтеринг / выездное обслуживание."""
+
+    __tablename__ = "catering_requests"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    company = Column(String(255), nullable=True)
+    phone = Column(String(64), nullable=False, index=True)
+    email = Column(String(255), nullable=True)
+    event_format = Column(String(32), nullable=False)
+    guests = Column(Integer, nullable=False, default=1)
+    event_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
+    event_time = Column(String(16), nullable=True)
+    venue = Column(Text, nullable=False)
+    budget_per_guest = Column(Integer, nullable=True)  # ₽ на человека, опционально
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    processed_at = Column(DateTime, nullable=True)
+    processed_by = Column(String(64), nullable=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="light" lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Кейтеринг · {{ texts.site_title }}</title>
+<link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#9b3f1c",
+          "on-primary": "#ffffff",
+          "primary-container": "#bb5732",
+          "on-primary-container": "#fffbff",
+          "secondary": "#805533",
+          "on-secondary": "#ffffff",
+          "tertiary": "#735c00",
+          "tertiary-container": "#cba72f",
+          "on-tertiary-container": "#4e3d00",
+          "surface": "#cbc7bf",
+          "surface-container": "#c1bdb5",
+          "surface-container-low": "#c6c2ba",
+          "surface-container-high": "#bcb9b1",
+          "on-surface": "#1d1c16",
+          "on-surface-variant": "#56423a",
+          "outline": "#897269",
+          "outline-variant": "#dcc1b6",
+          "background": "#cbc7bf",
+          "error": "#ba1a1a",
+          "error-container": "#ffdad6",
+          "on-error-container": "#93000a",
+        },
+        borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+        fontFamily: { "headline": ["Montserrat","sans-serif"], "body": ["Montserrat","sans-serif"] },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: "Montserrat", sans-serif; background: #cbc7bf; color: #1d1c16; }
+  h1, h2, h3, .font-headline { font-weight: 200; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .hero-bg {
+    background-image: linear-gradient(180deg, rgba(155,63,28,0.85) 0%, rgba(128,85,51,0.78) 100%),
+                      url('/assets/catering.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .field-input {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(137,114,105,0.35);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #1d1c16;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: #9b3f1c;
+    box-shadow: 0 0 0 3px rgba(155,63,28,0.15);
+  }
+  .field-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #56423a;
+    margin-bottom: 0.4rem;
+  }
+  .format-card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .format-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -12px rgba(155,63,28,0.25);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-[rgba(203,199,191,0.85)] backdrop-blur sticky top-0 z-30 border-b border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3">
+      <div class="bg-[#cbc7bf] p-2 rounded-lg">
+        <img src="/assets/logo.jpg" alt="Аксай Гриль" class="h-10 w-auto object-contain"
+             style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.15);"/>
+      </div>
+      <div>
+        <div class="font-headline text-xl text-[#9b3f1c]">Аксай Гриль</div>
+        <div class="text-[11px] text-on-surface-variant">{{ texts.tagline }}</div>
+      </div>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm">
+      <a href="/" class="text-on-surface-variant hover:text-primary">На главную</a>
+      <a href="tel:{{ texts.contact_phone }}" class="font-bold text-primary">{{ texts.contact_phone }}</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero-bg text-white">
+  <div class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Под ключ</span>
+    <h1 class="font-headline text-4xl md:text-6xl mb-4">Кейтеринг</h1>
+    <p class="text-lg md:text-xl max-w-2xl opacity-95 leading-relaxed">
+      Полное обслуживание мероприятий: меню под ваш формат и бюджет, сервировка,
+      посуда и персонал. Вы занимаетесь гостями — мы всем остальным.
+    </p>
+
+    <div class="grid sm:grid-cols-3 gap-4 mt-10 max-w-3xl">
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">restaurant</div>
+        <div class="font-semibold mt-2">Меню под формат</div>
+        <div class="text-xs opacity-80 mt-1">Подберём блюда под банкет, фуршет, мангал или кофе-брейк.</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">room_service</div>
+        <div class="font-semibold mt-2">Посуда и персонал</div>
+        <div class="text-xs opacity-80 mt-1">Привезём посуду, сервировку и официантов — по необходимости.</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">local_shipping</div>
+        <div class="font-semibold mt-2">Выезд по области</div>
+        <div class="text-xs opacity-80 mt-1">Аксай, Ростов-на-Дону и Аксайский район — выезжаем под ключ.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="max-w-6xl mx-auto px-6 mt-8 space-y-2">
+      {% for category, msg in messages %}
+        <div class="rounded-lg px-4 py-3 text-sm
+          {% if category == 'success' %}bg-tertiary-container text-on-tertiary-container
+          {% elif category == 'error' %}bg-error-container text-on-error-container
+          {% else %}bg-surface-container text-on-surface{% endif %}">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Forms / formats -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="flex items-end justify-between gap-4 flex-wrap mb-8">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Что мы умеем</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface">Форматы мероприятий</h2>
+    </div>
+    <p class="text-sm text-on-surface-variant max-w-md">
+      Не нашли свой формат? Выберите «Другое» в форме заявки и опишите ваше
+      событие — мы подготовим индивидуальное предложение.
+    </p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% set format_meta = {
+      'banquet':  ('event_seat',          'Классический банкет с рассадкой за столами, горячим, салатами и десертами.'),
+      'buffet':   ('cake',                'Лёгкие закуски, канапе и напитки. Гости свободно перемещаются и общаются.'),
+      'outdoor':  ('outdoor_grill',       'Привозим мангал, мясо и шашлычника. Готовим на огне прямо у вас.'),
+      'coffee':   ('coffee',              'Кофе, чай, выпечка, сэндвичи и фрукты — для конференций и встреч.'),
+      'memorial': ('local_florist',       'Тактичное обслуживание поминального обеда — традиционное меню без излишеств.'),
+      'wedding':  ('celebration',         'Свадьбы, юбилеи, корпоративы — праздничное меню и торжественная сервировка.'),
+      'other':    ('more_horiz',          'Любое другое событие — обсудим формат, меню и бюджет.'),
+    } %}
+    {% for f in formats %}
+      {% set icon_name, desc = format_meta.get(f.key, ('restaurant', '')) %}
+    <article class="format-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/40 flex flex-col">
+      <div class="material-symbols-outlined text-4xl text-primary mb-3">{{ icon_name }}</div>
+      <h3 class="font-headline text-2xl text-on-surface mb-2">{{ f.title }}</h3>
+      <p class="text-sm text-on-surface-variant flex-1">{{ desc }}</p>
+      <a href="#order-form"
+         onclick="document.getElementById('event_format').value = '{{ f.key }}';"
+         class="mt-5 inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition">
+        Выбрать формат
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Order form -->
+<section id="order-form" class="bg-surface-container-low/50 py-16 scroll-mt-20">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+      <div class="mb-8">
+        <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Заявка</div>
+        <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-2">Оставить заявку</h2>
+        <p class="text-sm text-on-surface-variant">
+          Заполните форму — менеджер свяжется в течение часа в рабочее время,
+          чтобы уточнить меню, бюджет и состав услуг.
+        </p>
+      </div>
+
+      <form method="post" action="{{ url_for('catering') }}" class="space-y-5">
+        {{ form.hidden_tag() }}
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="contact_name">{{ form.contact_name.label.text }} *</label>
+            {{ form.contact_name(id="contact_name", class_="field-input", placeholder="Иван Иванов") }}
+            {% for err in form.contact_name.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="company">{{ form.company.label.text }}</label>
+            {{ form.company(id="company", class_="field-input", placeholder="ООО «Ромашка» / частное лицо") }}
+            {% for err in form.company.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="phone">{{ form.phone.label.text }} *</label>
+            {{ form.phone(id="phone", class_="field-input", placeholder="+7 (___) ___-__-__") }}
+            {% for err in form.phone.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="email">{{ form.email.label.text }}</label>
+            {{ form.email(id="email", class_="field-input", type="email", placeholder="ivan@company.ru") }}
+            {% for err in form.email.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="event_format">{{ form.event_format.label.text }} *</label>
+          {{ form.event_format(id="event_format", class_="field-input") }}
+          {% for err in form.event_format.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <div>
+            <label class="field-label" for="guests">{{ form.guests.label.text }} *</label>
+            {{ form.guests(id="guests", class_="field-input", type="number", min="1", max="2000", placeholder="50") }}
+            {% for err in form.guests.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="event_date">{{ form.event_date.label.text }} *</label>
+            {{ form.event_date(id="event_date", class_="field-input", type="date") }}
+            {% for err in form.event_date.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="event_time">{{ form.event_time.label.text }}</label>
+            {{ form.event_time(id="event_time", class_="field-input", type="time") }}
+            {% for err in form.event_time.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="venue">{{ form.venue.label.text }} *</label>
+          {{ form.venue(id="venue", class_="field-input", rows="2",
+              placeholder="Адрес: банкетный зал, офис, дача, сад и т. п.") }}
+          {% for err in form.venue.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label class="field-label" for="budget_per_guest">{{ form.budget_per_guest.label.text }}</label>
+          {{ form.budget_per_guest(id="budget_per_guest", class_="field-input", type="number", min="0", placeholder="например, 1500") }}
+          <p class="text-[11px] text-on-surface-variant mt-1">
+            Если бюджет ещё не определён — оставьте пустым, мы предложим варианты.
+          </p>
+          {% for err in form.budget_per_guest.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label class="field-label" for="comment">{{ form.comment.label.text }}</label>
+          {{ form.comment(id="comment", class_="field-input", rows="4",
+              placeholder="Особые пожелания: меню, аллергены, посуда, официанты, тематика и пр.") }}
+          {% for err in form.comment.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p class="text-xs text-on-surface-variant max-w-md">
+            Отправляя форму, вы соглашаетесь с
+            <a href="/privacy.html" class="underline hover:text-primary">политикой обработки персональных данных</a>.
+          </p>
+          {{ form.submit(class_="bg-primary text-on-primary px-8 py-3.5 rounded-lg font-bold text-sm uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-primary/20 cursor-pointer") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-[#b8b4ac] py-10 mt-4 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+    <div>{{ texts.operator_name }} · ИНН {{ texts.operator_inn }}</div>
+    <div class="flex items-center gap-4">
+      <a href="/" class="hover:text-primary">На главную</a>
+      <a href="/privacy.html" class="hover:text-primary">Политика конфиденциальности</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -210,6 +210,72 @@ def business_lunch():
     )
 
 
+@app.route("/catering", methods=["GET", "POST"])
+def catering():
+    """Страница кейтеринга с формой заявки на мероприятие."""
+    from forms import CateringRequestForm
+    from models import CATERING_FORMATS, CateringRequest
+
+    form = CateringRequestForm()
+    form.event_format.choices = [
+        (item["key"], item["title"]) for item in CATERING_FORMATS
+    ]
+
+    if form.validate_on_submit():
+        session = SessionLocal()
+        try:
+            req = CateringRequest(
+                contact_name=form.contact_name.data.strip(),
+                company=(form.company.data or "").strip() or None,
+                phone=form.phone.data.strip(),
+                email=(form.email.data or "").strip() or None,
+                event_format=form.event_format.data,
+                guests=form.guests.data,
+                event_date=form.event_date.data.isoformat(),
+                event_time=(form.event_time.data or "").strip() or None,
+                venue=form.venue.data.strip(),
+                budget_per_guest=form.budget_per_guest.data,
+                comment=(form.comment.data or "").strip() or None,
+                ip_address=_client_ip(),
+            )
+            session.add(req)
+            session.commit()
+
+            req_snapshot = {
+                "id": req.id,
+                "contact_name": req.contact_name,
+                "company": req.company,
+                "phone": req.phone,
+                "email": req.email,
+                "event_format": req.event_format,
+                "guests": req.guests,
+                "event_date": req.event_date,
+                "event_time": req.event_time,
+                "venue": req.venue,
+                "budget_per_guest": req.budget_per_guest,
+                "comment": req.comment,
+            }
+
+            from mailer import send_catering_notification_async
+            base_url = request.host_url.rstrip("/")
+            send_catering_notification_async(req_snapshot, base_url=base_url)
+
+            flash(
+                "Заявка принята. Менеджер свяжется с вами для расчёта меню "
+                "и согласования деталей.",
+                "success",
+            )
+            return redirect(url_for("catering"))
+        finally:
+            session.close()
+
+    return render_template(
+        "catering.html",
+        formats=CATERING_FORMATS,
+        form=form,
+    )
+
+
 @app.route("/uploads/<path:filename>")
 def uploads(filename: str):
     uploads_dir = BASE_DIR / "uploads"
@@ -352,7 +418,7 @@ def admin_texts():
 @app.route("/admin/")
 @login_required
 def admin_dashboard():
-    from models import BusinessLunchOrder, LoginLog
+    from models import BusinessLunchOrder, CateringRequest, LoginLog
 
     session = SessionLocal()
     try:
@@ -367,10 +433,16 @@ def admin_dashboard():
             .filter(BusinessLunchOrder.is_processed.is_(False))
             .count()
         )
+        pending_catering = (
+            session.query(CateringRequest)
+            .filter(CateringRequest.is_processed.is_(False))
+            .count()
+        )
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
             pending_orders=pending_orders,
+            pending_catering=pending_catering,
         )
     finally:
         session.close()
@@ -460,6 +532,63 @@ def admin_email_settings():
         )
     finally:
         session.close()
+
+
+@app.route("/admin/catering")
+@login_required
+def admin_catering():
+    """Список заявок на кейтеринг."""
+    from models import CATERING_FORMATS, CateringRequest
+
+    show = request.args.get("show", "pending")  # pending|all|processed
+
+    session = SessionLocal()
+    try:
+        q = session.query(CateringRequest)
+        if show == "pending":
+            q = q.filter(CateringRequest.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(CateringRequest.is_processed.is_(True))
+        requests_list = q.order_by(CateringRequest.created_at.desc()).limit(200).all()
+
+        format_titles = {item["key"]: item["title"] for item in CATERING_FORMATS}
+
+        return render_template(
+            "admin/catering.html",
+            requests=requests_list,
+            show=show,
+            format_titles=format_titles,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/catering/<int:request_id>/toggle", methods=["POST"])
+@login_required
+def admin_catering_toggle(request_id: int):
+    """Отметить заявку на кейтеринг обработанной / снять отметку."""
+    from models import CateringRequest
+
+    session = SessionLocal()
+    try:
+        req = session.get(CateringRequest, request_id)
+        if req is None:
+            abort(404)
+        if req.is_processed:
+            req.is_processed = False
+            req.processed_at = None
+            req.processed_by = None
+            flash(f"Заявка #{req.id} возвращена в работу.", "success")
+        else:
+            req.is_processed = True
+            req.processed_at = datetime.utcnow()
+            req.processed_by = current_user.username
+            flash(f"Заявка #{req.id} отмечена как обработанная.", "success")
+        session.commit()
+    finally:
+        session.close()
+
+    return redirect(request.referrer or url_for("admin_catering"))
 
 
 @app.route("/admin/business-lunches/<int:order_id>/toggle", methods=["POST"])

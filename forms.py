@@ -5,6 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import (
     IntegerField,
     PasswordField,
+    SelectField,
     SelectMultipleField,
     StringField,
     SubmitField,
@@ -121,5 +122,69 @@ class BusinessLunchOrderForm(FlaskForm):
     comment = TextAreaField(
         "Комментарий",
         validators=[Optional(), Length(max=1000)],
+    )
+    submit = SubmitField("Отправить заявку")
+
+
+class CateringRequestForm(FlaskForm):
+    """Заявка на кейтеринговое обслуживание мероприятия."""
+
+    contact_name = StringField(
+        "Контактное лицо",
+        validators=[
+            DataRequired(message="Укажите имя контактного лица"),
+            Length(min=2, max=128),
+        ],
+    )
+    company = StringField(
+        "Компания / организатор",
+        validators=[Optional(), Length(max=255)],
+    )
+    phone = StringField(
+        "Телефон",
+        validators=[
+            DataRequired(message="Укажите телефон для связи"),
+            Length(min=5, max=64),
+            Regexp(r"^[\d\s+()\-]+$", message="Только цифры, пробелы и + ( ) -"),
+        ],
+    )
+    email = StringField(
+        "E-mail",
+        validators=[Optional(), Email(message="Некорректный e-mail"), Length(max=255)],
+    )
+    event_format = SelectField(
+        "Формат мероприятия",
+        choices=[],  # заполняется в роуте из CATERING_FORMATS
+        validators=[DataRequired(message="Выберите формат")],
+    )
+    guests = IntegerField(
+        "Количество гостей",
+        validators=[
+            DataRequired(message="Укажите число гостей"),
+            NumberRange(min=1, max=2000, message="От 1 до 2000"),
+        ],
+    )
+    event_date = DateField(
+        "Дата мероприятия",
+        validators=[DataRequired(message="Выберите дату мероприятия")],
+    )
+    event_time = StringField(
+        "Время начала",
+        validators=[Optional(), Length(max=16)],
+    )
+    venue = TextAreaField(
+        "Площадка / адрес",
+        validators=[
+            DataRequired(message="Укажите адрес площадки"),
+            Length(min=3, max=500),
+        ],
+    )
+    budget_per_guest = IntegerField(
+        "Бюджет на гостя, ₽ (если есть)",
+        validators=[Optional(), NumberRange(min=0, max=100000)],
+    )
+    comment = TextAreaField(
+        "Комментарий",
+        validators=[Optional(), Length(max=2000)],
     )
     submit = SubmitField("Отправить заявку")
