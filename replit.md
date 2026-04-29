@@ -12,10 +12,14 @@
 - `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText`, `BusinessLunchOrder`
   + каталоги `SITE_TEXT_CATALOG`, `BUSINESS_LUNCH_MENU`
 - `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`, `BusinessLunchOrderForm`
+- `mailer.py` — отправка e-mail-уведомлений (SMTP через stdlib),
+  фоновый поток для не-блокирующей отправки, безопасные fallback-сообщения
+  если SMTP не настроен.
 - `templates/` — Jinja-шаблоны
   - `index.html`, `privacy.html`, `business-lunch.html` — публичный сайт
   - `admin/base.html`, `admin/setup.html`, `admin/login.html`,
-    `admin/dashboard.html`, `admin/texts.html`, `admin/business_lunches.html`
+    `admin/dashboard.html`, `admin/texts.html`, `admin/business_lunches.html`,
+    `admin/email_settings.html`
 
 ## Бизнес-ланчи
 - Публичная страница `/business-lunch` — каталог `BUSINESS_LUNCH_MENU` (4 комплекса)
@@ -25,6 +29,18 @@
   «В работе / Обработанные / Все», кнопка «Отметить обработанной» (POST + CSRF),
   фиксируется `processed_at` и `processed_by`.
 - На дашборде админки бейдж с числом необработанных заявок.
+- При получении новой заявки запускается фоновый поток `mailer.send_order_notification_async`,
+  который шлёт письмо на адрес из `notify_email_recipient` (если задан и
+  `notify_email_enabled=yes`). Если SMTP не настроен — заявка всё равно
+  сохраняется, ошибка только логируется.
+
+## Уведомления на e-mail
+- Админка `/admin/email-settings` — статус SMTP (без раскрытия пароля),
+  адрес получателя, тумблер вкл/выкл, кнопка отправки тестового письма.
+- SMTP-параметры берутся из секретов окружения: `SMTP_HOST`, `SMTP_PORT`,
+  `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`. Поддерживается 465 (SSL) и
+  587 (STARTTLS). На момент текущей версии секреты не заполнены — пользователь
+  настроит позже.
 - `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
 - `uploads/` — пользовательские загрузки (создаётся при необходимости)
 - `data.db` — SQLite-база (создаётся при первом запуске, в .gitignore)
