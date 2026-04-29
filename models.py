@@ -208,6 +208,21 @@ SITE_TEXT_CATALOG: list[dict] = [
         "default": "17",
         "section": "Карта и адрес",
     },
+    # ----- Уведомления администратора -----
+    {
+        "key": "notify_email_recipient",
+        "label": "E-mail для уведомлений о новых заявках на бизнес-ланчи",
+        "kind": "text",
+        "default": "",
+        "section": "Уведомления",
+    },
+    {
+        "key": "notify_email_enabled",
+        "label": "Присылать уведомления (yes / no)",
+        "kind": "text",
+        "default": "yes",
+        "section": "Уведомления",
+    },
 ]
 
 

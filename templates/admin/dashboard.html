@@ -48,9 +48,16 @@
           {% else %}доступно{% endif %}
         </div>
       </a>
+      <a href="{{ url_for('admin_email_settings') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block">
+        <div class="font-medium text-primary">Уведомления на e-mail</div>
+        <div class="text-xs text-on-surface-variant mt-1">
+          Куда присылать письма о новых заявках и проверка SMTP
+        </div>
+        <div class="text-xs text-success mt-2">доступно</div>
+      </a>
       {% set sections = [
         ('Меню', 'CRUD блюд и категорий'),
-        ('Заказы', 'Список заказов и e-mail'),
         ('Реквизиты', 'ИП/ООО, ИНН, контакты'),
         ('SEO', 'Метатеги и Я.Метрика'),
         ('Юридические страницы', 'Политика, оферта, cookies')

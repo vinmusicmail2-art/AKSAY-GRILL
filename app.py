@@ -175,6 +175,26 @@ def business_lunch():
             )
             session.add(order)
             session.commit()
+
+            # Снимем «снимок» полей до закрытия сессии — для фоновой отправки.
+            order_snapshot = {
+                "id": order.id,
+                "contact_name": order.contact_name,
+                "company": order.company,
+                "phone": order.phone,
+                "email": order.email,
+                "persons": order.persons,
+                "delivery_date": order.delivery_date,
+                "delivery_time": order.delivery_time,
+                "delivery_address": order.delivery_address,
+                "selected_combos": order.selected_combos,
+                "comment": order.comment,
+            }
+
+            from mailer import send_order_notification_async
+            base_url = request.host_url.rstrip("/")
+            send_order_notification_async(order_snapshot, base_url=base_url)
+
             flash(
                 "Заявка принята. Мы свяжемся с вами для подтверждения.",
                 "success",
@@ -382,6 +402,61 @@ def admin_business_lunches():
             show=show,
             combo_titles=combo_titles,
             combo_prices=combo_prices,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/email-settings", methods=["GET", "POST"])
+@login_required
+def admin_email_settings():
+    """Настройки уведомлений и проверка SMTP."""
+    from mailer import send_test_email, smtp_status
+    from models import SiteText, load_site_texts
+
+    session = SessionLocal()
+    try:
+        if request.method == "POST":
+            action = request.form.get("action", "save")
+
+            if action == "save":
+                recipient = (request.form.get("notify_email_recipient") or "").strip()
+                enabled_raw = (request.form.get("notify_email_enabled") or "").strip()
+                enabled_value = "yes" if enabled_raw in ("on", "yes", "1", "true") else "no"
+
+                for key, value in (
+                    ("notify_email_recipient", recipient),
+                    ("notify_email_enabled", enabled_value),
+                ):
+                    row = session.query(SiteText).filter(SiteText.key == key).first()
+                    if row:
+                        row.value = value
+                    else:
+                        session.add(SiteText(key=key, value=value))
+                session.commit()
+                flash("Настройки уведомлений сохранены.", "success")
+                return redirect(url_for("admin_email_settings"))
+
+            if action == "test":
+                test_to = (request.form.get("test_to") or "").strip()
+                if not test_to:
+                    flash("Укажите адрес для тестового письма.", "error")
+                else:
+                    ok, msg = send_test_email(test_to)
+                    flash(
+                        ("Тестовое письмо отправлено: " if ok else "Не удалось отправить: ")
+                        + msg,
+                        "success" if ok else "error",
+                    )
+                return redirect(url_for("admin_email_settings"))
+
+        texts = load_site_texts(session)
+        return render_template(
+            "admin/email_settings.html",
+            recipient=texts.get("notify_email_recipient", ""),
+            enabled=(texts.get("notify_email_enabled", "yes") or "").strip().lower()
+                    in ("yes", "y", "1", "true", "on", "да"),
+            smtp=smtp_status(),
         )
     finally:
         session.close()
