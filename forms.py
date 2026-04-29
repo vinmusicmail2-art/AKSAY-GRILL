@@ -1,9 +1,25 @@
 """
-WTForms-формы для админки.
+WTForms-формы для админки и публичных страниц.
 """
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp
+from wtforms import (
+    IntegerField,
+    PasswordField,
+    SelectMultipleField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+)
+from wtforms.fields import DateField
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    Length,
+    NumberRange,
+    Optional,
+    Regexp,
+)
 
 
 class LoginForm(FlaskForm):
@@ -45,3 +61,65 @@ class SetupForm(FlaskForm):
         ],
     )
     submit = SubmitField("Создать администратора")
+
+
+class BusinessLunchOrderForm(FlaskForm):
+    """Заявка на корпоративные бизнес-ланчи."""
+
+    contact_name = StringField(
+        "Контактное лицо",
+        validators=[
+            DataRequired(message="Укажите имя контактного лица"),
+            Length(min=2, max=128),
+        ],
+    )
+    company = StringField(
+        "Компания",
+        validators=[Optional(), Length(max=255)],
+    )
+    phone = StringField(
+        "Телефон",
+        validators=[
+            DataRequired(message="Укажите телефон для связи"),
+            Length(min=5, max=64),
+            Regexp(
+                r"^[\d\s+()\-]+$",
+                message="Только цифры, пробелы и + ( ) -",
+            ),
+        ],
+    )
+    email = StringField(
+        "E-mail",
+        validators=[Optional(), Email(message="Некорректный e-mail"), Length(max=255)],
+    )
+    persons = IntegerField(
+        "Количество человек",
+        validators=[
+            DataRequired(message="Укажите количество персон"),
+            NumberRange(min=1, max=500, message="От 1 до 500"),
+        ],
+    )
+    delivery_date = DateField(
+        "Дата доставки",
+        validators=[DataRequired(message="Выберите дату доставки")],
+    )
+    delivery_time = StringField(
+        "Время доставки",
+        validators=[Optional(), Length(max=16)],
+    )
+    delivery_address = TextAreaField(
+        "Адрес доставки",
+        validators=[
+            DataRequired(message="Укажите адрес доставки"),
+            Length(min=5, max=500),
+        ],
+    )
+    selected_combos = SelectMultipleField(
+        "Выбранные комплексы",
+        choices=[],  # заполняется в роуте из BUSINESS_LUNCH_MENU
+    )
+    comment = TextAreaField(
+        "Комментарий",
+        validators=[Optional(), Length(max=1000)],
+    )
+    submit = SubmitField("Отправить заявку")

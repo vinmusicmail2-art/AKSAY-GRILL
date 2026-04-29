@@ -9,10 +9,11 @@
 ## Структура
 - `app.py` — точка входа Flask (роуты сайта, админки, Flask-Login, CSRF, context-processor)
 - `db.py` — engine, SessionLocal, Base (вынесено отдельно — без циклических импортов)
-- `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText` + каталог `SITE_TEXT_CATALOG`
-- `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`
+- `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText`, `BusinessLunchOrder`
+  + каталоги `SITE_TEXT_CATALOG`, `BUSINESS_LUNCH_MENU`
+- `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`, `BusinessLunchOrderForm`
 - `templates/` — Jinja-шаблоны
-  - `index.html`, `privacy.html` — публичный сайт
+  - `index.html`, `privacy.html`, `business-lunch.html` — публичный сайт
   - `admin/base.html`, `admin/setup.html`, `admin/login.html`, `admin/dashboard.html`, `admin/texts.html`
 - `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
 - `uploads/` — пользовательские загрузки (создаётся при необходимости)

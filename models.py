@@ -292,3 +292,89 @@ class LoginLog(Base):
 
 def admins_count(session: Session) -> int:
     return session.query(Admin).count()
+
+
+# ---------------------------------------------------------------------------
+# Бизнес-ланчи: каталог комплексов и заявки от компаний.
+# ---------------------------------------------------------------------------
+
+BUSINESS_LUNCH_MENU: list[dict] = [
+    {
+        "key": "light",
+        "title": "Лёгкий",
+        "price": 280,
+        "badge": "Курица",
+        "items": [
+            "Куриный суп с лапшой",
+            "Куриная котлета на пару",
+            "Рис с овощами",
+            "Салат «Помидор-огурец»",
+            "Хлеб пшеничный",
+            "Компот",
+        ],
+    },
+    {
+        "key": "hearty",
+        "title": "Сытный",
+        "price": 350,
+        "badge": "Свинина",
+        "items": [
+            "Солянка домашняя",
+            "Гуляш из говядины",
+            "Гречка с маслом",
+            "Капуста по-грузински",
+            "Хлеб пшеничный",
+            "Компот",
+        ],
+    },
+    {
+        "key": "grill",
+        "title": "Мясной с мангала",
+        "price": 450,
+        "badge": "Гриль",
+        "items": [
+            "Харчо",
+            "Шашлык из свинины (140 г)",
+            "Картофель по-деревенски",
+            "Овощи-гриль на шпажках",
+            "Булочка чесночная",
+            "Морс",
+        ],
+    },
+    {
+        "key": "veg",
+        "title": "Постный",
+        "price": 250,
+        "badge": "Без мяса",
+        "items": [
+            "Гороховый суп без мяса",
+            "Аджапсандал",
+            "Каша пшеничная",
+            "Свекла с чесноком",
+            "Хлеб пшеничный",
+            "Чай",
+        ],
+    },
+]
+
+
+class BusinessLunchOrder(Base):
+    """Заявка на корпоративные бизнес-ланчи."""
+
+    __tablename__ = "business_lunch_orders"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    company = Column(String(255), nullable=True)
+    phone = Column(String(64), nullable=False, index=True)
+    email = Column(String(255), nullable=True)
+    persons = Column(Integer, nullable=False, default=1)
+    delivery_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
+    delivery_time = Column(String(16), nullable=True)
+    delivery_address = Column(Text, nullable=False)
+    selected_combos = Column(Text, nullable=True)  # comma-separated keys
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )

@@ -122,6 +122,50 @@ def privacy():
     return render_template("privacy.html")
 
 
+@app.route("/business-lunch", methods=["GET", "POST"])
+def business_lunch():
+    """Страница комплексных бизнес-ланчей с формой корпоративного заказа."""
+    from forms import BusinessLunchOrderForm
+    from models import BUSINESS_LUNCH_MENU, BusinessLunchOrder
+
+    form = BusinessLunchOrderForm()
+    form.selected_combos.choices = [
+        (item["key"], item["title"]) for item in BUSINESS_LUNCH_MENU
+    ]
+
+    if form.validate_on_submit():
+        session = SessionLocal()
+        try:
+            order = BusinessLunchOrder(
+                contact_name=form.contact_name.data.strip(),
+                company=(form.company.data or "").strip() or None,
+                phone=form.phone.data.strip(),
+                email=(form.email.data or "").strip() or None,
+                persons=form.persons.data,
+                delivery_date=form.delivery_date.data.isoformat(),
+                delivery_time=(form.delivery_time.data or "").strip() or None,
+                delivery_address=form.delivery_address.data.strip(),
+                selected_combos=",".join(form.selected_combos.data or []) or None,
+                comment=(form.comment.data or "").strip() or None,
+                ip_address=_client_ip(),
+            )
+            session.add(order)
+            session.commit()
+            flash(
+                "Заявка принята. Мы свяжемся с вами для подтверждения.",
+                "success",
+            )
+            return redirect(url_for("business_lunch"))
+        finally:
+            session.close()
+
+    return render_template(
+        "business-lunch.html",
+        menu=BUSINESS_LUNCH_MENU,
+        form=form,
+    )
+
+
 @app.route("/uploads/<path:filename>")
 def uploads(filename: str):
     uploads_dir = BASE_DIR / "uploads"
