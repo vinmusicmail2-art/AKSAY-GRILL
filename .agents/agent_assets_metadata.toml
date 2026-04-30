@@ -426,6 +426,12 @@ uri = "file://assets/catering.png"
 type = "image"
 title = "catering buffet"
 
+[[generated]]
+id = "fdGzTG15uc1D_NUkydW_7"
+uri = "file://assets/events.png"
+type = "image"
+title = "events hall image"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"

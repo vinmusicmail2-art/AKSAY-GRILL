@@ -362,3 +362,115 @@ def send_test_email(to_addr: str) -> Tuple[bool, str]:
   и уведомления о новых заявках на бизнес-ланчи будут приходить на этот адрес.</p>
 </div></body></html>"""
     return _send_smtp(subject, plain, html, to_addr)
+
+
+def _format_hall_email(req, base_url: str = "") -> Tuple[str, str, str]:
+    """Сформировать subject + plain + html для бронирования зала."""
+    from models import EVENT_TYPES
+
+    types = {t["key"]: t["title"] for t in EVENT_TYPES}
+    type_title = types.get(req.event_type, req.event_type)
+
+    subject = (
+        f"Новая заявка на банкет #{req.id}"
+        f" — {type_title}, {req.guests} гостей, {req.event_date}"
+    )
+    admin_link = f"{base_url}/admin/events" if base_url else "/admin/events"
+
+    extras = []
+    if req.needs_decor:
+        extras.append("оформление зала")
+    if req.needs_menu_help:
+        extras.append("помощь с меню")
+    extras_line = ", ".join(extras) if extras else "—"
+
+    duration_line = (
+        f"{req.duration_hours} ч" if req.duration_hours else "не указана"
+    )
+
+    plain_lines = [
+        f"Получена новая заявка на бронирование зала #{req.id}.",
+        "",
+        f"Контактное лицо: {req.contact_name}",
+        f"Компания: {req.company or '—'}",
+        f"Телефон: {req.phone}",
+        f"E-mail: {req.email or '—'}",
+        "",
+        f"Тип мероприятия: {type_title}",
+        f"Дата: {req.event_date}, начало: {req.event_time}",
+        f"Длительность: {duration_line}",
+        f"Гостей: {req.guests}",
+        f"Доп. услуги: {extras_line}",
+        "",
+        f"Комментарий: {req.comment or '—'}",
+        "",
+        f"Открыть в админке: {admin_link}",
+    ]
+    plain = "\n".join(plain_lines)
+
+    html = f"""\
+<!doctype html>
+<html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d1c16;background:#f5f1e8;padding:24px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
+    <tr><td style="background:#9b3f1c;color:#fff;padding:18px 24px;">
+      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · банкеты</div>
+      <div style="font-size:20px;font-weight:600;margin-top:4px;">Новая заявка #{req.id}</div>
+    </td></tr>
+    <tr><td style="padding:20px 24px;">
+      <p style="margin:0 0 14px;">Получена новая заявка на бронирование зала.</p>
+      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
+        <tr><td style="color:#56423a;width:40%;">Контактное лицо</td><td><strong>{req.contact_name}</strong></td></tr>
+        <tr><td style="color:#56423a;">Компания</td><td>{req.company or '—'}</td></tr>
+        <tr><td style="color:#56423a;">Телефон</td><td><a href="tel:{req.phone}" style="color:#9b3f1c;">{req.phone}</a></td></tr>
+        <tr><td style="color:#56423a;">E-mail</td><td>{req.email or '—'}</td></tr>
+        <tr><td style="color:#56423a;">Тип</td><td><strong>{type_title}</strong></td></tr>
+        <tr><td style="color:#56423a;">Дата / начало</td><td>{req.event_date} в {req.event_time}</td></tr>
+        <tr><td style="color:#56423a;">Длительность</td><td>{duration_line}</td></tr>
+        <tr><td style="color:#56423a;">Гостей</td><td><strong>{req.guests}</strong></td></tr>
+        <tr><td style="color:#56423a;">Доп. услуги</td><td>{extras_line}</td></tr>
+      </table>
+      {f'<div style="margin-top:18px;"><div style="font-size:12px;color:#56423a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Комментарий</div><div style="white-space:pre-wrap;">{req.comment}</div></div>' if req.comment else ''}
+      <div style="margin-top:24px;">
+        <a href="{admin_link}" style="display:inline-block;background:#9b3f1c;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Открыть в админке</a>
+      </div>
+    </td></tr>
+    <tr><td style="background:#f5f1e8;padding:14px 24px;font-size:11px;color:#56423a;">
+      Это автоматическое уведомление. На него отвечать не нужно.
+    </td></tr>
+  </table>
+</body></html>"""
+
+    return subject, plain, html
+
+
+def send_hall_notification(req, base_url: str = "") -> Tuple[bool, str]:
+    """Отправить уведомление о новой заявке на бронирование зала."""
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
+    subject, plain, html = _format_hall_email(req, base_url=base_url)
+    return _send_smtp(subject, plain, html, recipient)
+
+
+def send_hall_notification_async(data: dict, base_url: str = "") -> None:
+    """Фоновая отправка уведомления о бронировании зала."""
+    class _Shim:
+        pass
+
+    o = _Shim()
+    for k, v in data.items():
+        setattr(o, k, v)
+
+    def _run():
+        try:
+            ok, msg = send_hall_notification(o, base_url=base_url)
+            if ok:
+                logger.info("Hall reservation notification sent: %s", msg)
+            else:
+                logger.warning("Hall reservation notification not sent: %s", msg)
+        except Exception:
+            logger.exception("Hall reservation notification failed")
+
+    threading.Thread(target=_run, daemon=True).start()

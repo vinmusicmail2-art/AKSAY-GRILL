@@ -3,6 +3,7 @@ WTForms-формы для админки и публичных страниц.
 """
 from flask_wtf import FlaskForm
 from wtforms import (
+    BooleanField,
     IntegerField,
     PasswordField,
     SelectField,
@@ -188,3 +189,65 @@ class CateringRequestForm(FlaskForm):
         validators=[Optional(), Length(max=2000)],
     )
     submit = SubmitField("Отправить заявку")
+
+
+class HallReservationForm(FlaskForm):
+    """Заявка на бронирование зала ресторана для мероприятия."""
+
+    contact_name = StringField(
+        "Контактное лицо",
+        validators=[
+            DataRequired(message="Укажите имя контактного лица"),
+            Length(min=2, max=128),
+        ],
+    )
+    company = StringField(
+        "Компания (если корпоративное)",
+        validators=[Optional(), Length(max=255)],
+    )
+    phone = StringField(
+        "Телефон",
+        validators=[
+            DataRequired(message="Укажите телефон для связи"),
+            Length(min=5, max=64),
+            Regexp(r"^[\d\s+()\-]+$", message="Только цифры, пробелы и + ( ) -"),
+        ],
+    )
+    email = StringField(
+        "E-mail",
+        validators=[Optional(), Email(message="Некорректный e-mail"), Length(max=255)],
+    )
+    event_type = SelectField(
+        "Тип мероприятия",
+        choices=[],  # заполняется в роуте из EVENT_TYPES
+        validators=[DataRequired(message="Выберите тип мероприятия")],
+    )
+    guests = IntegerField(
+        "Количество гостей",
+        validators=[
+            DataRequired(message="Укажите число гостей"),
+            NumberRange(min=2, max=300, message="От 2 до 300 гостей"),
+        ],
+    )
+    event_date = DateField(
+        "Дата мероприятия",
+        validators=[DataRequired(message="Выберите дату мероприятия")],
+    )
+    event_time = StringField(
+        "Время начала",
+        validators=[
+            DataRequired(message="Укажите время начала"),
+            Length(max=16),
+        ],
+    )
+    duration_hours = IntegerField(
+        "Длительность, часов",
+        validators=[Optional(), NumberRange(min=1, max=12)],
+    )
+    needs_decor = BooleanField("Нужно оформление зала (шары, цветы, баннер)")
+    needs_menu_help = BooleanField("Нужна помощь с подбором меню")
+    comment = TextAreaField(
+        "Комментарий / пожелания",
+        validators=[Optional(), Length(max=2000)],
+    )
+    submit = SubmitField("Забронировать зал")

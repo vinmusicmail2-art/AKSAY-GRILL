@@ -437,3 +437,43 @@ class CateringRequest(Base):
     created_at = Column(
         DateTime, default=datetime.utcnow, nullable=False, index=True
     )
+
+
+# ----- Бронирование зала ресторана для мероприятия (банкеты, юбилеи и т.п.) -----
+
+EVENT_TYPES: list[dict] = [
+    {"key": "anniversary",  "title": "Юбилей"},
+    {"key": "birthday",     "title": "День рождения"},
+    {"key": "wedding",      "title": "Свадьба"},
+    {"key": "corporate",    "title": "Корпоратив"},
+    {"key": "kids",         "title": "Детский праздник"},
+    {"key": "memorial",     "title": "Поминальный обед"},
+    {"key": "other",        "title": "Другое (опишу в комментарии)"},
+]
+
+
+class HallReservation(Base):
+    """Заявка на бронирование зала ресторана для мероприятия."""
+
+    __tablename__ = "hall_reservations"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    company = Column(String(255), nullable=True)
+    phone = Column(String(64), nullable=False, index=True)
+    email = Column(String(255), nullable=True)
+    event_type = Column(String(32), nullable=False)
+    guests = Column(Integer, nullable=False, default=1)
+    event_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
+    event_time = Column(String(16), nullable=False)  # HH:MM начало
+    duration_hours = Column(Integer, nullable=True)  # длительность в часах
+    needs_decor = Column(Boolean, default=False, nullable=False)
+    needs_menu_help = Column(Boolean, default=False, nullable=False)
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    processed_at = Column(DateTime, nullable=True)
+    processed_by = Column(String(64), nullable=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )

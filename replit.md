@@ -10,19 +10,20 @@
 - `app.py` — точка входа Flask (роуты сайта, админки, Flask-Login, CSRF, context-processor)
 - `db.py` — engine, SessionLocal, Base (вынесено отдельно — без циклических импортов)
 - `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText`,
-  `BusinessLunchOrder`, `CateringRequest`
-  + каталоги `SITE_TEXT_CATALOG`, `BUSINESS_LUNCH_MENU`, `CATERING_FORMATS`
+  `BusinessLunchOrder`, `CateringRequest`, `HallReservation`
+  + каталоги `SITE_TEXT_CATALOG`, `BUSINESS_LUNCH_MENU`,
+  `CATERING_FORMATS`, `EVENT_TYPES`
 - `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`,
-  `BusinessLunchOrderForm`, `CateringRequestForm`
+  `BusinessLunchOrderForm`, `CateringRequestForm`, `HallReservationForm`
 - `mailer.py` — отправка e-mail-уведомлений (SMTP через stdlib),
   фоновый поток для не-блокирующей отправки, безопасные fallback-сообщения
   если SMTP не настроен.
 - `templates/` — Jinja-шаблоны
-  - `index.html`, `privacy.html`, `business-lunch.html`, `catering.html`
-    — публичный сайт
+  - `index.html`, `privacy.html`, `business-lunch.html`, `catering.html`,
+    `events.html` — публичный сайт
   - `admin/base.html`, `admin/setup.html`, `admin/login.html`,
     `admin/dashboard.html`, `admin/texts.html`, `admin/business_lunches.html`,
-    `admin/catering.html`, `admin/email_settings.html`
+    `admin/catering.html`, `admin/events.html`, `admin/email_settings.html`
 
 ## Бизнес-ланчи
 - Публичная страница `/business-lunch` — каталог `BUSINESS_LUNCH_MENU` (4 комплекса)
@@ -51,6 +52,22 @@
   `mailer.send_catering_notification_async` — шлёт письмо при настроенном SMTP
   и включённых уведомлениях. Если SMTP не настроен — заявка всё равно сохраняется.
 - Кнопка «Оставить заявку» в карточке «Кейтеринг» на главной — ведёт на `/catering`.
+
+## Мероприятия в зале (банкеты)
+- Публичная страница `/events` — каталог `EVENT_TYPES` (юбилей, день
+  рождения, свадьба, корпоратив, детский праздник, поминальный обед, другое)
+  и форма бронирования зала (`HallReservationForm`).
+- Заявки сохраняются в таблицу `hall_reservations`: контактное лицо,
+  компания (опц.), телефон, e-mail, тип, гости (2-300), дата, время начала,
+  длительность (опц.), флаги «нужно оформление зала» и «нужна помощь с меню»,
+  комментарий, IP.
+- Админка `/admin/events` — список заявок с фильтром
+  «В работе / Обработанные / Все», тумблер обработки (POST + CSRF), бейджи
+  доп. услуг.
+- На дашборде бейдж `pending_events` с числом новых заявок.
+- При новой заявке запускается фоновый поток
+  `mailer.send_hall_notification_async`.
+- Кнопка «Обсудить событие» в карточке «Мероприятия» на главной — ведёт на `/events`.
 
 ## Уведомления на e-mail
 - Админка `/admin/email-settings` — статус SMTP (без раскрытия пароля),

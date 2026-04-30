@@ -276,6 +276,74 @@ def catering():
     )
 
 
+@app.route("/events", methods=["GET", "POST"])
+def events():
+    """Страница «Мероприятия в зале» — заявка на бронирование зала ресторана."""
+    from forms import HallReservationForm
+    from models import EVENT_TYPES, HallReservation
+
+    form = HallReservationForm()
+    form.event_type.choices = [
+        (item["key"], item["title"]) for item in EVENT_TYPES
+    ]
+
+    if form.validate_on_submit():
+        session = SessionLocal()
+        try:
+            req = HallReservation(
+                contact_name=form.contact_name.data.strip(),
+                company=(form.company.data or "").strip() or None,
+                phone=form.phone.data.strip(),
+                email=(form.email.data or "").strip() or None,
+                event_type=form.event_type.data,
+                guests=form.guests.data,
+                event_date=form.event_date.data.isoformat(),
+                event_time=(form.event_time.data or "").strip(),
+                duration_hours=form.duration_hours.data,
+                needs_decor=bool(form.needs_decor.data),
+                needs_menu_help=bool(form.needs_menu_help.data),
+                comment=(form.comment.data or "").strip() or None,
+                ip_address=_client_ip(),
+            )
+            session.add(req)
+            session.commit()
+
+            req_snapshot = {
+                "id": req.id,
+                "contact_name": req.contact_name,
+                "company": req.company,
+                "phone": req.phone,
+                "email": req.email,
+                "event_type": req.event_type,
+                "guests": req.guests,
+                "event_date": req.event_date,
+                "event_time": req.event_time,
+                "duration_hours": req.duration_hours,
+                "needs_decor": req.needs_decor,
+                "needs_menu_help": req.needs_menu_help,
+                "comment": req.comment,
+            }
+
+            from mailer import send_hall_notification_async
+            base_url = request.host_url.rstrip("/")
+            send_hall_notification_async(req_snapshot, base_url=base_url)
+
+            flash(
+                "Заявка на бронирование принята. Менеджер свяжется с вами, чтобы "
+                "подтвердить дату, обсудить меню и оформление.",
+                "success",
+            )
+            return redirect(url_for("events"))
+        finally:
+            session.close()
+
+    return render_template(
+        "events.html",
+        event_types=EVENT_TYPES,
+        form=form,
+    )
+
+
 @app.route("/uploads/<path:filename>")
 def uploads(filename: str):
     uploads_dir = BASE_DIR / "uploads"
@@ -418,7 +486,12 @@ def admin_texts():
 @app.route("/admin/")
 @login_required
 def admin_dashboard():
-    from models import BusinessLunchOrder, CateringRequest, LoginLog
+    from models import (
+        BusinessLunchOrder,
+        CateringRequest,
+        HallReservation,
+        LoginLog,
+    )
 
     session = SessionLocal()
     try:
@@ -438,11 +511,17 @@ def admin_dashboard():
             .filter(CateringRequest.is_processed.is_(False))
             .count()
         )
+        pending_events = (
+            session.query(HallReservation)
+            .filter(HallReservation.is_processed.is_(False))
+            .count()
+        )
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
             pending_orders=pending_orders,
             pending_catering=pending_catering,
+            pending_events=pending_events,
         )
     finally:
         session.close()
@@ -589,6 +668,63 @@ def admin_catering_toggle(request_id: int):
         session.close()
 
     return redirect(request.referrer or url_for("admin_catering"))
+
+
+@app.route("/admin/events")
+@login_required
+def admin_events():
+    """Список заявок на бронирование зала."""
+    from models import EVENT_TYPES, HallReservation
+
+    show = request.args.get("show", "pending")  # pending|all|processed
+
+    session = SessionLocal()
+    try:
+        q = session.query(HallReservation)
+        if show == "pending":
+            q = q.filter(HallReservation.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(HallReservation.is_processed.is_(True))
+        requests_list = q.order_by(HallReservation.created_at.desc()).limit(200).all()
+
+        type_titles = {item["key"]: item["title"] for item in EVENT_TYPES}
+
+        return render_template(
+            "admin/events.html",
+            requests=requests_list,
+            show=show,
+            type_titles=type_titles,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/events/<int:request_id>/toggle", methods=["POST"])
+@login_required
+def admin_events_toggle(request_id: int):
+    """Отметить заявку на банкет обработанной / снять отметку."""
+    from models import HallReservation
+
+    session = SessionLocal()
+    try:
+        req = session.get(HallReservation, request_id)
+        if req is None:
+            abort(404)
+        if req.is_processed:
+            req.is_processed = False
+            req.processed_at = None
+            req.processed_by = None
+            flash(f"Заявка #{req.id} возвращена в работу.", "success")
+        else:
+            req.is_processed = True
+            req.processed_at = datetime.utcnow()
+            req.processed_by = current_user.username
+            flash(f"Заявка #{req.id} отмечена как обработанная.", "success")
+        session.commit()
+    finally:
+        session.close()
+
+    return redirect(request.referrer or url_for("admin_events"))
 
 
 @app.route("/admin/business-lunches/<int:order_id>/toggle", methods=["POST"])
