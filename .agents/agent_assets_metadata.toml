@@ -503,3 +503,9 @@ id = "nG1pdo81eqXuGO02shuFd"
 uri = "file://CHANGES.txt"
 type = "text"
 title = "Все изменения сайта"
+
+[[outputs]]
+id = "BthmrkNW1_8BvwAo2cz07"
+uri = "file://CHANGELOG.md"
+type = "text"
+title = "Журнал изменений — Аксай Гриль"
