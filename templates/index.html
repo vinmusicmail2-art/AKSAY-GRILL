@@ -328,9 +328,9 @@
 <span class="material-symbols-outlined">delivery_dining</span>
                             {{ texts.hero_cta_primary }}
                         </button>
-<button class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm">
+<a href="#reviews" class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm inline-block">
                             {{ texts.hero_cta_secondary }}
-                        </button>
+                        </a>
 </div>
 </div>
 </section>
@@ -1665,6 +1665,214 @@
 </section>
 </main>
 </div>
+
+<!-- Reviews Section -->
+<section id="reviews" class="w-full py-20 bg-[#f5f0e8] scroll-mt-24 md:ml-[25%] md:w-[75%]">
+<div class="max-w-5xl mx-auto px-6 lg:px-16">
+  <div class="flex items-center justify-between mb-12">
+    <div>
+      <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Наши гости говорят</p>
+      <h2 class="font-headline text-3xl md:text-4xl text-[#3a2c26]" style="font-family:'Yanone Kaffeesatz',sans-serif; font-weight:300;">Отзывы</h2>
+    </div>
+    <div class="flex gap-3">
+      <button id="rev-prev" aria-label="Назад" class="w-11 h-11 rounded-full border border-outline-variant/40 bg-white text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-xl">chevron_left</span>
+      </button>
+      <button id="rev-next" aria-label="Вперёд" class="w-11 h-11 rounded-full border border-outline-variant/40 bg-white text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-xl">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-hidden">
+    <div id="reviews-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+
+      <!-- Review 1 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Были с семьёй в пятницу вечером — шашлык из баранины просто восхитительный! Мясо нежное, хорошо промаринованное. Дети были в восторге от куриных крылышек. Обязательно вернёмся!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">А</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Алина К.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · апрель 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Заказывали доставку на день рождения — всё привезли горячим и в срок. Люля-кебаб и аджапсандал просто огонь! Порции большие, цены адекватные. Спасибо команде Аксай Гриль!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">М</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Максим Т.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · март 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Бизнес-ланч — это что-то с чем-то. Суп, второе и напиток за копейки, и всё вкусное. Хожу туда почти каждый день уже полгода. Единственное пожелание — добавить больше вариантов гарнира.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Е</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Елена В.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · февраль 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 4 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Организовывали корпоратив на 30 человек — кейтеринг на высшем уровне. Мангал прямо на площадке, всё свежее, горячее. Гости были в восторге. Отдельное спасибо менеджеру за помощь в организации!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">С</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Сергей Л.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · январь 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 5 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Стейк из говядины — это нечто особенное. Прожарка medium как по учебнику, соус фирменный. Попробовала ещё запечённые грибы — тоже отлично. Атмосфера уютная, персонал внимательный.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Н</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Наталья О.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · декабрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 6 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Очень вкусные купаты! Взяли на вынос — доехали горячими, упакованы аккуратно. Овощи-гриль на шпажках тоже хороши. Немного долго ждали, но оно того стоило.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Д</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Дмитрий Ш.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Новочеркасск · ноябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 7 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Свиные рёбрышки — это моё всё. Побывал в десятках мест, но здесь делают их лучше всего. Маринад чувствуется, корочка хрустящая. Буду рекомендовать всем знакомым.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Р</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Роман Г.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · октябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 8 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Заезжаем сюда каждые выходные всей семьёй уже год. Дети обожают пышки со сгущёнкой, муж берёт шашлык из свинины, я — салат из свежих овощей. Всегда одинаково вкусно — это редкость!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">И</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Ирина Б.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · сентябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 9 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Мероприятие на природе организовали с кейтерингом от Аксай Гриль. Приехали вовремя, привезли весь инвентарь. Шашлык готовили прямо на месте. Гости остались довольны, никто не ушёл голодным.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">О</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Ольга М.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · август 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 10 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Попробовал харчо — густой, ароматный, настоящий! Порция большая, хлеб в комплекте. На второе взял рис с мясом — тоже отлично. Цены очень приятные для такого качества. Аксай Гриль — теперь моё любимое место!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">В</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Виктор П.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · июль 2024</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /reviews-track -->
+  </div>
+
+  <!-- Dots indicator -->
+  <div id="reviews-dots" class="flex justify-center gap-2 mt-8"></div>
+</div>
+
+<script>
+(function(){
+  var track = document.getElementById('reviews-track');
+  var dots  = document.getElementById('reviews-dots');
+  var cards = track.querySelectorAll('.review-card');
+  var perPage = 3;
+  var current = 0;
+
+  function getPerPage(){
+    return window.innerWidth < 768 ? 1 : 3;
+  }
+
+  function pages(){
+    return Math.ceil(cards.length / getPerPage());
+  }
+
+  function buildDots(){
+    dots.innerHTML = '';
+    for(var i = 0; i < pages(); i++){
+      var d = document.createElement('button');
+      d.className = 'w-2 h-2 rounded-full transition-all duration-300 ' + (i === current ? 'bg-primary w-6' : 'bg-primary/25');
+      d.setAttribute('aria-label', 'Страница ' + (i+1));
+      (function(idx){ d.addEventListener('click', function(){ go(idx); }); })(i);
+      dots.appendChild(d);
+    }
+  }
+
+  function go(idx){
+    var pp = getPerPage();
+    var p  = pages();
+    current = Math.max(0, Math.min(idx, p - 1));
+    var cardWidth = cards[0].getBoundingClientRect().width;
+    var gap = 24;
+    track.style.transform = 'translateX(-' + (current * pp * (cardWidth + gap)) + 'px)';
+    buildDots();
+    document.getElementById('rev-prev').disabled = current === 0;
+    document.getElementById('rev-next').disabled = current >= p - 1;
+  }
+
+  document.getElementById('rev-prev').addEventListener('click', function(){ go(current - 1); });
+  document.getElementById('rev-next').addEventListener('click', function(){ go(current + 1); });
+  window.addEventListener('resize', function(){ go(0); });
+
+  buildDots();
+  go(0);
+})();
+</script>
+</section>
+
 <!-- Footer Section -->
 <footer class="w-full py-12 mt-20 bg-[#b8b4ac] dark:bg-[#12100f] border-none">
 <div class="flex flex-col items-center justify-center gap-6 px-4 md:ml-[25%]">
