@@ -1,140 +1,49 @@
-# Аксай Гриль — Flask + SQLite
+# Аксай Гриль — Restaurant Web Application
 
-Сайт ресторана «Аксай Гриль» с админкой. Реализуется поэтапно
-из статического HTML в полноценное Flask-приложение с SQLite.
+## Overview
+A Flask-based web application for the Aksay Grill restaurant in Aksay, Russia. It provides a public-facing website for viewing menus and submitting service requests, plus a comprehensive admin panel for managing orders and site content.
 
-## Текущий этап
-**Этап 3 — редактирование текстов сайта через админку.**
+## Tech Stack
+- **Framework:** Flask (Python 3.11)
+- **Database:** SQLite (via SQLAlchemy ORM), stored in `data.db`
+- **Auth:** Flask-Login (custom username/password for admin)
+- **Forms:** Flask-WTF / WTForms with CSRF protection
+- **Email:** smtplib via environment variables (optional, gracefully skipped if unconfigured)
+- **Server:** Gunicorn (production/dev)
 
-## Структура
-- `app.py` — точка входа Flask (роуты сайта, админки, Flask-Login, CSRF, context-processor)
-- `db.py` — engine, SessionLocal, Base (вынесено отдельно — без циклических импортов)
-- `models.py` — ORM-модели: `Admin`, `LoginLog`, `SiteText`,
-  `BusinessLunchOrder`, `CateringRequest`, `HallReservation`
-  + каталоги `SITE_TEXT_CATALOG`, `BUSINESS_LUNCH_MENU`,
-  `CATERING_FORMATS`, `EVENT_TYPES`
-- `forms.py` — WTForms-формы: `LoginForm`, `SetupForm`,
-  `BusinessLunchOrderForm`, `CateringRequestForm`, `HallReservationForm`
-- `mailer.py` — отправка e-mail-уведомлений (SMTP через stdlib),
-  фоновый поток для не-блокирующей отправки, безопасные fallback-сообщения
-  если SMTP не настроен.
-- `templates/` — Jinja-шаблоны
-  - `index.html`, `privacy.html`, `business-lunch.html`, `catering.html`,
-    `events.html` — публичный сайт
-  - `admin/base.html`, `admin/setup.html`, `admin/login.html`,
-    `admin/dashboard.html`, `admin/texts.html`, `admin/business_lunches.html`,
-    `admin/catering.html`, `admin/events.html`, `admin/email_settings.html`
+## Project Structure
+- `main.py` — Entry point, imports app from app.py
+- `app.py` — All Flask routes (public + admin), app factory, DB init
+- `models.py` — SQLAlchemy models: Admin, LoginLog, BusinessLunchOrder, CateringRequest, HallReservation, SiteText
+- `db.py` — SQLAlchemy engine/session setup (SQLite)
+- `forms.py` — WTForms form definitions
+- `mailer.py` — Background email notifications via SMTP
+- `templates/` — Jinja2 templates (public pages + admin panel)
+- `assets/` — Static files (images, CSS, JS)
 
-## Бизнес-ланчи
-- Публичная страница `/business-lunch` — каталог `BUSINESS_LUNCH_MENU` (4 комплекса)
-  и форма корпоративного заказа (`BusinessLunchOrderForm`).
-- Заявки сохраняются в таблицу `business_lunch_orders` с IP клиента.
-- Админка `/admin/business-lunches` — список заявок с фильтром
-  «В работе / Обработанные / Все», кнопка «Отметить обработанной» (POST + CSRF),
-  фиксируется `processed_at` и `processed_by`.
-- На дашборде админки бейдж с числом необработанных заявок.
-- При получении новой заявки запускается фоновый поток `mailer.send_order_notification_async`,
-  который шлёт письмо на адрес из `notify_email_recipient` (если задан и
-  `notify_email_enabled=yes`). Если SMTP не настроен — заявка всё равно
-  сохраняется, ошибка только логируется.
+## Running the App
+The app runs via gunicorn on port 5000:
+```
+gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
+```
 
-## Кейтеринг
-- Публичная страница `/catering` — каталог `CATERING_FORMATS` (5 форматов:
-  банкет, фуршет, кофе-брейк, корпоратив, выездной мангал) и форма заявки
-  (`CateringRequestForm`).
-- Заявки сохраняются в таблицу `catering_requests`: контактное лицо, компания,
-  телефон, e-mail, формат, число гостей, дата/время, площадка, бюджет на гостя
-  (опционально), комментарий, IP.
-- Админка `/admin/catering` — список заявок с фильтром
-  «В работе / Обработанные / Все», тумблер обработки (POST + CSRF).
-- На дашборде бейдж `pending_catering` с числом новых заявок.
-- При новой заявке запускается фоновый поток
-  `mailer.send_catering_notification_async` — шлёт письмо при настроенном SMTP
-  и включённых уведомлениях. Если SMTP не настроен — заявка всё равно сохраняется.
-- Кнопка «Оставить заявку» в карточке «Кейтеринг» на главной — ведёт на `/catering`.
+## Environment Variables / Secrets
+- `SESSION_SECRET` — Flask session secret key (required)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` — Optional SMTP config for email notifications
 
-## Мероприятия в зале (банкеты)
-- Публичная страница `/events` — каталог `EVENT_TYPES` (юбилей, день
-  рождения, свадьба, корпоратив, детский праздник, поминальный обед, другое)
-  и форма бронирования зала (`HallReservationForm`).
-- Заявки сохраняются в таблицу `hall_reservations`: контактное лицо,
-  компания (опц.), телефон, e-mail, тип, гости (2-300), дата, время начала,
-  длительность (опц.), флаги «нужно оформление зала» и «нужна помощь с меню»,
-  комментарий, IP.
-- Админка `/admin/events` — список заявок с фильтром
-  «В работе / Обработанные / Все», тумблер обработки (POST + CSRF), бейджи
-  доп. услуг.
-- На дашборде бейдж `pending_events` с числом новых заявок.
-- При новой заявке запускается фоновый поток
-  `mailer.send_hall_notification_async`.
-- Кнопка «Обсудить событие» в карточке «Мероприятия» на главной — ведёт на `/events`.
+## Admin Panel
+- `/admin/setup` — One-time first admin creation (only available when no admins exist)
+- `/admin/login` — Admin login
+- `/admin` — Dashboard with pending order counts and login log
+- `/admin/business-lunches` — Manage business lunch orders
+- `/admin/catering` — Manage catering requests
+- `/admin/events` — Manage hall reservation requests
+- `/admin/texts` — Edit site content/texts
+- `/admin/email-settings` — Configure SMTP email notifications
 
-## Уведомления на e-mail
-- Админка `/admin/email-settings` — статус SMTP (без раскрытия пароля),
-  адрес получателя, тумблер вкл/выкл, кнопка отправки тестового письма.
-- SMTP-параметры берутся из секретов окружения: `SMTP_HOST`, `SMTP_PORT`,
-  `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`. Поддерживается 465 (SSL) и
-  587 (STARTTLS). На момент текущей версии секреты не заполнены — пользователь
-  настроит позже.
-- `assets/` — статика (картинки, логотип, фон), отдаётся по `/assets/`
-- `uploads/` — пользовательские загрузки (создаётся при необходимости)
-- `data.db` — SQLite-база (создаётся при первом запуске, в .gitignore)
-- `DESIGN.md` — дизайн-система «Terracotta Hearth»
-- `screen.png` — референс дизайна
-
-## Админка
-- `/admin/setup` — одноразовая страница создания первого администратора.
-  Доступна только пока в БД нет ни одного админа, после этого отдаёт 404.
-- `/admin/login` — вход. Если админов ещё нет, редиректит на `/admin/setup`.
-- `/admin/logout` — выход (POST + CSRF).
-- `/admin` — кабинет (защищён `@login_required`), показывает журнал входов.
-- `/admin/texts` — редактирование текстов главной страницы.
-- Все попытки входа (успех/отказ) пишутся в `login_logs` с IP и User-Agent
-  (требование 152-ФЗ — ведём аудит доступа).
-- Пароли хранятся как bcrypt-хеши (`Admin.password_hash`).
-- CSRF включён через Flask-WTF на всех формах.
-
-## Тексты сайта
-- Каталог редактируемых текстов описан в `models.SITE_TEXT_CATALOG` (key, label,
-  kind, default). Значения хранятся в таблице `site_texts`.
-- При первом запуске недостающие записи сидируются дефолтами.
-- Context-processor `inject_site_texts` кладёт словарь `texts` во все шаблоны;
-  в `index.html` нужные места заменены на `{{ texts.KEY }}`.
-
-## Стек
-- Python 3.11
-- Flask 3 + SQLAlchemy 2 (ORM)
-- Flask-Login (планируется в этапе 2 — авторизация)
-- Flask-WTF (CSRF, формы)
-- bcrypt (хеширование паролей)
-- gunicorn (продакшн-сервер)
-- Jinja2 (рендеринг)
-- Tailwind CSS через CDN
-
-## Запуск
-Workflow `Start application` запускает `python app.py` на порту 5000.
-В проде — `gunicorn -w 2 -b 0.0.0.0:5000 app:app`.
-
-## План этапов
-1. ✅ Перевод на Flask + SQLite (завершён)
-2. ✅ Авторизация админки (`/admin/login`, лог входов) — завершён
-3. ✅ Редактирование текстов сайта через админку — завершён
-4. ⏳ Загрузка картинок через админку
-5. ⏳ Управление меню (CRUD блюд)
-6. ⏳ Учёт заказов + e-mail-уведомления
-7. ⏳ Реквизиты компании, автоподстановка в подвал и privacy
-8. ⏳ SEO-настройки + Яндекс.Метрика
-9. ⏳ Редактор юридических страниц и cookie-баннера
-10. ⏳ Безопасность 152-ФЗ: бэкап, удаление ПД, журнал доступа, мульти-админ
-11. ⏳ Заглушка для будущей онлайн-оплаты
-12. ⏳ Инструкция по переносу на российский VPS
-
-## Правила работы с дизайном
-Размеры фреймов/блоков менять нельзя без отдельной явной команды
-пользователя. При добавлении или изменении контента — только встраиваем
-текст в существующий фрейм, не меняя его габаритов.
-
-## Соответствие 152-ФЗ
-Хранение ПД клиентов (заказы) на Replit нарушает 242-ФЗ. Для прода
-нужен российский VPS (Timeweb, Yandex Cloud). Replit — только для
-разработки. Подробности в плане работ (этап 12).
+## Public Pages
+- `/` — Main restaurant homepage
+- `/business-lunch` — Business lunch menu and order form
+- `/catering` — Catering service request form
+- `/events` — Hall reservation form
+- `/privacy.html` — Privacy policy
