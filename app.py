@@ -147,6 +147,11 @@ def privacy():
     return render_template("privacy.html")
 
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
 @app.route("/business-lunch", methods=["GET", "POST"])
 def business_lunch():
     """Страница комплексных бизнес-ланчей с формой корпоративного заказа."""

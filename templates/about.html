@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="light" lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>О нас · {{ texts.site_title }}</title>
+<link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#9b3f1c",
+          "on-primary": "#ffffff",
+          "primary-container": "#bb5732",
+          "on-primary-container": "#fffbff",
+          "secondary": "#805533",
+          "on-secondary": "#ffffff",
+          "tertiary": "#735c00",
+          "tertiary-container": "#cba72f",
+          "on-tertiary-container": "#4e3d00",
+          "surface": "#cbc7bf",
+          "surface-container": "#c1bdb5",
+          "surface-container-low": "#c6c2ba",
+          "surface-container-high": "#bcb9b1",
+          "on-surface": "#1d1c16",
+          "on-surface-variant": "#56423a",
+          "outline": "#897269",
+          "outline-variant": "#dcc1b6",
+          "background": "#cbc7bf",
+          "error": "#ba1a1a",
+          "error-container": "#ffdad6",
+          "on-error-container": "#93000a",
+        },
+        borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+        fontFamily: { "headline": ["Montserrat","sans-serif"], "body": ["Montserrat","sans-serif"] },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: "Montserrat", sans-serif; background: #cbc7bf; color: #1d1c16; }
+  h1, h2, h3, .font-headline { font-weight: 200; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .hero-bg {
+    background-image: linear-gradient(160deg, rgba(155,63,28,0.88) 0%, rgba(86,66,58,0.82) 100%),
+                      url('/assets/events.png');
+    background-size: cover;
+    background-position: center 30%;
+  }
+  .advantage-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .advantage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px -12px rgba(155,63,28,0.22);
+  }
+  .divider {
+    width: 48px;
+    height: 3px;
+    background: #9b3f1c;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-[rgba(203,199,191,0.92)] backdrop-blur sticky top-0 z-30 border-b border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3">
+      <div class="bg-[#cbc7bf] p-2 rounded-lg">
+        <img src="/assets/logo.jpg" alt="Аксай Гриль" class="h-10 w-auto object-contain"
+             style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.15);"/>
+      </div>
+      <div>
+        <div class="font-headline text-xl text-[#9b3f1c]">Аксай Гриль</div>
+        <div class="text-[11px] text-on-surface-variant">{{ texts.tagline }}</div>
+      </div>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm">
+      <a href="/" class="text-on-surface-variant hover:text-primary transition-colors">На главную</a>
+      <a href="tel:{{ texts.contact_phone }}" class="font-bold text-primary">{{ texts.contact_phone }}</a>
+    </nav>
+    <a href="/" class="sm:hidden text-on-surface-variant hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero-bg text-white">
+  <div class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Работаем с 2022 года</span>
+    <h1 class="font-headline text-4xl md:text-6xl mb-5 leading-tight">О нас</h1>
+    <p class="text-lg md:text-xl max-w-2xl opacity-95 leading-relaxed">
+      Аксай Гриль — это живое место с огнём, вкусом и домашней кухней
+      в самом сердце Аксайского района.
+    </p>
+    <div class="flex flex-wrap gap-3 mt-8">
+      <a href="/" class="inline-flex items-center gap-2 bg-white/15 border border-white/30 backdrop-blur text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-white/25 transition">
+        <span class="material-symbols-outlined text-base">restaurant_menu</span>
+        Смотреть меню
+      </a>
+      <a href="tel:{{ texts.contact_phone }}" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition">
+        <span class="material-symbols-outlined text-base">call</span>
+        Позвонить нам
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- О предприятии -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Наша история</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-5">Более двух лет<br/>на рынке Аксая</h2>
+      <div class="divider mb-6"></div>
+      <div class="space-y-4 text-[15px] text-on-surface-variant leading-relaxed">
+        <p>
+          Предприятие общественного питания <strong class="text-on-surface">«Аксай Гриль»</strong> работает
+          на рынке Аксайского района уже более двух лет. За это время мы стали
+          любимым местом для жителей и гостей района, которые ценят настоящий вкус,
+          домашнюю кухню и искреннее гостеприимство.
+        </p>
+        <p>
+          Мы расположены на рынке <strong class="text-on-surface">«Казачий»</strong> — в удобном месте
+          с просторной парковкой, на перекрёстке трёх дорог. Совсем рядом — новый
+          микрорайон <strong class="text-on-surface">Придонье</strong> с численностью жителей
+          около 120&nbsp;000 человек: до нас легко дойти пешком или подъехать
+          буквально за несколько минут.
+        </p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">schedule</span>
+        <div class="font-semibold text-on-surface mb-1">Более 2 лет</div>
+        <div class="text-xs text-on-surface-variant">Стабильная работа и сотни довольных гостей</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">location_on</span>
+        <div class="font-semibold text-on-surface mb-1">Рынок «Казачий»</div>
+        <div class="text-xs text-on-surface-variant">Удобный подъезд, парковка рядом</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">directions_walk</span>
+        <div class="font-semibold text-on-surface mb-1">Пешая доступность</div>
+        <div class="text-xs text-on-surface-variant">Рядом с микрорайоном Придонье (120 000 жит.)</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">fork_right</span>
+        <div class="font-semibold text-on-surface mb-1">Перекрёсток трёх дорог</div>
+        <div class="text-xs text-on-surface-variant">Удобно добраться из любой части города</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Кухня -->
+<section class="bg-surface-container-low/60 py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-10">
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Что готовим</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface">Кухня Аксай Гриль</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="advantage-card bg-[#cbc7bf] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">outdoor_grill</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Блюда на гриле</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Шашлык из свинины, говядины, баранины и курицы, люля-кебаб,
+          куриные крылья и бёдра — всё готовится на живом огне.
+        </p>
+      </div>
+      <div class="advantage-card bg-[#cbc7bf] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">soup_kitchen</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Донская кухня</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Наваристый борщ, солянка по-домашнему — традиционные рецепты,
+          которые пахнут детством и теплом.
+        </p>
+      </div>
+      <div class="advantage-card bg-[#cbc7bf] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">ramen_dining</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Азиатская кухня</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Шурпа из баранины, лагман, плов — насыщенные и ароматные блюда
+          восточной традиции, приготовленные по настоящим рецептам.
+        </p>
+      </div>
+    </div>
+    <!-- Главное преимущество -->
+    <div class="mt-8 bg-primary rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-6">
+      <span class="material-symbols-outlined text-6xl opacity-90 flex-shrink-0" style="font-variation-settings:'FILL' 1">egg_alt</span>
+      <div>
+        <div class="text-xs uppercase tracking-widest opacity-70 mb-2">Наше главное преимущество</div>
+        <h3 class="font-headline text-2xl md:text-3xl mb-2">Домашние продукты и свежайшее мясо</h3>
+        <p class="text-sm opacity-90 leading-relaxed max-w-2xl">
+          Мы готовим только из натуральных домашних продуктов и мяса высочайшей свежести.
+          Никаких заморозок, никаких полуфабрикатов — каждое блюдо создаётся здесь и сейчас,
+          чтобы вы получили настоящий вкус.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Услуги -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Что мы предлагаем</div>
+  <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-10">Наши услуги</h2>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">delivery_dining</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Доставка обедов</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Доставляем готовые обеды прямо на предприятия и строительные площадки.
+        Горячее, свежее, вовремя — без лишних хлопот для вашего коллектива.
+      </p>
+      <a href="/" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Заказать доставку <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">celebration</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Банкеты и фуршеты</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Организуем банкеты и фуршеты любой сложности: свадьбы, юбилеи,
+        уютные семейные торжества. Возьмём на себя всё — от меню до сервировки.
+      </p>
+      <a href="/catering" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Узнать подробнее <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">corporate_fare</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Корпоративные события</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Выездное обслуживание корпоративов и деловых встреч. Приедем на вашу
+        территорию — с едой, оборудованием и персоналом.
+      </p>
+      <a href="/events" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Оставить заявку <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Контакты / CTA -->
+<section class="bg-[#b8b4ac] py-14 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Мы рядом</div>
+      <h2 class="font-headline text-2xl md:text-3xl text-on-surface mb-3">Приходите в гости</h2>
+      <div class="space-y-2 text-sm text-on-surface-variant">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+          г. Аксай, рынок «Казачий»
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+          {{ texts.working_hours }}
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">call</span>
+          <a href="tel:{{ texts.contact_phone }}" class="hover:text-primary transition-colors font-medium">{{ texts.contact_phone }}</a>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <a href="/" class="inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-7 py-3.5 rounded-lg font-bold text-sm uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-primary/20">
+        <span class="material-symbols-outlined text-base">restaurant_menu</span>
+        Смотреть меню
+      </a>
+      <a href="tel:{{ texts.contact_phone }}" class="inline-flex items-center justify-center gap-2 border border-outline-variant/40 text-on-surface px-7 py-3.5 rounded-lg font-medium text-sm hover:bg-surface-container transition">
+        <span class="material-symbols-outlined text-base">call</span>
+        Позвонить
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-[#b0aca4] py-8 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+    <div>{{ texts.operator_name }} · ИНН {{ texts.operator_inn }}</div>
+    <div class="flex items-center gap-4">
+      <a href="/" class="hover:text-primary transition-colors">На главную</a>
+      <a href="/privacy.html" class="hover:text-primary transition-colors">Политика конфиденциальности</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
