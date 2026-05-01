@@ -134,6 +134,25 @@ def _is_safe_next(target: str) -> bool:
     return not parsed.netloc and not parsed.scheme and target.startswith("/")
 
 
+def _safe_referrer(fallback: str) -> str:
+    """Извлечь путь из Referer-заголовка и вернуть его, если он безопасен.
+
+    Referer содержит полный URL (http://host/path?q=1), поэтому берём
+    только path+query и проверяем, что результат начинается с '/'.
+    Если проверка не пройдена — возвращаем fallback.
+    """
+    ref = request.referrer or ""
+    if not ref:
+        return fallback
+    parsed = urlparse(ref)
+    path = parsed.path
+    if parsed.query:
+        path = f"{path}?{parsed.query}"
+    if _is_safe_next(path):
+        return path
+    return fallback
+
+
 # ----------------------------- публичные роуты -----------------------------
 
 
@@ -680,7 +699,7 @@ def admin_catering_toggle(request_id: int):
     finally:
         session.close()
 
-    return redirect(request.referrer or url_for("admin_catering"))
+    return redirect(_safe_referrer(url_for("admin_catering")))
 
 
 @app.route("/admin/events")
@@ -737,7 +756,7 @@ def admin_events_toggle(request_id: int):
     finally:
         session.close()
 
-    return redirect(request.referrer or url_for("admin_events"))
+    return redirect(_safe_referrer(url_for("admin_events")))
 
 
 @app.route("/admin/business-lunches/<int:order_id>/toggle", methods=["POST"])
@@ -765,9 +784,7 @@ def admin_business_lunch_toggle(order_id: int):
     finally:
         session.close()
 
-    return redirect(
-        request.referrer or url_for("admin_business_lunches")
-    )
+    return redirect(_safe_referrer(url_for("admin_business_lunches")))
 
 
 @app.route("/order/delivery", methods=["POST"])
@@ -897,7 +914,7 @@ def admin_delivery_order_toggle(order_id: int):
     finally:
         session.close()
 
-    return redirect(request.referrer or url_for("admin_delivery_orders"))
+    return redirect(_safe_referrer(url_for("admin_delivery_orders")))
 
 
 with app.app_context():
