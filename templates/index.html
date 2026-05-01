@@ -1889,26 +1889,26 @@
 </div>
 
 <!-- Footer Section -->
-<footer class="w-full py-12 mt-20 bg-[#b8b4ac] dark:bg-[#12100f] border-none">
-<div class="flex flex-col items-center justify-center gap-6 px-4 md:ml-[25%]">
+<footer class="w-full md:ml-[25%] md:w-[75%] py-12 mt-20 bg-[#b8b4ac] dark:bg-[#12100f] border-none">
+<div class="flex flex-col items-center justify-center gap-6 px-4">
 <div class="mb-4 bg-[#cbc7bf] p-4 rounded-xl">
 <img alt="Aksai Grill Logo Footer" class="h-24 w-auto object-contain" src="/assets/logo.jpg" style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.15);"/>
 </div>
 <div class="flex items-center gap-3">
 <span class="font-headline text-2xl text-[#9b3f1c] font-[200]">Аксай Гриль</span>
-<span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-<p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">{{ texts.tagline }}</p>
+<span class="w-1.5 h-1.5 rounded-full bg-primary/60"></span>
+<p class="font-body text-sm font-medium text-[#3a2c26] dark:text-[#e7e2d8]">{{ texts.tagline }}</p>
 </div>
-<nav class="flex flex-wrap justify-center gap-8 text-[#56423a] opacity-60">
-<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="/privacy.html">Политика конфиденциальности</a>
-<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Условия использования</a>
-<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
+<nav class="flex flex-wrap justify-center gap-8 text-[#3a2c26]">
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="/privacy.html">Политика конфиденциальности</a>
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Условия использования</a>
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
 </nav>
-<div class="pt-8 border-t border-outline-variant/20 w-full max-w-lg text-center space-y-2">
-<p class="font-body text-[10px] text-on-surface-variant opacity-60 leading-relaxed">
+<div class="pt-8 border-t border-outline-variant/40 w-full max-w-lg text-center space-y-2">
+<p class="font-body text-[10px] text-[#3a2c26] leading-relaxed">
 {{ texts.operator_name }} · ИНН {{ texts.operator_inn }} · ОГРНИП {{ texts.operator_ogrnip }}
 </p>
-<p class="font-body text-[10px] text-on-surface-variant opacity-40">{{ texts.footer_copyright|safe }}</p>
+<p class="font-body text-[10px] text-[#56423a]">{{ texts.footer_copyright|safe }}</p>
 </div>
 </div>
 </footer>
