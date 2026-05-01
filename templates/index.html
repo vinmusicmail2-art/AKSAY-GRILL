@@ -1929,14 +1929,29 @@
 </button>
 </header>
 <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-3">
-<p id="cart-empty" class="text-center text-on-surface-variant text-sm py-12">Корзина пуста.<br/>Добавьте блюда из меню.</p>
+<div id="cart-empty-state" class="flex flex-col items-center justify-center py-12 gap-6">
+  <span class="material-symbols-outlined text-5xl text-on-surface-variant/40">shopping_basket</span>
+  <p class="text-center text-on-surface-variant text-sm">Корзина пуста.<br/>Добавьте блюда из меню.</p>
+  <a href="#mangal" onclick="closeCart()" class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm hover:opacity-90 transition-all">
+    <span class="material-symbols-outlined text-lg">restaurant_menu</span>
+    Перейти в меню
+  </a>
+</div>
 </div>
 <footer class="px-6 py-5 border-t border-outline-variant/20 bg-surface-container-low">
-<div class="flex items-center justify-between mb-4">
-<span class="text-sm text-on-surface-variant uppercase tracking-widest">Итого</span>
-<span id="cart-total" class="text-2xl font-bold text-primary">0₽</span>
+<div id="cart-footer-full" class="hidden">
+  <div class="flex items-center justify-between mb-4">
+    <span class="text-sm text-on-surface-variant uppercase tracking-widest">Итого</span>
+    <span id="cart-total" class="text-2xl font-bold text-primary">0₽</span>
+  </div>
+  <button id="cart-checkout-btn" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Оформить заказ</button>
 </div>
-<button id="cart-checkout-btn" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Оформить заказ</button>
+<div id="cart-footer-empty" class="flex flex-col gap-2">
+  <button onclick="closeCart()" class="w-full border border-outline-variant/30 text-on-surface-variant py-3 rounded-lg font-medium text-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2">
+    <span class="material-symbols-outlined text-lg">close</span>
+    Закрыть
+  </button>
+</div>
 </footer>
 </aside>
 <!-- Checkout Modal -->
@@ -2000,16 +2015,27 @@
     const qty = totalQty();
     const sum = totalSum();
     document.querySelectorAll('#cart-badge-mobile, #cart-badge-fab').forEach(b => b.textContent = qty);
-    document.getElementById('cart-total').textContent = fmt(sum);
+    const cartTotal = document.getElementById('cart-total');
+    if(cartTotal) cartTotal.textContent = fmt(sum);
     const hdr = document.getElementById('cart-header-summary');
     if(hdr){
       hdr.textContent = qty > 0 ? `${qty} ${plural(qty,['блюдо','блюда','блюд'])} · ${fmt(sum)}` : 'Заказать';
     }
     const list = document.getElementById('cart-items');
+    const emptyState = document.getElementById('cart-empty-state');
+    const footerFull = document.getElementById('cart-footer-full');
+    const footerEmpty = document.getElementById('cart-footer-empty');
     const items = Object.values(cart);
     if(items.length){
-      list.innerHTML = items.map(i => `
-        <div class="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
+      if(emptyState) emptyState.classList.add('hidden');
+      if(footerFull) footerFull.classList.remove('hidden');
+      if(footerEmpty) footerEmpty.classList.add('hidden');
+      const existing = list.querySelectorAll('.cart-item-row');
+      existing.forEach(el => el.remove());
+      items.forEach(i => {
+        const div = document.createElement('div');
+        div.className = 'cart-item-row flex items-center justify-between bg-white rounded-lg p-3 shadow-sm';
+        div.innerHTML = `
           <div class="flex-1 min-w-0 pr-3">
             <div class="font-medium text-on-surface text-sm truncate">${i.name}</div>
             <div class="text-xs text-on-surface-variant">${i.price}₽ × ${i.qty}</div>
@@ -2018,10 +2044,14 @@
             <button data-act="dec" data-name="${i.name}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
             <span class="w-6 text-center text-sm font-bold">${i.qty}</span>
             <button data-act="inc" data-name="${i.name}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
-          </div>
-        </div>`).join('');
+          </div>`;
+        list.appendChild(div);
+      });
     } else {
-      list.innerHTML = '<p id="cart-empty" class="text-center text-on-surface-variant text-sm py-12">Корзина пуста.<br/>Добавьте блюда из меню.</p>';
+      if(emptyState) emptyState.classList.remove('hidden');
+      if(footerFull) footerFull.classList.add('hidden');
+      if(footerEmpty) footerEmpty.classList.remove('hidden');
+      list.querySelectorAll('.cart-item-row').forEach(el => el.remove());
     }
     renderDishActions();
   }
