@@ -47,6 +47,7 @@ app.secret_key = os.environ.get("SESSION_SECRET") or os.environ.get(
     "SECRET_KEY", "dev-secret-change-me"
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 МБ для загрузок
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 csrf = CSRFProtect(app)
