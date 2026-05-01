@@ -516,12 +516,19 @@ def admin_dashboard():
             .filter(HallReservation.is_processed.is_(False))
             .count()
         )
+        from models import DeliveryOrder
+        pending_delivery = (
+            session.query(DeliveryOrder)
+            .filter(DeliveryOrder.is_processed.is_(False))
+            .count()
+        )
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
             pending_orders=pending_orders,
             pending_catering=pending_catering,
             pending_events=pending_events,
+            pending_delivery=pending_delivery,
         )
     finally:
         session.close()
@@ -755,6 +762,105 @@ def admin_business_lunch_toggle(order_id: int):
     return redirect(
         request.referrer or url_for("admin_business_lunches")
     )
+
+
+@app.route("/order/delivery", methods=["POST"])
+@csrf.exempt
+def order_delivery():
+    """Принять заказ на доставку из корзины на главной странице (JSON POST)."""
+    import json as _json
+    from models import DeliveryOrder
+
+    data = request.get_json(silent=True) or {}
+    contact_name = (data.get("name") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    email = (data.get("email") or "").strip() or None
+    delivery_address = (data.get("address") or "").strip()
+    comment = (data.get("comment") or "").strip() or None
+    items = data.get("items") or []
+    total = data.get("total") or 0
+
+    if not contact_name or not phone or not delivery_address or not items:
+        return {"ok": False, "error": "Не заполнены обязательные поля."}, 400
+
+    session = SessionLocal()
+    try:
+        order = DeliveryOrder(
+            contact_name=contact_name,
+            phone=phone,
+            email=email,
+            delivery_address=delivery_address,
+            items_json=_json.dumps(items, ensure_ascii=False),
+            total_amount=int(total),
+            comment=comment,
+            ip_address=_client_ip(),
+        )
+        session.add(order)
+        session.commit()
+        return {"ok": True, "id": order.id}
+    finally:
+        session.close()
+
+
+@app.route("/admin/delivery-orders")
+@login_required
+def admin_delivery_orders():
+    """Список заказов на доставку с главной страницы."""
+    import json as _json
+    from models import DeliveryOrder
+
+    show = request.args.get("show", "pending")
+
+    session = SessionLocal()
+    try:
+        q = session.query(DeliveryOrder)
+        if show == "pending":
+            q = q.filter(DeliveryOrder.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(DeliveryOrder.is_processed.is_(True))
+        orders = q.order_by(DeliveryOrder.created_at.desc()).limit(200).all()
+
+        def parse_items(o):
+            try:
+                return _json.loads(o.items_json)
+            except Exception:
+                return []
+
+        return render_template(
+            "admin/delivery_orders.html",
+            orders=orders,
+            show=show,
+            parse_items=parse_items,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/delivery-orders/<int:order_id>/toggle", methods=["POST"])
+@login_required
+def admin_delivery_order_toggle(order_id: int):
+    from models import DeliveryOrder
+
+    session = SessionLocal()
+    try:
+        order = session.get(DeliveryOrder, order_id)
+        if order is None:
+            abort(404)
+        if order.is_processed:
+            order.is_processed = False
+            order.processed_at = None
+            order.processed_by = None
+            flash(f"Заказ #{order.id} возвращён в работу.", "success")
+        else:
+            order.is_processed = True
+            order.processed_at = datetime.utcnow()
+            order.processed_by = current_user.username
+            flash(f"Заказ #{order.id} отмечен как выполненный.", "success")
+        session.commit()
+    finally:
+        session.close()
+
+    return redirect(request.referrer or url_for("admin_delivery_orders"))
 
 
 with app.app_context():

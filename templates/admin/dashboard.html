@@ -82,6 +82,23 @@
           {% else %}доступно{% endif %}
         </div>
       </a>
+      <a href="{{ url_for('admin_delivery_orders') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block relative">
+        {% if pending_delivery and pending_delivery > 0 %}
+          <span class="absolute top-3 right-3 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-2 rounded-full bg-primary text-on-primary text-xs font-bold">
+            {{ pending_delivery }}
+          </span>
+        {% endif %}
+        <div class="font-medium text-primary">Заказы на доставку</div>
+        <div class="text-xs text-on-surface-variant mt-1">
+          Заказы из корзины на главной странице сайта
+        </div>
+        <div class="text-xs text-success mt-2">
+          {% if pending_delivery and pending_delivery > 0 %}
+            {{ pending_delivery }} в работе
+          {% else %}доступно{% endif %}
+        </div>
+      </a>
       <a href="{{ url_for('admin_email_settings') }}"
          class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block">
         <div class="font-medium text-primary">Уведомления на e-mail</div>

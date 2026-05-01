@@ -324,7 +324,7 @@
 {{ texts.hero_veg_text|safe }}
 </p>
 <div class="flex gap-4" style="position:relative; top:15px;">
-<button class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
+<button onclick="openCart()" class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
 <span class="material-symbols-outlined">delivery_dining</span>
                             {{ texts.hero_cta_primary }}
                         </button>
@@ -1727,15 +1727,19 @@
 </header>
 <form id="checkout-form" class="px-6 py-5 space-y-4">
 <div>
-<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Имя</label>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Имя *</label>
 <input name="name" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
 </div>
 <div>
-<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Телефон</label>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Телефон *</label>
 <input name="phone" type="tel" required placeholder="+7 (___) ___-__-__" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
 </div>
 <div>
-<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Адрес доставки</label>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">E-mail <span class="opacity-60 normal-case tracking-normal">(необязательно)</span></label>
+<input name="email" type="email" placeholder="example@mail.ru" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Адрес доставки *</label>
 <input name="address" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
 </div>
 <div>
@@ -1820,7 +1824,7 @@
     });
   }
   function initDishCards(){
-    document.querySelectorAll('section#pervye .group, section#vtorye .group, section#garniry .group, section#salaty .group, section#vypechka .group, section#napitki .group, section#extras .group').forEach(card => {
+    document.querySelectorAll('section#mangal .group, section#pervye .group, section#vtorye .group, section#garniry .group, section#salaty .group, section#vypechka .group, section#napitki .group, section#extras .group').forEach(card => {
       const btn = Array.from(card.querySelectorAll('button')).find(b => /Добавить в заказ/i.test(b.textContent));
       if(!btn) return;
       const name = card.querySelector('h3')?.textContent.trim();
@@ -1892,22 +1896,42 @@
 
   document.getElementById('checkout-form').addEventListener('submit', async function(e){
     e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const origText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправляем...';
     const data = Object.fromEntries(new FormData(e.target).entries());
-    const order = {
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
-      customer: data,
+    const payload = {
+      name: data.name,
+      phone: data.phone,
+      email: data.email || '',
+      address: data.address,
+      comment: data.comment || '',
       items: Object.values(cart),
       total: totalSum()
     };
-    const all = JSON.parse(localStorage.getItem('aksay_orders') || '[]');
-    all.push(order);
-    localStorage.setItem('aksay_orders', JSON.stringify(all));
-    try { await sendOrder(order); } catch(_){}
-    Object.keys(cart).forEach(k => delete cart[k]);
-    render();
-    document.getElementById('checkout-form').classList.add('hidden');
-    document.getElementById('checkout-success').classList.remove('hidden');
+    try {
+      const resp = await fetch('/order/delivery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await resp.json();
+      if(result.ok){
+        Object.keys(cart).forEach(k => delete cart[k]);
+        render();
+        document.getElementById('checkout-form').classList.add('hidden');
+        document.getElementById('checkout-success').classList.remove('hidden');
+      } else {
+        alert(result.error || 'Ошибка при отправке заказа. Попробуйте ещё раз.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = origText;
+      }
+    } catch(err) {
+      alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = origText;
+    }
   });
   document.addEventListener('click', function(e){
     const btn = e.target.closest('button');

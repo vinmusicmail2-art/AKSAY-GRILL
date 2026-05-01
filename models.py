@@ -477,3 +477,29 @@ class HallReservation(Base):
     created_at = Column(
         DateTime, default=datetime.utcnow, nullable=False, index=True
     )
+
+
+# ---------------------------------------------------------------------------
+# Заказы на доставку с главной страницы (модальное окно «Заказать доставку»).
+# ---------------------------------------------------------------------------
+
+class DeliveryOrder(Base):
+    """Заказ на доставку блюд из корзины на главной странице."""
+
+    __tablename__ = "delivery_orders"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    phone = Column(String(64), nullable=False, index=True)
+    email = Column(String(255), nullable=True)
+    delivery_address = Column(Text, nullable=False)
+    items_json = Column(Text, nullable=False)   # JSON-список [{name, price, qty}]
+    total_amount = Column(Integer, nullable=False, default=0)  # ₽
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    processed_at = Column(DateTime, nullable=True)
+    processed_by = Column(String(64), nullable=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )
