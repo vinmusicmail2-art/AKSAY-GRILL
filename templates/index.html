@@ -100,8 +100,13 @@
       h2.dish-heading + p {
         margin-top: 40px;
       }
+      html {
+        overflow-x: hidden;
+        overflow-y: scroll; /* всегда резервировать место под скроллбар — без сдвигов */
+      }
       body {
         font-weight: 400; /* Montserrat Regular for body */
+        overflow-x: hidden;
       }
       /* Equalize dish card heights so "Добавить в заказ" buttons line up */
       section[id] .grid > .group {
@@ -1665,8 +1670,8 @@
 </section>
 
 <!-- Reviews Section -->
-<section id="reviews" class="py-20 scroll-mt-24 -mx-8 lg:-mx-16 px-8 lg:px-16 bg-[#f5f0e8]">
-<div class="max-w-5xl mx-auto px-6 lg:px-16">
+<section id="reviews" class="py-20 scroll-mt-24 bg-[#f5f0e8]">
+<div class="max-w-5xl mx-auto">
   <div class="flex items-center justify-between mb-12">
     <div>
       <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Наши гости говорят</p>
@@ -2056,16 +2061,25 @@
       btn.replaceWith(slot);
     });
   }
+  function lockScroll(){
+    const sw = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = sw + 'px';
+    document.documentElement.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    document.documentElement.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
   window.openCart = function(){
     document.getElementById('cart-overlay').classList.remove('hidden');
     const d = document.getElementById('cart-drawer');
     d.classList.remove('translate-x-full');
-    document.body.style.overflow = 'hidden';
+    lockScroll();
   };
   window.closeCart = function(){
     document.getElementById('cart-overlay').classList.add('hidden');
     document.getElementById('cart-drawer').classList.add('translate-x-full');
-    document.body.style.overflow = '';
+    unlockScroll();
   };
   function add(name, price){
     if(!cart[name]) cart[name] = { name, price, qty: 0 };
@@ -2086,12 +2100,12 @@
     document.getElementById('checkout-form').reset();
     const ov = document.getElementById('checkout-overlay');
     ov.classList.remove('hidden'); ov.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+    lockScroll();
   };
   window.closeCheckout = function(){
     const ov = document.getElementById('checkout-overlay');
     ov.classList.add('hidden'); ov.classList.remove('flex');
-    document.body.style.overflow = '';
+    unlockScroll();
   };
   document.getElementById('cart-checkout-btn').addEventListener('click', function(){
     closeCart();
