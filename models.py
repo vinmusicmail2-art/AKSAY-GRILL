@@ -607,6 +607,23 @@ class HallReservation(Base):
 # Заказы на доставку с главной страницы (модальное окно «Заказать доставку»).
 # ---------------------------------------------------------------------------
 
+class QuickRequest(Base):
+    """Быстрая заявка с кнопки «Оставить заявку» в блоке доставки."""
+
+    __tablename__ = "quick_requests"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    phone = Column(String(64), nullable=False, index=True)
+    address = Column(Text, nullable=False)
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )
+
+
 class DeliveryOrder(Base):
     """Заказ на доставку блюд из корзины на главной странице."""
 

@@ -808,6 +808,37 @@ def order_delivery():
         session.close()
 
 
+@app.route("/quick-request", methods=["POST"])
+def quick_request():
+    """Принять быструю заявку с кнопки «Оставить заявку» в блоке доставки."""
+    from models import QuickRequest
+
+    contact_name = (request.form.get("contact_name") or "").strip()
+    phone = (request.form.get("phone") or "").strip()
+    address = (request.form.get("address") or "").strip()
+    comment = (request.form.get("comment") or "").strip() or None
+
+    if not contact_name or not phone or not address:
+        flash("Пожалуйста, заполните все обязательные поля.", "error")
+        return redirect(url_for("home") + "#dostavka")
+
+    session = SessionLocal()
+    try:
+        req = QuickRequest(
+            contact_name=contact_name,
+            phone=phone,
+            address=address,
+            comment=comment,
+            ip_address=_client_ip(),
+        )
+        session.add(req)
+        session.commit()
+        flash("Заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
+        return redirect(url_for("home") + "#dostavka")
+    finally:
+        session.close()
+
+
 @app.route("/admin/delivery-orders")
 @login_required
 def admin_delivery_orders():
