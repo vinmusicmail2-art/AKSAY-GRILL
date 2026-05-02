@@ -20,6 +20,219 @@
     </div>
   </section>
 
+  <!-- ===== БЛОК ЗАЯВОК ===== -->
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-center justify-between gap-4 flex-wrap mb-2">
+      <div>
+        <h2 class="text-xl font-light text-primary">Заявки</h2>
+        <p class="text-xs text-on-surface-variant mt-0.5">Все входящие заявки с сайта — доставка, ланчи, кейтеринг, банкеты</p>
+      </div>
+      {% if total_new > 0 %}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-on-primary text-sm font-bold">
+          <span class="material-icons text-base">notifications_active</span>
+          {{ total_new }} новых
+        </span>
+      {% endif %}
+    </div>
+
+    <button onclick="openRequestsModal()"
+            class="mt-4 w-full flex items-center justify-center gap-3 py-5 rounded-xl bg-primary text-on-primary font-semibold text-lg hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all shadow-md">
+      <span class="material-icons text-2xl">inbox</span>
+      Открыть все заявки
+      {% if total_new > 0 %}
+        <span class="ml-1 px-2.5 py-0.5 rounded-full bg-white/20 text-sm font-bold">{{ total_new }} новых</span>
+      {% endif %}
+    </button>
+  </section>
+
+  <!-- ===== МОДАЛЬНОЕ ОКНО ЗАЯВОК ===== -->
+  <div id="requests-modal"
+       class="fixed inset-0 z-50 hidden items-start justify-center bg-black/50 backdrop-blur-sm p-4 pt-8 overflow-y-auto">
+    <div class="bg-[#f5f1eb] rounded-2xl shadow-2xl w-full max-w-[1200px] mx-auto flex flex-col">
+
+      <!-- Шапка модала -->
+      <div class="flex items-center justify-between px-8 py-5 border-b border-outline/20 bg-surface-card rounded-t-2xl sticky top-0 z-10">
+        <div class="flex items-center gap-3">
+          <span class="material-icons text-primary text-2xl">inbox</span>
+          <h2 class="text-xl font-medium text-primary">Все заявки</h2>
+          {% if total_new > 0 %}
+            <span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ total_new }} новых</span>
+          {% endif %}
+        </div>
+        <button onclick="closeRequestsModal()" class="text-on-surface-variant hover:text-error transition-colors p-1">
+          <span class="material-icons text-2xl">close</span>
+        </button>
+      </div>
+
+      <!-- 4 колонки -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-0 divide-y md:divide-y-0 md:divide-x divide-outline/20">
+
+        <!-- Колонка 1: Доставка -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 px-5 py-4 bg-surface-low border-b border-outline/20">
+            <span class="material-icons text-primary text-lg">delivery_dining</span>
+            <span class="font-semibold text-sm text-primary">Заказы на доставку</span>
+            {% if pending_delivery > 0 %}
+              <span class="ml-auto px-2 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ pending_delivery }}</span>
+            {% endif %}
+          </div>
+          <div class="flex-1 overflow-y-auto max-h-[60vh] divide-y divide-outline/10 px-1 py-1">
+            {% if all_delivery %}
+              {% for o in all_delivery %}
+              <div class="px-4 py-3 rounded-lg hover:bg-surface-low transition-colors {{ 'opacity-50' if o.is_processed }}">
+                <div class="flex items-start justify-between gap-2">
+                  <span class="font-medium text-sm text-on-surface truncate">{{ o.contact_name }}</span>
+                  {% if not o.is_processed %}
+                    <span class="shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5"></span>
+                  {% endif %}
+                </div>
+                <a href="tel:{{ o.phone }}" class="text-xs text-primary hover:underline">{{ o.phone }}</a>
+                <div class="text-xs text-on-surface-variant mt-0.5 truncate">{{ o.delivery_address }}</div>
+                {% if o.total_amount %}
+                  <div class="text-xs font-medium text-on-surface mt-0.5">{{ o.total_amount }} ₽</div>
+                {% endif %}
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-[10px] text-on-surface-variant">{{ o.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                  <a href="{{ url_for('admin_delivery_orders') }}" class="text-[10px] text-primary hover:underline">подробнее →</a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="px-4 py-8 text-center text-sm text-on-surface-variant italic">Заявок пока нет</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Колонка 2: Бизнес-ланчи -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 px-5 py-4 bg-surface-low border-b border-outline/20">
+            <span class="material-icons text-primary text-lg">restaurant</span>
+            <span class="font-semibold text-sm text-primary">Заявки на бизнес-ланчи</span>
+            {% if pending_orders > 0 %}
+              <span class="ml-auto px-2 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ pending_orders }}</span>
+            {% endif %}
+          </div>
+          <div class="flex-1 overflow-y-auto max-h-[60vh] divide-y divide-outline/10 px-1 py-1">
+            {% if all_lunch %}
+              {% for o in all_lunch %}
+              <div class="px-4 py-3 rounded-lg hover:bg-surface-low transition-colors {{ 'opacity-50' if o.is_processed }}">
+                <div class="flex items-start justify-between gap-2">
+                  <span class="font-medium text-sm text-on-surface truncate">{{ o.contact_name }}</span>
+                  {% if not o.is_processed %}
+                    <span class="shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5"></span>
+                  {% endif %}
+                </div>
+                <a href="tel:{{ o.phone }}" class="text-xs text-primary hover:underline">{{ o.phone }}</a>
+                {% if o.company %}<div class="text-xs text-on-surface-variant truncate">{{ o.company }}</div>{% endif %}
+                <div class="text-xs text-on-surface-variant mt-0.5">{{ o.persons }} чел. · {{ o.delivery_date }}</div>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-[10px] text-on-surface-variant">{{ o.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                  <a href="{{ url_for('admin_business_lunches') }}" class="text-[10px] text-primary hover:underline">подробнее →</a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="px-4 py-8 text-center text-sm text-on-surface-variant italic">Заявок пока нет</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Колонка 3: Кейтеринг -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 px-5 py-4 bg-surface-low border-b border-outline/20">
+            <span class="material-icons text-primary text-lg">outdoor_grill</span>
+            <span class="font-semibold text-sm text-primary">Заявки на кейтеринг</span>
+            {% if pending_catering > 0 %}
+              <span class="ml-auto px-2 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ pending_catering }}</span>
+            {% endif %}
+          </div>
+          <div class="flex-1 overflow-y-auto max-h-[60vh] divide-y divide-outline/10 px-1 py-1">
+            {% if all_catering %}
+              {% for o in all_catering %}
+              <div class="px-4 py-3 rounded-lg hover:bg-surface-low transition-colors {{ 'opacity-50' if o.is_processed }}">
+                <div class="flex items-start justify-between gap-2">
+                  <span class="font-medium text-sm text-on-surface truncate">{{ o.contact_name }}</span>
+                  {% if not o.is_processed %}
+                    <span class="shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5"></span>
+                  {% endif %}
+                </div>
+                <a href="tel:{{ o.phone }}" class="text-xs text-primary hover:underline">{{ o.phone }}</a>
+                <div class="text-xs text-on-surface-variant mt-0.5">{{ o.event_format }} · {{ o.guests }} чел.</div>
+                <div class="text-xs text-on-surface-variant">{{ o.event_date }}{% if o.event_time %} в {{ o.event_time }}{% endif %}</div>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-[10px] text-on-surface-variant">{{ o.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                  <a href="{{ url_for('admin_catering') }}" class="text-[10px] text-primary hover:underline">подробнее →</a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="px-4 py-8 text-center text-sm text-on-surface-variant italic">Заявок пока нет</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Колонка 4: Банкеты -->
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2 px-5 py-4 bg-surface-low border-b border-outline/20">
+            <span class="material-icons text-primary text-lg">celebration</span>
+            <span class="font-semibold text-sm text-primary">Заявки на банкеты</span>
+            {% if pending_events > 0 %}
+              <span class="ml-auto px-2 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ pending_events }}</span>
+            {% endif %}
+          </div>
+          <div class="flex-1 overflow-y-auto max-h-[60vh] divide-y divide-outline/10 px-1 py-1">
+            {% if all_events %}
+              {% for o in all_events %}
+              <div class="px-4 py-3 rounded-lg hover:bg-surface-low transition-colors {{ 'opacity-50' if o.is_processed }}">
+                <div class="flex items-start justify-between gap-2">
+                  <span class="font-medium text-sm text-on-surface truncate">{{ o.contact_name }}</span>
+                  {% if not o.is_processed %}
+                    <span class="shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5"></span>
+                  {% endif %}
+                </div>
+                <a href="tel:{{ o.phone }}" class="text-xs text-primary hover:underline">{{ o.phone }}</a>
+                <div class="text-xs text-on-surface-variant mt-0.5">{{ o.event_type }} · {{ o.guests }} чел.</div>
+                <div class="text-xs text-on-surface-variant">{{ o.event_date }} в {{ o.event_time }}</div>
+                <div class="flex items-center justify-between mt-1">
+                  <span class="text-[10px] text-on-surface-variant">{{ o.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                  <a href="{{ url_for('admin_events') }}" class="text-[10px] text-primary hover:underline">подробнее →</a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="px-4 py-8 text-center text-sm text-on-surface-variant italic">Заявок пока нет</div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+
+      <div class="px-8 py-4 border-t border-outline/20 text-center">
+        <button onclick="closeRequestsModal()" class="px-6 py-2 rounded-lg border border-outline/40 text-sm text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openRequestsModal() {
+      var m = document.getElementById('requests-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeRequestsModal() {
+      var m = document.getElementById('requests-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('requests-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeRequestsModal();
+    });
+  </script>
+
   <section class="bg-surface-card rounded-xl shadow-lg p-8">
     <h2 class="text-xl font-light text-primary mb-4">Разделы</h2>
     <div class="grid sm:grid-cols-2 gap-4">

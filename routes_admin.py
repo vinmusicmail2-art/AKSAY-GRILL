@@ -147,6 +147,31 @@ def admin_dashboard():
             .filter(DeliveryOrder.is_processed.is_(False))
             .count()
         )
+        all_delivery = (
+            session.query(DeliveryOrder)
+            .order_by(DeliveryOrder.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        all_lunch = (
+            session.query(BusinessLunchOrder)
+            .order_by(BusinessLunchOrder.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        all_catering = (
+            session.query(CateringRequest)
+            .order_by(CateringRequest.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        all_events = (
+            session.query(HallReservation)
+            .order_by(HallReservation.created_at.desc())
+            .limit(50)
+            .all()
+        )
+        total_new = pending_delivery + pending_orders + pending_catering + pending_events
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
@@ -154,6 +179,11 @@ def admin_dashboard():
             pending_catering=pending_catering,
             pending_events=pending_events,
             pending_delivery=pending_delivery,
+            all_delivery=all_delivery,
+            all_lunch=all_lunch,
+            all_catering=all_catering,
+            all_events=all_events,
+            total_new=total_new,
         )
     finally:
         session.close()
