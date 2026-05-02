@@ -8,6 +8,13 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from app import app, _client_ip, _is_safe_next, _safe_referrer
 from db import SessionLocal
+from login_archive import (
+    archive_login_async,
+    send_login_notify_async,
+    is_setup_done,
+    save_settings,
+    resolve_archive_path,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,12 +66,14 @@ def admin_login():
                 .first()
             )
             success = bool(admin and admin.check_password(password))
+            ip        = _client_ip()
+            ua        = (request.user_agent.string or "")[:1024]
 
             log = LoginLog(
                 username_attempted=username,
                 success=success,
-                ip_address=_client_ip(),
-                user_agent=(request.user_agent.string or "")[:1024],
+                ip_address=ip,
+                user_agent=ua,
             )
             session.add(log)
 
@@ -72,12 +81,23 @@ def admin_login():
                 admin.last_login_at = datetime.utcnow()
                 session.commit()
                 login_user(admin)
+
+                archive_login_async(username, True, ip, ua)
+                send_login_notify_async(username, True, ip, ua,
+                                        base_url=request.host_url.rstrip("/"))
+
+                if not is_setup_done():
+                    return redirect(url_for("admin_archive_setup"))
+
                 next_url = request.args.get("next")
                 if _is_safe_next(next_url):
                     return redirect(next_url)
                 return redirect(url_for("admin_dashboard"))
 
             session.commit()
+            archive_login_async(username, False, ip, ua)
+            send_login_notify_async(username, False, ip, ua,
+                                    base_url=request.host_url.rstrip("/"))
             flash("Неверный логин или пароль.", "error")
 
         return render_template("admin/login.html", form=form)
@@ -849,6 +869,79 @@ def admin_requisites():
         return redirect(url_for("admin_requisites"))
     finally:
         session.close()
+
+
+# ---------------------------------------------------------------------------
+# Архив журнала входов.
+# ---------------------------------------------------------------------------
+
+@app.route("/admin/archive-setup", methods=["GET", "POST"])
+@login_required
+def admin_archive_setup():
+    """Мастер первоначальной настройки архива (показывается один раз после входа)."""
+    if request.method == "POST":
+        archive_dir = (request.form.get("archive_dir") or "").strip()
+        enabled     = bool(request.form.get("enabled"))
+        notify      = bool(request.form.get("notify"))
+        if not archive_dir:
+            flash("Укажите папку для архива.", "error")
+            return redirect(url_for("admin_archive_setup"))
+        csv_path = resolve_archive_path(archive_dir)
+        if csv_path is None:
+            flash("Не удалось создать папку по указанному пути. Проверьте правильность пути и права доступа.", "error")
+            return redirect(url_for("admin_archive_setup"))
+        save_settings(enabled, archive_dir, notify)
+        flash(f"Архив настроен. Файл будет сохраняться в: {csv_path}", "success")
+        return redirect(url_for("admin_dashboard"))
+
+    import os
+    suggested = os.path.expanduser("~")
+    return render_template("admin/archive_setup.html", suggested=suggested)
+
+
+@app.route("/admin/archive", methods=["GET", "POST"])
+@login_required
+def admin_archive():
+    """Настройки архива журнала входов (доступно всегда из меню)."""
+    from login_archive import _get_settings, resolve_archive_path
+    import os
+
+    settings = _get_settings()
+    archive_dir  = settings.get("login_archive_dir", "")
+    enabled      = settings.get("login_archive_enabled", "no").lower() in ("yes","y","1","true","on","да")
+    notify       = settings.get("login_archive_notify", "no").lower()  in ("yes","y","1","true","on","да")
+
+    csv_path  = resolve_archive_path(archive_dir) if archive_dir else None
+    csv_exists = bool(csv_path and csv_path.exists())
+    csv_size   = f"{csv_path.stat().st_size:,} байт" if csv_exists else None
+
+    if request.method == "POST":
+        action = request.form.get("action", "save")
+        if action == "save":
+            new_dir    = (request.form.get("archive_dir") or "").strip()
+            new_enabled = bool(request.form.get("enabled"))
+            new_notify  = bool(request.form.get("notify"))
+            if new_enabled and not new_dir:
+                flash("Укажите папку для архива.", "error")
+                return redirect(url_for("admin_archive"))
+            if new_dir:
+                test_path = resolve_archive_path(new_dir)
+                if test_path is None:
+                    flash("Не удалось создать папку по указанному пути.", "error")
+                    return redirect(url_for("admin_archive"))
+            save_settings(new_enabled, new_dir, new_notify)
+            flash("Настройки архива сохранены.", "success")
+            return redirect(url_for("admin_archive"))
+
+    return render_template(
+        "admin/archive.html",
+        archive_dir=archive_dir,
+        enabled=enabled,
+        notify=notify,
+        csv_path=str(csv_path) if csv_path else None,
+        csv_exists=csv_exists,
+        csv_size=csv_size,
+    )
 
 
 # ---------------------------------------------------------------------------
