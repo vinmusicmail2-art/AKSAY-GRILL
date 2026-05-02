@@ -43,9 +43,9 @@ module.exports = {
         "on-tertiary-fixed":          "#241a00",
         "on-tertiary-fixed-variant":  "#574500",
 
-        "surface":                    "#cbc7bf",
+        "surface":                    "#e1ddd5",
         "surface-dim":                "#dedad0",
-        "surface-bright":             "#cbc7bf",
+        "surface-bright":             "#e1ddd5",
         "surface-variant":            "#b8b4ac",
         "surface-container-lowest":   "#cccccc",
         "surface-container-low":      "#c6c2ba",
@@ -57,7 +57,7 @@ module.exports = {
         "inverse-surface":            "#32302a",
         "inverse-on-surface":         "#c4c0b8",
 
-        "background":                 "#cbc7bf",
+        "background":                 "#e1ddd5",
         "on-background":              "#1d1c16",
 
         "outline":                    "#897269",
