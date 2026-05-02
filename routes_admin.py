@@ -1338,3 +1338,77 @@ def admin_events_export():
         return _csv_response(f"bankety_{ts}.csv", rows)
     finally:
         session.close()
+
+
+@app.route("/admin/stats/export")
+@login_required
+def admin_stats_export():
+    from datetime import datetime as _dt, timedelta
+
+    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation
+
+    period = request.args.get("period", "all")
+    now = _dt.utcnow()
+    if period == "today":
+        since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == "week":
+        since = now - timedelta(days=7)
+    elif period == "month":
+        since = now - timedelta(days=30)
+    else:
+        since = None
+
+    tables = [
+        (DeliveryOrder,      "delivery",  "Доставка"),
+        (BusinessLunchOrder, "lunch",     "Ланчи"),
+        (CateringRequest,    "catering",  "Кейтеринг"),
+        (HallReservation,    "events",    "Банкеты"),
+    ]
+
+    session = SessionLocal()
+    try:
+        stats = {}
+        for model, key, _label in tables:
+            q = session.query(model).filter(
+                model.is_processed.is_(True),
+                model.processed_by.isnot(None),
+            )
+            if since:
+                q = q.filter(model.processed_at >= since)
+            for row in q.all():
+                by = row.processed_by
+                if by not in stats:
+                    stats[by] = {
+                        "delivery": 0, "lunch": 0, "catering": 0, "events": 0,
+                        "total": 0, "total_minutes": 0.0, "timed_count": 0, "last_at": None,
+                    }
+                stats[by][key] += 1
+                stats[by]["total"] += 1
+                if row.processed_at and row.created_at:
+                    diff = (row.processed_at - row.created_at).total_seconds() / 60.0
+                    if diff >= 0:
+                        stats[by]["total_minutes"] += diff
+                        stats[by]["timed_count"] += 1
+                if row.processed_at:
+                    if stats[by]["last_at"] is None or row.processed_at > stats[by]["last_at"]:
+                        stats[by]["last_at"] = row.processed_at
+
+        period_labels = {"today": "Сегодня", "week": "7 дней", "month": "30 дней", "all": "Всё время"}
+        rows = [["Администратор", "Доставка", "Ланчи", "Кейтеринг", "Банкеты",
+                 "Всего", "Ср. время обработки (мин)", "Последняя обработка",
+                 "Период"]]
+        for by, s in sorted(stats.items(), key=lambda x: x[1]["total"], reverse=True):
+            tc = s["timed_count"]
+            avg = round(s["total_minutes"] / tc) if tc else ""
+            last = s["last_at"].strftime("%d.%m.%Y %H:%M") if s["last_at"] else ""
+            rows.append([
+                by,
+                s["delivery"], s["lunch"], s["catering"], s["events"],
+                s["total"], avg, last,
+                period_labels.get(period, period),
+            ])
+
+        ts = _dt.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"statistika_adminov_{ts}.csv", rows)
+    finally:
+        session.close()
