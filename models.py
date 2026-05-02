@@ -1,8 +1,5 @@
 """
 Модели БД для админки «Аксай Гриль».
-
-- Admin: учётная запись администратора (UserMixin для Flask-Login).
-- LoginLog: журнал попыток входа (152-ФЗ — ведём аудит доступа).
 """
 from __future__ import annotations
 
@@ -10,16 +7,13 @@ from datetime import datetime
 
 import bcrypt
 from flask_login import UserMixin
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
-from sqlalchemy.orm import Session
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import Session, relationship
 
 from db import Base
 
 # ---------------------------------------------------------------------------
 # Каталог редактируемых текстов сайта.
-# Описывается на уровне Python: ключ → (метка, тип поля, значение по умолчанию).
-# При первом запуске значения по умолчанию записываются в БД,
-# дальше админ редактирует их через /admin/texts.
 # ---------------------------------------------------------------------------
 
 SITE_TEXT_CATALOG: list[dict] = [
@@ -397,6 +391,70 @@ SITE_TEXT_CATALOG: list[dict] = [
         "default": "/assets/about-hero.webp",
         "section": "SEO",
     },
+    # ----- Юридические страницы -----
+    {
+        "key": "legal_privacy_last_updated",
+        "label": "Политика конфиденциальности: дата последнего обновления",
+        "kind": "text",
+        "default": "26 апреля 2026 г.",
+        "section": "Юридические страницы",
+    },
+    {
+        "key": "legal_offer_html",
+        "label": "Публичная оферта: полный текст (HTML разрешён)",
+        "kind": "html",
+        "default": (
+            "<h2>1. Общие положения</h2>"
+            "<p>Настоящая публичная оферта является официальным предложением "
+            "ИП Секретёв Алексей Сергеевич (далее — «Исполнитель») заключить договор "
+            "на оказание услуг общественного питания и доставки готовых блюд.</p>"
+            "<h2>2. Предмет оферты</h2>"
+            "<p>Исполнитель обязуется приготовить и доставить блюда согласно заказу "
+            "Пользователя, а Пользователь обязуется оплатить заказ.</p>"
+            "<h2>3. Оформление заказа</h2>"
+            "<p>Заказ оформляется через сайт или по телефону. "
+            "Договор считается заключённым с момента подтверждения заказа Исполнителем.</p>"
+            "<h2>4. Стоимость и оплата</h2>"
+            "<p>Стоимость блюд указана на сайте. Оплата производится наличными или "
+            "банковской картой при получении.</p>"
+            "<h2>5. Доставка</h2>"
+            "<p>Доставка осуществляется по г. Аксай и прилегающим территориям. "
+            "Сроки доставки — до 45 минут с момента подтверждения заказа. "
+            "При заказе от 1500 рублей доставка бесплатная.</p>"
+            "<h2>6. Отказ от заказа</h2>"
+            "<p>Пользователь вправе отказаться от заказа до его передачи курьеру. "
+            "После передачи курьеру возврат денежных средств не производится.</p>"
+            "<h2>7. Реквизиты Исполнителя</h2>"
+            "<p>ИП Секретёв Алексей Сергеевич · ИНН 614200356558 · "
+            "ОГРНИП 324619600091280 · Тел: +7 (908) 513-78-80</p>"
+        ),
+        "section": "Юридические страницы",
+    },
+    {
+        "key": "legal_cookies_html",
+        "label": "Политика cookies: полный текст (HTML разрешён)",
+        "kind": "html",
+        "default": (
+            "<h2>Что такое cookies</h2>"
+            "<p>Cookies — небольшие текстовые файлы, которые сохраняются на вашем устройстве "
+            "при посещении сайта. Они помогают нам улучшать работу сайта и предоставлять "
+            "персонализированный опыт.</p>"
+            "<h2>Какие cookies мы используем</h2>"
+            "<ul>"
+            "<li><strong>Технические cookies</strong> — необходимы для корректной работы сайта "
+            "(например, сохранение содержимого корзины).</li>"
+            "<li><strong>Аналитические cookies</strong> — помогают нам понять, как посетители "
+            "используют сайт (Яндекс.Метрика).</li>"
+            "</ul>"
+            "<h2>Управление cookies</h2>"
+            "<p>Вы можете отключить cookies в настройках браузера. Однако некоторые функции "
+            "сайта могут работать некорректно.</p>"
+            "<h2>Согласие</h2>"
+            "<p>Продолжая использовать сайт, вы соглашаетесь с использованием cookies "
+            "в соответствии с настоящей политикой.</p>"
+        ),
+        "section": "Юридические страницы",
+    },
 ]
 
 
@@ -441,6 +499,220 @@ def load_site_texts(session: Session) -> dict[str, str]:
     rows = {t.key: t.value for t in session.query(SiteText).all()}
     return {item["key"]: rows.get(item["key"], item["default"])
             for item in SITE_TEXT_CATALOG}
+
+
+# ---------------------------------------------------------------------------
+# Меню: категории и блюда.
+# ---------------------------------------------------------------------------
+
+class MenuCategory(Base):
+    __tablename__ = "menu_categories"
+
+    id = Column(Integer, primary_key=True)
+    slug = Column(String(64), unique=True, nullable=False, index=True)
+    name = Column(String(128), nullable=False)
+    heading = Column(String(128), nullable=False)
+    description = Column(Text, default="")
+    nav_icon = Column(String(64), default="restaurant_menu")
+    sort_order = Column(Integer, default=0)
+    is_visible = Column(Boolean, default=True, nullable=False)
+    show_in_nav = Column(Boolean, default=True, nullable=False)
+
+    dishes = relationship(
+        "Dish",
+        back_populates="category",
+        order_by="Dish.sort_order",
+        cascade="all, delete-orphan",
+    )
+
+
+class Dish(Base):
+    __tablename__ = "dishes"
+
+    id = Column(Integer, primary_key=True)
+    category_id = Column(Integer, ForeignKey("menu_categories.id"), nullable=False)
+    name = Column(String(256), nullable=False)
+    description = Column(Text, default="")
+    price = Column(Integer, default=0)
+    image_src = Column(String(512), default="")
+    is_available = Column(Boolean, default=True, nullable=False)
+    sort_order = Column(Integer, default=0)
+
+    category = relationship("MenuCategory", back_populates="dishes")
+
+
+_MENU_SEED: list[dict] = [
+    {
+        "slug": "mangal", "name": "Блюда на мангале",
+        "heading": "БЛЮДА НА МАНГАЛЕ ИЛИ ГРИЛЕ (1 кг)",
+        "description": "Мясо, птица и овощи на углях с дымком — порции от 1 кг для большой компании.",
+        "nav_icon": "outdoor_grill", "sort_order": 10, "show_in_nav": True,
+        "dishes": [
+            ("Шашлык на мангале", "Сочный шашлык на ваш выбор — свинина, баранина, говядина или курица.", 1200, "/assets/dishes/shashlyk-mix.webp"),
+            ("Куриные крылья, бедра и ножки", "Ассорти куриных частей с золотистой румяной корочкой на углях.", 850, "/assets/dishes/kurinye-grill.webp"),
+            ("Свиные ребрышки", "Сочные свиные ребрышки в карамельной глазури с дымком.", 1100, "/assets/dishes/rebryshki-grill.webp"),
+            ("Стейки", "Толстые сочные стейки на гриле с румяными полосками от решётки.", 1800, "/assets/dishes/steiki-grill.webp"),
+            ("Купаты, колбаски", "Домашние купаты и колбаски на углях с румяной хрустящей корочкой.", 900, "/assets/dishes/kupaty-grill.webp"),
+            ("Аджапсандал", "Грузинское овощное рагу из баклажанов, перцев и томатов с зеленью.", 650, "/assets/dishes/adzhapsandal.webp"),
+            ("Овощи-гриль на шпажках", "Перец, кабачок, баклажан, томаты и лук на шпажках с дымком.", 600, "/assets/dishes/ovoshi-shpazhki.webp"),
+            ("Запечённые перцы и баклажаны", "Целиком запечённые овощи с чесноком, кинзой и петрушкой.", 650, "/assets/dishes/perci-baklazhany.webp"),
+            ("Овощная икра с дымком", "Икра из запечённых баклажанов и перцев с лёгким ароматом дыма.", 550, "/assets/dishes/ovoshnaya-ikra.webp"),
+            ("Запеченные грибы", "Целые шампиньоны на гриле с маслом, чесноком и зеленью.", 750, "/assets/dishes/griby-grill.webp"),
+        ],
+    },
+    {
+        "slug": "pervye", "name": "Первые блюда",
+        "heading": "ПЕРВЫЕ БЛЮДА",
+        "description": "Наваристые супы, приготовленные по старинным рецептам с использованием только свежих ингредиентов.",
+        "nav_icon": "soup_kitchen", "sort_order": 20, "show_in_nav": True,
+        "dishes": [
+            ("Борщ", "Классический наваристый борщ со свеклой, нежной говядиной и свежей зеленью.", 220, ""),
+            ("Шурпа", "Традиционный восточный суп с крупными кусками баранины и овощами.", 250, ""),
+            ("Солянка", "Наваристая солянка с копчёностями, оливками, лимоном и сметаной.", 250, "/assets/dishes/solyanka.webp"),
+            ("Суп Лагман", "Узбекский суп с домашней тянутой лапшой, говядиной и овощами.", 350, "/assets/dishes/lagman.webp"),
+            ("Суп гороховый", "Густой гороховый суп с копчёностями, сухариками и свежим укропом.", 220, "/assets/dishes/gorohovyi.webp"),
+            ("Лапша куриная", "Прозрачный куриный бульон с домашней лапшой и свежей зеленью.", 200, "/assets/dishes/lapsha-kurinaya.webp"),
+            ("Суп с фасолью", "Сытный суп с красной фасолью, томатами и копчёным мясом.", 220, "/assets/dishes/sup-fasol.webp"),
+            ("Суп Харчо", "Острый грузинский суп с говядиной, рисом, грецкими орехами и кинзой.", 220, "/assets/dishes/harcho.webp"),
+            ("Окрошка на кефире", "Освежающий холодный суп на кефире с овощами, яйцом и зеленью.", 250, "/assets/dishes/okroshka.webp"),
+        ],
+    },
+    {
+        "slug": "vtorye", "name": "Вторые блюда",
+        "heading": "ВТОРЫЕ БЛЮДА",
+        "description": "Сытные мясные и рыбные блюда домашней кухни — от фирменных котлет до классических вторых блюд.",
+        "nav_icon": "restaurant_menu", "sort_order": 30, "show_in_nav": True,
+        "dishes": [
+            ("Куриная котлета", "Сочная домашняя куриная котлета на пару.", 150, "/assets/dishes/kuriniaja-kotleta.webp"),
+            ("Гуляш из говядины", "Нежный гуляш из говядины с томатным соусом и зеленью.", 220, "/assets/dishes/gulyash-govyadina.webp"),
+            ("Котлета «По-киевски»", "Сочная котлета с начинкой из масла и зелени.", 170, "/assets/dishes/kotleta-po-kievski.webp"),
+            ("Медвежья лапа", "Фирменная котлета из рубленого мяса с грибной начинкой.", 250, "/assets/dishes/medvezhya-lapa.webp"),
+            ("Макароны по-флотски", "Классические макароны по-флотски с мясным фаршем.", 200, "/assets/dishes/makarony-po-flotski.webp"),
+            ("Пельмени домашние со сметаной", "Домашние пельмени с нежным тестом и сочной начинкой.", 350, "/assets/dishes/pelmeni-smetana.webp"),
+            ("Курица тушеная в сливках", "Нежная курица, тушённая в сливочном соусе с травами.", 170, "/assets/dishes/kuritsa-v-slivkah.webp"),
+            ("Рыба жареная Хек", "Хек, обжаренный до золотистой корочки.", 190, "/assets/dishes/ryba-hek.webp"),
+            ("Отбивная куриная", "Куриное филе, отбитое и обжаренное в панировке.", 170, "/assets/dishes/otbivnaja-kurinaja.webp"),
+            ("Вареники со сметаной", "Домашние вареники с картофелем и творогом.", 300, "/assets/dishes/vareniki-smetana.webp"),
+            ("Люля-кебаб из курицы", "Фирменный люля-кебаб из рубленого куриного мяса.", 160, "/assets/dishes/lyulya-kuritsa.webp"),
+            ("Куриное бедро жареное", "Румяное куриное бедро с золотистой корочкой.", 170, "/assets/dishes/kurinoe-bedro.webp"),
+            ("Яичница глазунья натуральная", "Аппетитная глазунья из трёх яиц со свежей зеленью.", 150, "/assets/dishes/yaichnitsa-glazunja.webp"),
+            ("Яичница 2 яйца", "Классическая яичница из двух яиц с зеленью.", 100, "/assets/dishes/yaichnitsa-2.webp"),
+            ("Крылья жареные (1 кг)", "Хрустящие жареные куриные крылья. Цена за килограмм.", 650, "/assets/dishes/krylya-zharenye.webp"),
+        ],
+    },
+    {
+        "slug": "garniry", "name": "Гарниры",
+        "heading": "ГАРНИРЫ",
+        "description": "Идеальное дополнение к основным блюдам — классические гарниры из круп, картофеля и овощей.",
+        "nav_icon": "rice_bowl", "sort_order": 40, "show_in_nav": True,
+        "dishes": [
+            ("Картофельное пюре со сливочным маслом", "Воздушное картофельное пюре.", 95, "/assets/dishes/pure-maslo.webp"),
+            ("Гречка отварная", "Рассыпчатая гречневая каша.", 80, "/assets/dishes/grechka.webp"),
+            ("Макароны отварные", "Классические отварные макароны со сливочным маслом.", 80, "/assets/dishes/makarony-otvar.webp"),
+            ("Рис отварной с овощами", "Лёгкий рис с морковью, кукурузой и зелёным горошком.", 80, "/assets/dishes/ris-ovoshhi.webp"),
+            ("Картофель по-деревенски", "Запечённые дольки картофеля с золотистой корочкой и травами.", 80, "/assets/dishes/kartofel-derevenski.webp"),
+            ("Капуста тушеная", "Сочная тушёная капуста с морковью и томатом.", 80, "/assets/dishes/kapusta-tushenaya.webp"),
+            ("Каша пшеничная рассыпчатая", "Ароматная пшеничная каша рассыпчатая со сливочным маслом.", 70, "/assets/dishes/kasha-pshenichnaya.webp"),
+        ],
+    },
+    {
+        "slug": "salaty", "name": "Салаты",
+        "heading": "САЛАТЫ",
+        "description": "Свежие овощные и классические салаты — лёгкое дополнение к основному меню.",
+        "nav_icon": "flatware", "sort_order": 50, "show_in_nav": True,
+        "dishes": [
+            ("Свекла с чесноком", "Тёртая свёкла с чесноком и нежной заправкой.", 100, "/assets/dishes/svekla-chesnok.webp"),
+            ("Салат «Оливье» с колбасой", "Классический оливье с колбасой, овощами и майонезной заправкой.", 100, "/assets/dishes/olivie-kolbasa.webp"),
+            ("Капуста по-грузински", "Острая маринованная капуста по-грузински с морковью и свёклой.", 100, "/assets/dishes/kapusta-gruzinski.webp"),
+            ("Салат из помидоров с огурцами", "Свежие помидоры и огурцы с луком, зеленью и лёгкой заправкой.", 100, "/assets/dishes/salat-pomidor-ogurec.webp"),
+            ("Кабачки жареные", "Золотистые жареные кабачки с чесночным соусом.", 100, "/assets/dishes/kabachki-zharenye.webp"),
+            ("Капуста с горошком", "Свежий капустный салат с зелёным горошком и морковью.", 100, "/assets/dishes/kapusta-goroshek.webp"),
+            ("Морковь с чесноком", "Острая морковь по-корейски с чесноком и пряностями.", 100, "/assets/dishes/morkov-chesnok.webp"),
+        ],
+    },
+    {
+        "slug": "vypechka", "name": "Выпечка",
+        "heading": "ВЫПЕЧКА",
+        "description": "Домашняя выпечка из печи — пирожки, беляши, сырники, блинчики и фирменная самса.",
+        "nav_icon": "bakery_dining", "sort_order": 60, "show_in_nav": True,
+        "dishes": [
+            ("Хлеб пшеничный", "Свежий пшеничный хлеб собственной выпечки.", 5, "/assets/dishes/hleb-pshenichnyj.webp"),
+            ("Пирожок жареный", "Румяный жареный пирожок с начинкой на выбор.", 80, "/assets/dishes/pirozhok-zharenyj.webp"),
+            ("Сосиска в тесте", "Аппетитная сосиска в нежном слоёном тесте.", 100, "/assets/dishes/sosiska-v-teste.webp"),
+            ("Беляши", "Классические беляши с сочной мясной начинкой.", 150, "/assets/dishes/belyashi.webp"),
+            ("Сырники из творога", "Нежные сырники из творога со сметаной и вареньем.", 170, "/assets/dishes/syrniki.webp"),
+            ("Булочка чесночная", "Ароматная булочка с чесноком, маслом и зеленью.", 40, "/assets/dishes/bulochka-chesnochnaya.webp"),
+            ("Блинчики с мясом", "Тонкие блинчики с сочной мясной начинкой.", 200, "/assets/dishes/blinchiki-myaso.webp"),
+            ("Самса", "Узбекская самса с мясом в хрустящем слоёном тесте.", 160, "/assets/dishes/samsa.webp"),
+            ("Оладьи 2 шт.", "Пышные домашние оладьи со сметаной и мёдом.", 150, "/assets/dishes/oladi.webp"),
+        ],
+    },
+    {
+        "slug": "napitki", "name": "Напитки",
+        "heading": "НАПИТКИ",
+        "description": "Горячие и прохладительные напитки — компоты, чай, кофе, газировка и вода.",
+        "nav_icon": "local_bar", "sort_order": 70, "show_in_nav": True,
+        "dishes": [
+            ("Компот из сухофруктов", "Домашний ароматный компот из сушёных яблок и кураги.", 50, "/assets/dishes/kompot.webp"),
+            ("Кока-кола 0,5 л", "Газированный напиток в стеклянной бутылке.", 120, "/assets/dishes/kola-05.webp"),
+            ("Чай в пакетиках", "Свежезаваренный чёрный чай в чашке.", 50, "/assets/dishes/chay-paket.webp"),
+            ("Кофе растворимый", "Классический растворимый кофе.", 50, "/assets/dishes/kofe-rastvor.webp"),
+            ("Кофе 3 в 1", "Сливочный кофе со сливками и сахаром.", 50, "/assets/dishes/kofe-3v1.webp"),
+            ("BURN 0,5 л", "Энергетический напиток.", 150, "/assets/dishes/burn.webp"),
+            ("Флеш 0,5 л", "Энергетический напиток.", 110, "/assets/dishes/flesh.webp"),
+            ("Адреналин Раш 0,5 л", "Энергетический напиток.", 190, "/assets/dishes/adrenalin.webp"),
+            ("Вода 0,5 л Аквадон", "Питьевая негазированная вода.", 50, "/assets/dishes/voda-05.webp"),
+            ("Кубай 1,5 л", "Газированная минеральная вода в большой бутылке.", 90, "/assets/dishes/kubay.webp"),
+            ("Кока-кола 1 л", "Газированный напиток в большой бутылке.", 150, "/assets/dishes/kola-1l.webp"),
+            ("Лимонад в стекле", "Домашний лимонад в стеклянной бутылке.", 110, "/assets/dishes/limonad-steklo.webp"),
+            ("Вода 5 л питьевая", "Питьевая вода в большой бутылке для всей семьи.", 160, "/assets/dishes/voda-5l.webp"),
+            ("Холодный чай LIPTON зелёный персик", "Прохладительный холодный чай со вкусом персика.", 150, "/assets/dishes/ice-tea.webp"),
+            ("Чай чёрный в чайнике", "Свежезаваренный чёрный чай в чайнике на компанию.", 300, "/assets/dishes/chaynik-chay.webp"),
+        ],
+    },
+    {
+        "slug": "extras", "name": "Дополнительно",
+        "heading": "ДОПОЛНИТЕЛЬНО",
+        "description": "Контейнеры для еды на вынос и дополнительные порции соусов.",
+        "nav_icon": "add_circle", "sort_order": 80, "show_in_nav": False,
+        "dishes": [
+            ("Контейнер", "Одноразовый контейнер для еды на вынос.", 10, "/assets/dishes/konteiner.webp"),
+            ("Соус к блюду", "Дополнительная порция соуса (чесночный, томатный или сметанный).", 10, "/assets/dishes/sous.webp"),
+        ],
+    },
+]
+
+
+def seed_menu(session: Session) -> None:
+    """Создать категории и блюда меню при первом запуске."""
+    existing_slugs = {c.slug for c in session.query(MenuCategory.slug).all()}
+    if existing_slugs:
+        return
+    for i, cat_data in enumerate(_MENU_SEED):
+        cat = MenuCategory(
+            slug=cat_data["slug"],
+            name=cat_data["name"],
+            heading=cat_data["heading"],
+            description=cat_data["description"],
+            nav_icon=cat_data["nav_icon"],
+            sort_order=cat_data["sort_order"],
+            show_in_nav=cat_data["show_in_nav"],
+            is_visible=True,
+        )
+        session.add(cat)
+        session.flush()
+        for j, (name, desc, price, img) in enumerate(cat_data["dishes"]):
+            session.add(Dish(
+                category_id=cat.id,
+                name=name,
+                description=desc,
+                price=price,
+                image_src=img,
+                is_available=True,
+                sort_order=j * 10,
+            ))
+    session.commit()
+
 
 class Admin(Base, UserMixin):
     __tablename__ = "admins"
@@ -526,171 +798,120 @@ BUSINESS_LUNCH_MENU: list[dict] = [
             "Шашлык из свинины (140 г)",
             "Картофель по-деревенски",
             "Овощи-гриль на шпажках",
-            "Булочка чесночная",
-            "Морс",
-        ],
-    },
-    {
-        "key": "veg",
-        "title": "Постный",
-        "price": 250,
-        "badge": "Без мяса",
-        "items": [
-            "Гороховый суп без мяса",
-            "Аджапсандал",
-            "Каша пшеничная",
-            "Свекла с чесноком",
             "Хлеб пшеничный",
-            "Чай",
+            "Компот",
         ],
     },
+]
+
+CATERING_FORMATS: list[dict] = [
+    {"key": "corporate", "title": "Корпоративное мероприятие"},
+    {"key": "wedding", "title": "Свадьба"},
+    {"key": "birthday", "title": "День рождения / юбилей"},
+    {"key": "outdoor", "title": "Выездное мероприятие на природе"},
+    {"key": "other", "title": "Другое"},
+]
+
+EVENT_TYPES: list[dict] = [
+    {"key": "birthday", "title": "День рождения / юбилей"},
+    {"key": "wedding", "title": "Свадьба"},
+    {"key": "corporate", "title": "Корпоратив"},
+    {"key": "funeral", "title": "Поминальный обед"},
+    {"key": "other", "title": "Другое"},
 ]
 
 
 class BusinessLunchOrder(Base):
-    """Заявка на корпоративные бизнес-ланчи."""
-
     __tablename__ = "business_lunch_orders"
 
     id = Column(Integer, primary_key=True)
     contact_name = Column(String(128), nullable=False)
-    company = Column(String(255), nullable=True)
-    phone = Column(String(64), nullable=False, index=True)
-    email = Column(String(255), nullable=True)
-    persons = Column(Integer, nullable=False, default=1)
-    delivery_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
-    delivery_time = Column(String(16), nullable=True)
+    company = Column(String(256), nullable=True)
+    phone = Column(String(30), nullable=False)
+    email = Column(String(120), nullable=True)
+    persons = Column(Integer, nullable=False)
+    delivery_date = Column(String(20), nullable=False)
+    delivery_time = Column(String(20), nullable=True)
     delivery_address = Column(Text, nullable=False)
-    selected_combos = Column(Text, nullable=True)  # comma-separated keys
+    selected_combos = Column(String(256), nullable=True)
     comment = Column(Text, nullable=True)
     ip_address = Column(String(64), nullable=True)
-    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    is_processed = Column(Boolean, default=False, nullable=False)
     processed_at = Column(DateTime, nullable=True)
     processed_by = Column(String(64), nullable=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False, index=True
-    )
-
-
-# ---------------------------------------------------------------------------
-# Кейтеринг: форматы мероприятий и заявки.
-# ---------------------------------------------------------------------------
-
-CATERING_FORMATS: list[dict] = [
-    {"key": "banquet",    "title": "Банкет (рассадка)"},
-    {"key": "buffet",     "title": "Фуршет"},
-    {"key": "outdoor",    "title": "Выездной мангал"},
-    {"key": "coffee",     "title": "Кофе-брейк"},
-    {"key": "memorial",   "title": "Поминальный обед"},
-    {"key": "wedding",    "title": "Свадьба / юбилей"},
-    {"key": "other",      "title": "Другое (опишу в комментарии)"},
-]
 
 
 class CateringRequest(Base):
-    """Заявка на кейтеринг / выездное обслуживание."""
-
     __tablename__ = "catering_requests"
 
     id = Column(Integer, primary_key=True)
     contact_name = Column(String(128), nullable=False)
-    company = Column(String(255), nullable=True)
-    phone = Column(String(64), nullable=False, index=True)
-    email = Column(String(255), nullable=True)
-    event_format = Column(String(32), nullable=False)
-    guests = Column(Integer, nullable=False, default=1)
-    event_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
-    event_time = Column(String(16), nullable=True)
+    company = Column(String(256), nullable=True)
+    phone = Column(String(30), nullable=False)
+    email = Column(String(120), nullable=True)
+    event_format = Column(String(64), nullable=False)
+    guests = Column(Integer, nullable=False)
+    event_date = Column(String(20), nullable=False)
+    event_time = Column(String(20), nullable=True)
     venue = Column(Text, nullable=False)
-    budget_per_guest = Column(Integer, nullable=True)  # ₽ на человека, опционально
+    budget_per_guest = Column(Integer, nullable=True)
     comment = Column(Text, nullable=True)
     ip_address = Column(String(64), nullable=True)
-    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    is_processed = Column(Boolean, default=False, nullable=False)
     processed_at = Column(DateTime, nullable=True)
     processed_by = Column(String(64), nullable=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False, index=True
-    )
-
-
-# ----- Бронирование зала ресторана для мероприятия (банкеты, юбилеи и т.п.) -----
-
-EVENT_TYPES: list[dict] = [
-    {"key": "anniversary",  "title": "Юбилей"},
-    {"key": "birthday",     "title": "День рождения"},
-    {"key": "wedding",      "title": "Свадьба"},
-    {"key": "corporate",    "title": "Корпоратив"},
-    {"key": "kids",         "title": "Детский праздник"},
-    {"key": "memorial",     "title": "Поминальный обед"},
-    {"key": "other",        "title": "Другое (опишу в комментарии)"},
-]
 
 
 class HallReservation(Base):
-    """Заявка на бронирование зала ресторана для мероприятия."""
-
     __tablename__ = "hall_reservations"
 
     id = Column(Integer, primary_key=True)
     contact_name = Column(String(128), nullable=False)
-    company = Column(String(255), nullable=True)
-    phone = Column(String(64), nullable=False, index=True)
-    email = Column(String(255), nullable=True)
-    event_type = Column(String(32), nullable=False)
-    guests = Column(Integer, nullable=False, default=1)
-    event_date = Column(String(32), nullable=False)  # ISO YYYY-MM-DD
-    event_time = Column(String(16), nullable=False)  # HH:MM начало
-    duration_hours = Column(Integer, nullable=True)  # длительность в часах
-    needs_decor = Column(Boolean, default=False, nullable=False)
-    needs_menu_help = Column(Boolean, default=False, nullable=False)
+    company = Column(String(256), nullable=True)
+    phone = Column(String(30), nullable=False)
+    email = Column(String(120), nullable=True)
+    event_type = Column(String(64), nullable=False)
+    guests = Column(Integer, nullable=False)
+    event_date = Column(String(20), nullable=False)
+    event_time = Column(String(20), nullable=False)
+    duration_hours = Column(Integer, nullable=True)
+    needs_decor = Column(Boolean, default=False)
+    needs_menu_help = Column(Boolean, default=False)
     comment = Column(Text, nullable=True)
     ip_address = Column(String(64), nullable=True)
-    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    is_processed = Column(Boolean, default=False, nullable=False)
     processed_at = Column(DateTime, nullable=True)
     processed_by = Column(String(64), nullable=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False, index=True
-    )
-
-
-# ---------------------------------------------------------------------------
-# Заказы на доставку с главной страницы (модальное окно «Заказать доставку»).
-# ---------------------------------------------------------------------------
-
-class QuickRequest(Base):
-    """Быстрая заявка с кнопки «Оставить заявку» в блоке доставки."""
-
-    __tablename__ = "quick_requests"
-
-    id = Column(Integer, primary_key=True)
-    contact_name = Column(String(128), nullable=False)
-    phone = Column(String(64), nullable=False, index=True)
-    address = Column(Text, nullable=False)
-    comment = Column(Text, nullable=True)
-    ip_address = Column(String(64), nullable=True)
-    is_processed = Column(Boolean, default=False, nullable=False, index=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False, index=True
-    )
 
 
 class DeliveryOrder(Base):
-    """Заказ на доставку блюд из корзины на главной странице."""
-
     __tablename__ = "delivery_orders"
 
     id = Column(Integer, primary_key=True)
     contact_name = Column(String(128), nullable=False)
-    phone = Column(String(64), nullable=False, index=True)
-    email = Column(String(255), nullable=True)
+    phone = Column(String(30), nullable=False)
+    email = Column(String(120), nullable=True)
     delivery_address = Column(Text, nullable=False)
-    items_json = Column(Text, nullable=False)   # JSON-список [{name, price, qty}]
-    total_amount = Column(Integer, nullable=False, default=0)  # ₽
+    items_json = Column(Text, nullable=False)
+    total_amount = Column(Integer, default=0)
     comment = Column(Text, nullable=True)
     ip_address = Column(String(64), nullable=True)
-    is_processed = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    is_processed = Column(Boolean, default=False, nullable=False)
     processed_at = Column(DateTime, nullable=True)
     processed_by = Column(String(64), nullable=True)
-    created_at = Column(
-        DateTime, default=datetime.utcnow, nullable=False, index=True
-    )
+
+
+class QuickRequest(Base):
+    __tablename__ = "quick_requests"
+
+    id = Column(Integer, primary_key=True)
+    contact_name = Column(String(128), nullable=False)
+    phone = Column(String(30), nullable=False)
+    address = Column(Text, nullable=False)
+    comment = Column(Text, nullable=True)
+    ip_address = Column(String(64), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

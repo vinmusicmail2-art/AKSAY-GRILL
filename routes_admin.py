@@ -489,3 +489,387 @@ def admin_delivery_order_toggle(order_id: int):
         session.close()
 
     return redirect(_safe_referrer(url_for("admin_delivery_orders")))
+
+
+# ---------------------------------------------------------------------------
+# Меню: категории и блюда.
+# ---------------------------------------------------------------------------
+
+@app.route("/admin/menu")
+@login_required
+def admin_menu():
+    from models import Dish, MenuCategory
+
+    session = SessionLocal()
+    try:
+        categories = (
+            session.query(MenuCategory)
+            .order_by(MenuCategory.sort_order)
+            .all()
+        )
+        for cat in categories:
+            _ = cat.dishes  # eager-load
+        total_dishes = session.query(Dish).count()
+        return render_template("admin/menu.html", categories=categories, total_dishes=total_dishes)
+    finally:
+        session.close()
+
+
+@app.route("/admin/menu/category/add", methods=["POST"])
+@login_required
+def admin_menu_category_add():
+    from models import MenuCategory
+
+    session = SessionLocal()
+    try:
+        slug = (request.form.get("slug") or "").strip().lower()
+        name = (request.form.get("name") or "").strip()
+        heading = (request.form.get("heading") or "").strip()
+        if not slug or not name or not heading:
+            flash("Заполните обязательные поля: название, slug и заголовок.", "error")
+            return redirect(url_for("admin_menu"))
+        existing = session.query(MenuCategory).filter_by(slug=slug).first()
+        if existing:
+            flash(f"Категория со slug «{slug}» уже существует.", "error")
+            return redirect(url_for("admin_menu"))
+        cat = MenuCategory(
+            slug=slug,
+            name=name,
+            heading=heading,
+            description=(request.form.get("description") or "").strip(),
+            nav_icon=(request.form.get("nav_icon") or "restaurant_menu").strip(),
+            sort_order=int(request.form.get("sort_order") or 100),
+            show_in_nav=bool(request.form.get("show_in_nav")),
+            is_visible=True,
+        )
+        session.add(cat)
+        session.commit()
+        flash(f"Категория «{name}» добавлена.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error adding menu category: %s", exc)
+        flash("Ошибка при добавлении категории.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+@app.route("/admin/menu/category/<int:cat_id>/edit", methods=["POST"])
+@login_required
+def admin_menu_category_edit(cat_id: int):
+    from models import MenuCategory
+
+    session = SessionLocal()
+    try:
+        cat = session.get(MenuCategory, cat_id)
+        if cat is None:
+            abort(404)
+        slug = (request.form.get("slug") or "").strip().lower()
+        name = (request.form.get("name") or "").strip()
+        heading = (request.form.get("heading") or "").strip()
+        if not slug or not name or not heading:
+            flash("Заполните обязательные поля.", "error")
+            return redirect(url_for("admin_menu"))
+        conflict = (
+            session.query(MenuCategory)
+            .filter(MenuCategory.slug == slug, MenuCategory.id != cat_id)
+            .first()
+        )
+        if conflict:
+            flash(f"Slug «{slug}» уже занят другой категорией.", "error")
+            return redirect(url_for("admin_menu"))
+        cat.slug = slug
+        cat.name = name
+        cat.heading = heading
+        cat.description = (request.form.get("description") or "").strip()
+        cat.nav_icon = (request.form.get("nav_icon") or "restaurant_menu").strip()
+        cat.sort_order = int(request.form.get("sort_order") or cat.sort_order)
+        cat.show_in_nav = bool(request.form.get("show_in_nav"))
+        session.commit()
+        flash(f"Категория «{name}» обновлена.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error editing menu category %d: %s", cat_id, exc)
+        flash("Ошибка при сохранении категории.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+@app.route("/admin/menu/category/<int:cat_id>/delete", methods=["POST"])
+@login_required
+def admin_menu_category_delete(cat_id: int):
+    from models import MenuCategory
+
+    session = SessionLocal()
+    try:
+        cat = session.get(MenuCategory, cat_id)
+        if cat is None:
+            abort(404)
+        if cat.dishes:
+            flash("Нельзя удалить категорию с блюдами. Сначала удалите все блюда.", "error")
+            return redirect(url_for("admin_menu"))
+        name = cat.name
+        session.delete(cat)
+        session.commit()
+        flash(f"Категория «{name}» удалена.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error deleting menu category %d: %s", cat_id, exc)
+        flash("Ошибка при удалении категории.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+@app.route("/admin/menu/category/<int:cat_id>/toggle-visibility", methods=["POST"])
+@login_required
+def admin_menu_category_toggle_visibility(cat_id: int):
+    from models import MenuCategory
+
+    session = SessionLocal()
+    try:
+        cat = session.get(MenuCategory, cat_id)
+        if cat is None:
+            abort(404)
+        cat.is_visible = not cat.is_visible
+        session.commit()
+        state = "показана" if cat.is_visible else "скрыта"
+        flash(f"Категория «{cat.name}» {state}.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error toggling category visibility %d: %s", cat_id, exc)
+        flash("Ошибка.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+@app.route("/admin/menu/dish/add", methods=["GET", "POST"])
+@login_required
+def admin_menu_dish_add():
+    from models import Dish, MenuCategory
+
+    session = SessionLocal()
+    try:
+        categories = session.query(MenuCategory).order_by(MenuCategory.sort_order).all()
+        preselect_cat_id = int(request.args.get("cat_id") or 0)
+
+        if request.method == "POST":
+            name = (request.form.get("name") or "").strip()
+            category_id = int(request.form.get("category_id") or 0)
+            if not name or not category_id:
+                flash("Укажите название и категорию блюда.", "error")
+                return render_template(
+                    "admin/menu_dish_form.html",
+                    dish=None,
+                    categories=categories,
+                    preselect_cat_id=preselect_cat_id,
+                )
+            dish = Dish(
+                category_id=category_id,
+                name=name,
+                description=(request.form.get("description") or "").strip(),
+                price=int(request.form.get("price") or 0),
+                image_src=(request.form.get("image_src") or "").strip(),
+                is_available=bool(request.form.get("is_available")),
+                sort_order=int(request.form.get("sort_order") or 0),
+            )
+            session.add(dish)
+            session.commit()
+            flash(f"Блюдо «{name}» добавлено.", "success")
+            return redirect(url_for("admin_menu"))
+
+        return render_template(
+            "admin/menu_dish_form.html",
+            dish=None,
+            categories=categories,
+            preselect_cat_id=preselect_cat_id,
+        )
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error adding dish: %s", exc)
+        flash("Ошибка при добавлении блюда.", "error")
+        return redirect(url_for("admin_menu"))
+    finally:
+        session.close()
+
+
+@app.route("/admin/menu/dish/<int:dish_id>/edit", methods=["GET", "POST"])
+@login_required
+def admin_menu_dish_edit(dish_id: int):
+    from models import Dish, MenuCategory
+
+    session = SessionLocal()
+    try:
+        dish = session.get(Dish, dish_id)
+        if dish is None:
+            abort(404)
+        categories = session.query(MenuCategory).order_by(MenuCategory.sort_order).all()
+
+        if request.method == "POST":
+            name = (request.form.get("name") or "").strip()
+            category_id = int(request.form.get("category_id") or dish.category_id)
+            if not name:
+                flash("Название блюда не может быть пустым.", "error")
+                return render_template(
+                    "admin/menu_dish_form.html",
+                    dish=dish,
+                    categories=categories,
+                    preselect_cat_id=dish.category_id,
+                )
+            dish.name = name
+            dish.category_id = category_id
+            dish.description = (request.form.get("description") or "").strip()
+            dish.price = int(request.form.get("price") or 0)
+            dish.image_src = (request.form.get("image_src") or "").strip()
+            dish.is_available = bool(request.form.get("is_available"))
+            dish.sort_order = int(request.form.get("sort_order") or 0)
+            session.commit()
+            flash(f"Блюдо «{name}» обновлено.", "success")
+            return redirect(url_for("admin_menu"))
+
+        return render_template(
+            "admin/menu_dish_form.html",
+            dish=dish,
+            categories=categories,
+            preselect_cat_id=dish.category_id,
+        )
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error editing dish %d: %s", dish_id, exc)
+        flash("Ошибка при редактировании блюда.", "error")
+        return redirect(url_for("admin_menu"))
+    finally:
+        session.close()
+
+
+@app.route("/admin/menu/dish/<int:dish_id>/delete", methods=["POST"])
+@login_required
+def admin_menu_dish_delete(dish_id: int):
+    from models import Dish
+
+    session = SessionLocal()
+    try:
+        dish = session.get(Dish, dish_id)
+        if dish is None:
+            abort(404)
+        name = dish.name
+        session.delete(dish)
+        session.commit()
+        flash(f"Блюдо «{name}» удалено.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error deleting dish %d: %s", dish_id, exc)
+        flash("Ошибка при удалении блюда.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+@app.route("/admin/menu/dish/<int:dish_id>/toggle", methods=["POST"])
+@login_required
+def admin_menu_dish_toggle(dish_id: int):
+    from models import Dish
+
+    session = SessionLocal()
+    try:
+        dish = session.get(Dish, dish_id)
+        if dish is None:
+            abort(404)
+        dish.is_available = not dish.is_available
+        session.commit()
+        state = "доступно" if dish.is_available else "скрыто"
+        flash(f"«{dish.name}» теперь {state}.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error toggling dish %d: %s", dish_id, exc)
+        flash("Ошибка.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
+# ---------------------------------------------------------------------------
+# Реквизиты.
+# ---------------------------------------------------------------------------
+
+REQUISITES_KEYS = [
+    "operator_name",
+    "operator_inn",
+    "operator_ogrnip",
+    "operator_reg_date",
+    "operator_phone",
+    "operator_email",
+    "operator_tax_authority",
+    "operator_address",
+]
+
+
+@app.route("/admin/requisites", methods=["GET", "POST"])
+@login_required
+def admin_requisites():
+    from models import SiteText, load_site_texts
+
+    session = SessionLocal()
+    try:
+        if request.method == "POST":
+            for key in REQUISITES_KEYS:
+                value = (request.form.get(key) or "").strip()
+                row = session.query(SiteText).filter_by(key=key).first()
+                if row:
+                    row.value = value
+                else:
+                    session.add(SiteText(key=key, value=value))
+            session.commit()
+            flash("Реквизиты сохранены.", "success")
+            return redirect(url_for("admin_requisites"))
+
+        return render_template("admin/requisites.html")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error saving requisites: %s", exc)
+        flash("Ошибка при сохранении.", "error")
+        return redirect(url_for("admin_requisites"))
+    finally:
+        session.close()
+
+
+# ---------------------------------------------------------------------------
+# Юридические страницы.
+# ---------------------------------------------------------------------------
+
+LEGAL_KEYS = [
+    "legal_privacy_last_updated",
+    "legal_offer_html",
+    "legal_cookies_html",
+]
+
+
+@app.route("/admin/legal", methods=["GET", "POST"])
+@login_required
+def admin_legal():
+    from models import SiteText
+
+    session = SessionLocal()
+    try:
+        if request.method == "POST":
+            for key in LEGAL_KEYS:
+                value = (request.form.get(key) or "").strip()
+                row = session.query(SiteText).filter_by(key=key).first()
+                if row:
+                    row.value = value
+                else:
+                    session.add(SiteText(key=key, value=value))
+            session.commit()
+            flash("Юридические страницы сохранены.", "success")
+            return redirect(url_for("admin_legal"))
+
+        return render_template("admin/legal.html")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error saving legal pages: %s", exc)
+        flash("Ошибка при сохранении.", "error")
+        return redirect(url_for("admin_legal"))
+    finally:
+        session.close()

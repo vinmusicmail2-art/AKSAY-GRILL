@@ -1,0 +1,247 @@
+{% extends "admin/base.html" %}
+{% block title %}Меню{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-light text-primary mb-1">Управление меню</h1>
+        <p class="text-on-surface-variant text-sm">{{ total_dishes }} блюд в {{ categories|length }} категориях</p>
+      </div>
+      <button onclick="document.getElementById('add-cat-panel').classList.toggle('hidden')"
+              class="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">add</span>
+        Новая категория
+      </button>
+    </div>
+
+    <div id="add-cat-panel" class="hidden mt-6 p-6 bg-surface-lowest rounded-xl border border-outline/20">
+      <h3 class="text-sm font-semibold text-primary mb-4 uppercase tracking-wider">Добавить категорию</h3>
+      <form method="POST" action="{{ url_for('admin_menu_category_add') }}" class="grid sm:grid-cols-2 gap-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Название *</label>
+          <input name="name" type="text" required placeholder="Гарниры"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Slug (лат.) *</label>
+          <input name="slug" type="text" required placeholder="garniry"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Заголовок на сайте *</label>
+          <input name="heading" type="text" required placeholder="ГАРНИРЫ"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Иконка Material</label>
+          <input name="nav_icon" type="text" placeholder="restaurant_menu"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Порядок</label>
+          <input name="sort_order" type="number" value="100"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div class="flex items-center gap-4 pt-5">
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-on-surface-variant">
+            <input name="show_in_nav" type="checkbox" checked class="accent-primary"/> В навигации
+          </label>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Описание</label>
+          <input name="description" type="text" placeholder="Краткое описание категории"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div class="sm:col-span-2 flex gap-3">
+          <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">Добавить</button>
+          <button type="button" onclick="document.getElementById('add-cat-panel').classList.add('hidden')"
+                  class="px-6 py-2 rounded-lg text-sm border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  {% for cat in categories %}
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary text-xl">{{ cat.nav_icon }}</span>
+        </div>
+        <div>
+          <h2 class="text-xl font-light text-primary">{{ cat.name }}</h2>
+          <p class="text-xs text-on-surface-variant">
+            slug: <code class="bg-surface-lowest px-1 rounded">{{ cat.slug }}</code>
+            · {{ cat.dishes|length }} блюд
+            · порядок: {{ cat.sort_order }}
+            {% if not cat.is_visible %}<span class="text-amber-600 ml-1">· скрыта</span>{% endif %}
+            {% if not cat.show_in_nav %}<span class="text-on-surface-variant/50 ml-1">· не в nav</span>{% endif %}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="togglePanel('edit-cat-{{ cat.id }}')"
+                class="px-3 py-1.5 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">edit</span>Изменить
+        </button>
+        <form method="POST" action="{{ url_for('admin_menu_category_toggle_visibility', cat_id=cat.id) }}" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <button type="submit"
+                  class="px-3 py-1.5 rounded-lg text-xs border border-outline/30 flex items-center gap-1 transition-all
+                  {{ 'text-amber-600 hover:bg-amber-50' if cat.is_visible else 'text-success hover:bg-success-container' }}">
+            <span class="material-symbols-outlined text-sm">{{ 'visibility_off' if cat.is_visible else 'visibility' }}</span>
+            {{ 'Скрыть' if cat.is_visible else 'Показать' }}
+          </button>
+        </form>
+        {% if cat.dishes|length == 0 %}
+        <form method="POST" action="{{ url_for('admin_menu_category_delete', cat_id=cat.id) }}" class="inline"
+              onsubmit="return confirm('Удалить категорию «{{ cat.name }}»? Это действие необратимо.')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <button type="submit"
+                  class="px-3 py-1.5 rounded-lg text-xs border border-error/30 text-error hover:bg-error-container transition-all flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">delete</span>Удалить
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <div id="edit-cat-{{ cat.id }}" class="hidden mb-6 p-5 bg-surface-lowest rounded-xl border border-outline/20">
+      <form method="POST" action="{{ url_for('admin_menu_category_edit', cat_id=cat.id) }}" class="grid sm:grid-cols-2 gap-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Название</label>
+          <input name="name" type="text" value="{{ cat.name }}" required
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Slug</label>
+          <input name="slug" type="text" value="{{ cat.slug }}" required
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Заголовок на сайте</label>
+          <input name="heading" type="text" value="{{ cat.heading }}" required
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Иконка Material</label>
+          <input name="nav_icon" type="text" value="{{ cat.nav_icon }}"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Порядок</label>
+          <input name="sort_order" type="number" value="{{ cat.sort_order }}"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div class="flex items-center gap-6 pt-5">
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-on-surface-variant">
+            <input name="show_in_nav" type="checkbox" {{ 'checked' if cat.show_in_nav }} class="accent-primary"/> В навигации
+          </label>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Описание</label>
+          <input name="description" type="text" value="{{ cat.description }}"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div class="sm:col-span-2 flex gap-3">
+          <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">Сохранить</button>
+          <button type="button" onclick="togglePanel('edit-cat-{{ cat.id }}')"
+                  class="px-6 py-2 rounded-lg text-sm border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">Отмена</button>
+        </div>
+      </form>
+    </div>
+
+    {% if cat.dishes %}
+    <div class="overflow-x-auto mb-6">
+      <table class="w-full text-sm">
+        <thead class="text-left text-xs uppercase tracking-wider text-on-surface-variant border-b border-outline/30">
+          <tr>
+            <th class="py-2 pr-3 w-14">Фото</th>
+            <th class="py-2 pr-3">Название / описание</th>
+            <th class="py-2 pr-3 w-20 text-right">Цена</th>
+            <th class="py-2 pr-3 w-24 text-center">Статус</th>
+            <th class="py-2 text-right w-20">Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for dish in cat.dishes %}
+          <tr class="border-b border-outline/10 {{ 'opacity-50' if not dish.is_available }}">
+            <td class="py-2 pr-3">
+              {% if dish.image_src %}
+              <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
+                   class="w-12 h-12 object-cover rounded-lg" onerror="this.style.display='none'"/>
+              {% else %}
+              <div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant/40 text-xl">image</span>
+              </div>
+              {% endif %}
+            </td>
+            <td class="py-2 pr-3">
+              <div class="font-medium text-on-surface leading-tight">{{ dish.name }}</div>
+              {% if dish.description %}
+              <div class="text-xs text-on-surface-variant mt-0.5 truncate max-w-xs">{{ dish.description }}</div>
+              {% endif %}
+            </td>
+            <td class="py-2 pr-3 text-right font-mono font-semibold text-primary whitespace-nowrap">{{ dish.price }}₽</td>
+            <td class="py-2 pr-3 text-center">
+              <form method="POST" action="{{ url_for('admin_menu_dish_toggle', dish_id=dish.id) }}" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit"
+                        class="text-xs px-2 py-1 rounded-full font-medium hover:opacity-80 transition-opacity
+                        {{ 'bg-success-container text-success' if dish.is_available else 'bg-error-container text-error' }}">
+                  {{ 'в наличии' if dish.is_available else 'нет' }}
+                </button>
+              </form>
+            </td>
+            <td class="py-2">
+              <div class="flex gap-1 justify-end">
+                <a href="{{ url_for('admin_menu_dish_edit', dish_id=dish.id) }}"
+                   class="p-1.5 rounded-lg border border-outline/30 text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all"
+                   title="Редактировать">
+                  <span class="material-symbols-outlined text-base">edit</span>
+                </a>
+                <form method="POST" action="{{ url_for('admin_menu_dish_delete', dish_id=dish.id) }}" class="inline"
+                      onsubmit="return confirm('Удалить «{{ dish.name }}»?')">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                  <button type="submit"
+                          class="p-1.5 rounded-lg border border-error/30 text-error hover:bg-error-container transition-all"
+                          title="Удалить">
+                    <span class="material-symbols-outlined text-base">delete</span>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-sm text-on-surface-variant mb-6 italic">Блюд пока нет — добавьте первое.</p>
+    {% endif %}
+
+    <a href="{{ url_for('admin_menu_dish_add', cat_id=cat.id) }}"
+       class="inline-flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+      <span class="material-symbols-outlined text-base">add</span>
+      Добавить блюдо
+    </a>
+  </section>
+  {% else %}
+  <section class="bg-surface-card rounded-xl shadow-lg p-8 text-center text-on-surface-variant">
+    Категорий пока нет — создайте первую.
+  </section>
+  {% endfor %}
+
+</div>
+<script>
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+</script>
+{% endblock %}

@@ -26,12 +26,36 @@ def contact():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    from models import MenuCategory
+
+    session = SessionLocal()
+    try:
+        categories = (
+            session.query(MenuCategory)
+            .filter_by(is_visible=True)
+            .order_by(MenuCategory.sort_order)
+            .all()
+        )
+        for cat in categories:
+            _ = cat.dishes  # eager-load within session
+        return render_template("index.html", menu_categories=categories)
+    finally:
+        session.close()
 
 
 @app.route("/privacy.html")
 def privacy():
     return render_template("privacy.html")
+
+
+@app.route("/offer")
+def offer():
+    return render_template("offer.html")
+
+
+@app.route("/cookies")
+def cookies():
+    return render_template("cookies.html")
 
 
 @app.route("/about")

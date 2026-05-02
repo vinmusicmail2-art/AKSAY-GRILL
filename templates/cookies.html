@@ -1,0 +1,30 @@
+{% extends "base_public.html" %}
+
+{% block title %}Политика cookies · {{ texts.site_title }}{% endblock %}
+
+{% block extra_styles %}
+  h2 { color: #9b3f1c; margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.5rem; }
+  p, li { font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.75rem; color: #56423a; }
+  ul { list-style: disc; margin-left: 1.5rem; }
+  a { color: #9b3f1c; text-decoration: underline; }
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 py-12">
+  <h1 class="font-headline text-4xl text-[#9b3f1c] mb-2">Политика использования cookies</h1>
+  <p class="text-sm opacity-70 mb-8">{{ texts.operator_name }}</p>
+
+  {% if texts.legal_cookies_html %}
+    {{ texts.legal_cookies_html | safe }}
+  {% else %}
+    <p class="text-on-surface-variant italic">Текст политики ещё не заполнен. Администратор добавит его в ближайшее время.</p>
+  {% endif %}
+
+  <hr class="my-10 border-outline/20"/>
+  <nav class="flex flex-wrap gap-6 text-sm">
+    <a href="{{ url_for('privacy') }}" class="text-[#9b3f1c] hover:underline">Политика конфиденциальности</a>
+    <a href="{{ url_for('offer') }}" class="text-[#9b3f1c] hover:underline">Публичная оферта</a>
+    <a href="{{ url_for('home') }}" class="text-[#9b3f1c] hover:underline">На главную</a>
+  </nav>
+</div>
+{% endblock %}

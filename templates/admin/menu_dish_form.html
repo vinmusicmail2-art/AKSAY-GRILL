@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Редактировать блюдо' if dish else 'Добавить блюдо' }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+
+  <div class="flex items-center gap-3">
+    <a href="{{ url_for('admin_menu') }}"
+       class="p-2 rounded-lg border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <h1 class="text-3xl font-light text-primary">
+      {{ 'Редактировать блюдо' if dish else 'Добавить блюдо' }}
+    </h1>
+  </div>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <form method="POST" class="space-y-5">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Категория *</label>
+        <select name="category_id" required
+                class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary">
+          {% for cat in categories %}
+          <option value="{{ cat.id }}" {{ 'selected' if dish and dish.category_id == cat.id else ('selected' if preselect_cat_id == cat.id) }}>
+            {{ cat.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Название *</label>
+        <input name="name" type="text" required maxlength="256"
+               value="{{ dish.name if dish else '' }}"
+               placeholder="Шашлык из свинины"
+               class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Описание</label>
+        <textarea name="description" rows="3" maxlength="512"
+                  placeholder="Краткое описание вкуса и состава блюда"
+                  class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary resize-none">{{ dish.description if dish else '' }}</textarea>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Цена (₽) *</label>
+          <input name="price" type="number" required min="0" max="99999"
+                 value="{{ dish.price if dish else '' }}"
+                 placeholder="350"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Порядок</label>
+          <input name="sort_order" type="number" min="0"
+                 value="{{ dish.sort_order if dish else '0' }}"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">URL изображения</label>
+        <input name="image_src" type="text" maxlength="512"
+               value="{{ dish.image_src if dish else '' }}"
+               placeholder="/assets/dishes/shashlyk.webp или https://..."
+               class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        <p class="text-xs text-on-surface-variant mt-1">Относительный путь к файлу в /assets/dishes/ или внешний URL изображения.</p>
+        {% if dish and dish.image_src %}
+        <div class="mt-3">
+          <p class="text-xs text-on-surface-variant mb-1">Текущее изображение:</p>
+          <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
+               class="w-24 h-24 object-cover rounded-lg border border-outline/20"
+               onerror="this.replaceWith(document.createTextNode('Изображение не загружено'))"/>
+        </div>
+        {% endif %}
+      </div>
+
+      <div>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input name="is_available" type="checkbox"
+                 {{ 'checked' if not dish or dish.is_available }}
+                 class="accent-primary w-4 h-4"/>
+          <span class="text-sm text-on-surface-variant">Блюдо доступно (отображается на сайте)</span>
+        </label>
+      </div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="submit"
+                class="bg-primary text-on-primary px-8 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+          {{ 'Сохранить изменения' if dish else 'Добавить блюдо' }}
+        </button>
+        <a href="{{ url_for('admin_menu') }}"
+           class="px-8 py-2.5 rounded-lg text-sm border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">
+          Отмена
+        </a>
+      </div>
+    </form>
+  </section>
+
+</div>
+{% endblock %}

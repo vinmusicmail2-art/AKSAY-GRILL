@@ -61,6 +61,7 @@ def init_db() -> None:
     session = SessionLocal()
     try:
         models.seed_site_texts(session)
+        models.seed_menu(session)
     finally:
         session.close()
 
