@@ -10,6 +10,7 @@ import logging
 import smtplib
 import ssl
 import threading
+import types
 from email.message import EmailMessage
 from email.utils import formataddr, formatdate
 from typing import Optional, Tuple
@@ -24,9 +25,8 @@ _LABEL_COLOR = "#56423a"
 
 
 def _get_smtp_password_from_db() -> str:
-    """Читает пароль SMTP из БД, если он там сохранён."""
+    """Читает пароль SMTP из таблицы site_texts, если он там сохранён."""
     try:
-        from db import SessionLocal
         from sqlalchemy import text
         session = SessionLocal()
         try:
@@ -88,8 +88,10 @@ def _get_recipient_and_toggle() -> Tuple[Optional[str], bool]:
 
 def _send_smtp(subject: str, body_text: str, body_html: Optional[str],
                to_addr: str) -> Tuple[bool, str]:
+    """Отправить письмо через SMTP. Возвращает (ok, сообщение)."""
     cfg = _get_smtp_config()
-    if smtp_status()["missing"]:
+    missing = [k for k in ("host", "port", "user", "password", "from_addr") if not cfg.get(k)]
+    if missing:
         return False, "SMTP не настроен (нет одного из SMTP_* секретов)."
 
     msg = EmailMessage()
@@ -174,14 +176,33 @@ def _comment_block(comment: str) -> str:
     )
 
 
-def _send_notification_async(send_fn, data: dict, base_url: str, thread_name: str) -> None:
-    """Универсальный фоновый запуск уведомления."""
-    class _Shim:
-        pass
+def _guarded_send(
+    format_fn,
+    req,
+    base_url: str = "",
+) -> Tuple[bool, str]:
+    """Проверить флаг уведомлений и адрес получателя, затем отправить письмо.
 
-    o = _Shim()
-    for k, v in data.items():
-        setattr(o, k, v)
+    Используется всеми ``send_*_notification`` функциями вместо копипасты
+    одинаковых четырёх строк guard-логики.
+    """
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
+    subject, plain, html = format_fn(req, base_url=base_url)
+    return _send_smtp(subject, plain, html, recipient)
+
+
+def _send_notification_async(send_fn, data: dict, base_url: str, thread_name: str) -> None:
+    """Запустить ``send_fn`` в фоновом треде.
+
+    ``data`` — словарь полей заявки; преобразуется в объект через
+    ``SimpleNamespace`` чтобы форматировщики письма могли обращаться к
+    атрибутам через точку (``req.phone`` и т.д.).
+    """
+    o = types.SimpleNamespace(**data)
 
     def _run():
         try:
@@ -259,13 +280,8 @@ def _format_order_email(order, base_url: str = "") -> Tuple[str, str, str]:
 
 
 def send_order_notification(order, base_url: str = "") -> Tuple[bool, str]:
-    recipient, enabled = _get_recipient_and_toggle()
-    if not enabled:
-        return False, "Уведомления выключены в настройках."
-    if not recipient:
-        return False, "Не задан e-mail получателя в настройках."
-    subject, plain, html = _format_order_email(order, base_url=base_url)
-    return _send_smtp(subject, plain, html, recipient)
+    """Отправить e-mail о новой заявке на бизнес-ланч."""
+    return _guarded_send(_format_order_email, order, base_url)
 
 
 def send_order_notification_async(order_data: dict, base_url: str = "") -> None:
@@ -332,13 +348,8 @@ def _format_catering_email(req, base_url: str = "") -> Tuple[str, str, str]:
 
 
 def send_catering_notification(req, base_url: str = "") -> Tuple[bool, str]:
-    recipient, enabled = _get_recipient_and_toggle()
-    if not enabled:
-        return False, "Уведомления выключены в настройках."
-    if not recipient:
-        return False, "Не задан e-mail получателя в настройках."
-    subject, plain, html = _format_catering_email(req, base_url=base_url)
-    return _send_smtp(subject, plain, html, recipient)
+    """Отправить e-mail о новой заявке на кейтеринг."""
+    return _guarded_send(_format_catering_email, req, base_url)
 
 
 def send_catering_notification_async(data: dict, base_url: str = "") -> None:
@@ -400,13 +411,8 @@ def _format_hall_email(req, base_url: str = "") -> Tuple[str, str, str]:
 
 
 def send_hall_notification(req, base_url: str = "") -> Tuple[bool, str]:
-    recipient, enabled = _get_recipient_and_toggle()
-    if not enabled:
-        return False, "Уведомления выключены в настройках."
-    if not recipient:
-        return False, "Не задан e-mail получателя в настройках."
-    subject, plain, html = _format_hall_email(req, base_url=base_url)
-    return _send_smtp(subject, plain, html, recipient)
+    """Отправить e-mail о новой заявке на бронирование зала."""
+    return _guarded_send(_format_hall_email, req, base_url)
 
 
 def send_hall_notification_async(data: dict, base_url: str = "") -> None:
@@ -477,13 +483,8 @@ def _format_delivery_email(order, base_url: str = "") -> Tuple[str, str, str]:
 
 
 def send_delivery_notification(order, base_url: str = "") -> Tuple[bool, str]:
-    recipient, enabled = _get_recipient_and_toggle()
-    if not enabled:
-        return False, "Уведомления выключены в настройках."
-    if not recipient:
-        return False, "Не задан e-mail получателя в настройках."
-    subject, plain, html = _format_delivery_email(order, base_url=base_url)
-    return _send_smtp(subject, plain, html, recipient)
+    """Отправить e-mail о новом заказе доставки."""
+    return _guarded_send(_format_delivery_email, order, base_url)
 
 
 def send_delivery_notification_async(order_data: dict, base_url: str = "") -> None:
@@ -524,13 +525,8 @@ def _format_quick_request_email(req, base_url: str = "") -> Tuple[str, str, str]
 
 
 def send_quick_request_notification(req, base_url: str = "") -> Tuple[bool, str]:
-    recipient, enabled = _get_recipient_and_toggle()
-    if not enabled:
-        return False, "Уведомления выключены в настройках."
-    if not recipient:
-        return False, "Не задан e-mail получателя в настройках."
-    subject, plain, html = _format_quick_request_email(req, base_url=base_url)
-    return _send_smtp(subject, plain, html, recipient)
+    """Отправить e-mail о быстром заказе с главной страницы."""
+    return _guarded_send(_format_quick_request_email, req, base_url)
 
 
 def send_quick_request_notification_async(data: dict, base_url: str = "") -> None:

@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 @app.route("/contact", methods=["POST"])
 def contact():
+    """Принять вопрос с публичной контактной формы и отправить e-mail администратору."""
     from mailer import send_contact_question
     name = (request.form.get("name") or "").strip()
     phone = (request.form.get("phone") or "").strip()
@@ -26,6 +27,7 @@ def contact():
 
 @app.route("/")
 def home():
+    """Главная страница: загрузить видимые категории меню с блюдами."""
     from models import MenuCategory
 
     session = SessionLocal()
@@ -98,6 +100,11 @@ def spasibo_meropriyatiya():
 
 @app.route("/business-lunch", methods=["GET", "POST"])
 def business_lunch():
+    """Страница и форма заявки на корпоративные бизнес-ланчи.
+
+    GET  — показать форму с каталогом комплексов.
+    POST — сохранить заявку в БД, запустить e-mail уведомление, редирект на «спасибо».
+    """
     from forms import BusinessLunchOrderForm
     from models import BUSINESS_LUNCH_MENU, BusinessLunchOrder
 
@@ -151,6 +158,11 @@ def business_lunch():
 
 @app.route("/catering", methods=["GET", "POST"])
 def catering():
+    """Страница и форма заявки на кейтеринговое обслуживание мероприятий.
+
+    GET  — показать форму с выбором формата мероприятия.
+    POST — сохранить заявку, отправить уведомление, редирект на «спасибо».
+    """
     from forms import CateringRequestForm
     from models import CATERING_FORMATS, CateringRequest
 
@@ -206,6 +218,11 @@ def catering():
 
 @app.route("/events", methods=["GET", "POST"])
 def events():
+    """Страница и форма бронирования зала для мероприятий (банкет, свадьба и др.).
+
+    GET  — показать форму.
+    POST — сохранить заявку, отправить уведомление, редирект на «спасибо».
+    """
     from forms import HallReservationForm
     from models import EVENT_TYPES, HallReservation
 
@@ -276,6 +293,12 @@ def healthz():
 @app.route("/order/delivery", methods=["POST"])
 @csrf.exempt
 def order_delivery():
+    """Принять JSON-заказ из корзины на главной странице.
+
+    Ожидает тело: {name, phone, email?, address, items: [...], total, comment?}.
+    CSRF-exempt, т.к. вызывается fetch() из клиентского JS.
+    Возвращает JSON: {ok: true, id: N} или {ok: false, error: "..."}.
+    """
     import json as _json
     from models import DeliveryOrder
 
@@ -324,6 +347,11 @@ def order_delivery():
 
 @app.route("/quick-request", methods=["POST"])
 def quick_request():
+    """Принять быструю заявку на доставку с главной страницы (форма, не JSON).
+
+    Поля: contact_name, phone, address (обязательные) + comment (опционально).
+    Сохраняет в таблицу QuickRequest, отправляет e-mail и редиректит на «спасибо».
+    """
     from models import QuickRequest
 
     contact_name = (request.form.get("contact_name") or "").strip()
