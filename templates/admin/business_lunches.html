@@ -80,6 +80,12 @@
                     Новая
                   </span>
                 {% endif %}
+                {% if o.is_processed and o.processed_by %}
+                  <span class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold" title="Обработал: {{ o.processed_by }}{% if o.processed_at %} · {{ o.processed_at.strftime('%d.%m.%Y %H:%M') }}{% endif %}">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-on-primary text-[9px] font-bold uppercase shrink-0">{{ o.processed_by[0] }}</span>
+                    {{ o.processed_by }}
+                  </span>
+                {% endif %}
                 <span class="text-xs text-on-surface-variant">
                   Создана {{ o.created_at.strftime('%d.%m.%Y %H:%M') }} UTC
                 </span>
