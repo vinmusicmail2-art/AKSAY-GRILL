@@ -43,8 +43,8 @@ class SetupForm(FlaskForm):
             DataRequired(message="Введите логин"),
             Length(min=3, max=64, message="От 3 до 64 символов"),
             Regexp(
-                r"^[A-Za-z0-9_.-]+$",
-                message="Только латиница, цифры и _.-",
+                r"^[A-Za-z0-9А-Яа-яЁё_.-]+$",
+                message="Только буквы, цифры и _.-",
             ),
         ],
     )
