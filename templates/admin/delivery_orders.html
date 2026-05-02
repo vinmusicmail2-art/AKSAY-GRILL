@@ -23,11 +23,24 @@
           <span class="material-symbols-outlined text-base leading-none">download</span>
           Скачать CSV
         </a>
+        <!-- Фильтр по периоду -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Период:</span>
+          {% set periods = [('', 'Всё время'), ('today', 'Сегодня'), ('week', 'Неделя'), ('month', 'Месяц')] %}
+          {% for value, label in periods %}
+            <a href="{{ url_for('admin_delivery_orders', show=show, sort=sort, admin=admin_filter, period=value) }}"
+               class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
+               {% if period == value %}bg-primary text-on-primary
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
         <!-- Фильтр статуса -->
         <div class="flex flex-wrap gap-2">
           {% set tabs = [('pending', 'В работе'), ('processed', 'Выполненные'), ('all', 'Все')] %}
           {% for value, label in tabs %}
-            <a href="{{ url_for('admin_delivery_orders', show=value, sort=sort) }}"
+            <a href="{{ url_for('admin_delivery_orders', show=value, sort=sort, period=period) }}"
                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
                {% if show == value %}bg-primary text-on-primary shadow-md
                {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
@@ -47,7 +60,7 @@
             ('status_done','Готовые вверху'),
           ] %}
           {% for value, label in sorts %}
-            <a href="{{ url_for('admin_delivery_orders', show=show, sort=value, admin=admin_filter) }}"
+            <a href="{{ url_for('admin_delivery_orders', show=show, sort=value, admin=admin_filter, period=period) }}"
                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
                {% if sort == value %}bg-primary text-on-primary
                {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
@@ -59,13 +72,13 @@
         {% if all_admins %}
         <div class="flex flex-wrap items-center gap-1.5">
           <span class="text-xs text-on-surface-variant mr-1">Обработал:</span>
-          <a href="{{ url_for('admin_delivery_orders', show=show, sort=sort, admin='') }}"
+          <a href="{{ url_for('admin_delivery_orders', show=show, sort=sort, admin='', period=period) }}"
              class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
              {% if not admin_filter %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
             Все
           </a>
           {% for name in all_admins %}
-          <a href="{{ url_for('admin_delivery_orders', show=show, sort=sort, admin=name) }}"
+          <a href="{{ url_for('admin_delivery_orders', show=show, sort=sort, admin=name, period=period) }}"
              class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
              {% if admin_filter == name %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
             <span class="inline-flex items-center justify-center w-4 h-4 rounded-full {% if admin_filter == name %}bg-white/30{% else %}bg-primary/20{% endif %} text-[9px] font-bold uppercase">{{ name[0] }}</span>

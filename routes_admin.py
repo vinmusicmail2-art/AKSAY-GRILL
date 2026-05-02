@@ -3,7 +3,7 @@ import csv
 import io
 import json as _json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Response, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -226,8 +226,6 @@ def admin_dashboard():
 @app.route("/admin/stats")
 @login_required
 def admin_stats():
-    from datetime import datetime, timedelta
-
     from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation
 
     period = request.args.get("period", "all")
@@ -423,6 +421,7 @@ def admin_business_lunches():
     show         = request.args.get("show", "pending")
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
+    period       = (request.args.get("period") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -439,6 +438,13 @@ def admin_business_lunches():
             q = q.filter(BusinessLunchOrder.is_processed.is_(True))
         if admin_filter:
             q = q.filter(BusinessLunchOrder.processed_by == admin_filter)
+        now = datetime.utcnow()
+        if period == "today":
+            q = q.filter(BusinessLunchOrder.created_at >= now.replace(hour=0, minute=0, second=0, microsecond=0))
+        elif period == "week":
+            q = q.filter(BusinessLunchOrder.created_at >= now - timedelta(days=7))
+        elif period == "month":
+            q = q.filter(BusinessLunchOrder.created_at >= now - timedelta(days=30))
         _LUNCH_SORT = {
             "date_desc": [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()],
             "date_asc":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.asc()],
@@ -458,6 +464,7 @@ def admin_business_lunches():
             sort=sort,
             admin_filter=admin_filter,
             all_admins=all_admins,
+            period=period,
             combo_titles={item["key"]: item["title"] for item in BUSINESS_LUNCH_MENU},
             combo_prices={item["key"]: item["price"] for item in BUSINESS_LUNCH_MENU},
         )
@@ -500,6 +507,7 @@ def admin_catering():
     show         = request.args.get("show", "pending")
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
+    period       = (request.args.get("period") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -516,6 +524,13 @@ def admin_catering():
             q = q.filter(CateringRequest.is_processed.is_(True))
         if admin_filter:
             q = q.filter(CateringRequest.processed_by == admin_filter)
+        now = datetime.utcnow()
+        if period == "today":
+            q = q.filter(CateringRequest.created_at >= now.replace(hour=0, minute=0, second=0, microsecond=0))
+        elif period == "week":
+            q = q.filter(CateringRequest.created_at >= now - timedelta(days=7))
+        elif period == "month":
+            q = q.filter(CateringRequest.created_at >= now - timedelta(days=30))
         _CAT_SORT = {
             "date_desc":   [CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()],
             "date_asc":    [CateringRequest.is_processed.asc(), CateringRequest.created_at.asc()],
@@ -537,6 +552,7 @@ def admin_catering():
             sort=sort,
             admin_filter=admin_filter,
             all_admins=all_admins,
+            period=period,
             format_titles={item["key"]: item["title"] for item in CATERING_FORMATS},
         )
     finally:
@@ -578,6 +594,7 @@ def admin_events():
     show         = request.args.get("show", "pending")
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
+    period       = (request.args.get("period") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -594,6 +611,13 @@ def admin_events():
             q = q.filter(HallReservation.is_processed.is_(True))
         if admin_filter:
             q = q.filter(HallReservation.processed_by == admin_filter)
+        now = datetime.utcnow()
+        if period == "today":
+            q = q.filter(HallReservation.created_at >= now.replace(hour=0, minute=0, second=0, microsecond=0))
+        elif period == "week":
+            q = q.filter(HallReservation.created_at >= now - timedelta(days=7))
+        elif period == "month":
+            q = q.filter(HallReservation.created_at >= now - timedelta(days=30))
         _EV_SORT = {
             "date_desc":   [HallReservation.is_processed.asc(), HallReservation.created_at.desc()],
             "date_asc":    [HallReservation.is_processed.asc(), HallReservation.created_at.asc()],
@@ -613,6 +637,7 @@ def admin_events():
             sort=sort,
             admin_filter=admin_filter,
             all_admins=all_admins,
+            period=period,
             type_titles={item["key"]: item["title"] for item in EVENT_TYPES},
         )
     finally:
@@ -654,6 +679,7 @@ def admin_delivery_orders():
     show         = request.args.get("show", "pending")
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
+    period       = (request.args.get("period") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -670,6 +696,13 @@ def admin_delivery_orders():
             q = q.filter(DeliveryOrder.is_processed.is_(True))
         if admin_filter:
             q = q.filter(DeliveryOrder.processed_by == admin_filter)
+        now = datetime.utcnow()
+        if period == "today":
+            q = q.filter(DeliveryOrder.created_at >= now.replace(hour=0, minute=0, second=0, microsecond=0))
+        elif period == "week":
+            q = q.filter(DeliveryOrder.created_at >= now - timedelta(days=7))
+        elif period == "month":
+            q = q.filter(DeliveryOrder.created_at >= now - timedelta(days=30))
         _DEL_SORT = {
             "date_desc":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()],
             "date_asc":   [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.asc()],
@@ -695,6 +728,7 @@ def admin_delivery_orders():
             sort=sort,
             admin_filter=admin_filter,
             all_admins=all_admins,
+            period=period,
             parse_items=parse_items,
         )
     finally:
