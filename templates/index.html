@@ -1177,7 +1177,7 @@ document.getElementById('quick-request-modal').addEventListener('click', functio
 
 <!-- Кнопка «Наверх» — появляется при прокрутке к подвалу -->
 <button id="back-to-top" type="button" aria-label="Наверх"
-  class="fixed right-8 z-50 w-12 h-12 rounded-full bg-[#9b3f1c] text-white shadow-lg shadow-black/20 flex items-center justify-center opacity-0 pointer-events-none translate-y-3 transition-all duration-300 hover:scale-110 hover:bg-[#7a3015]"
+  class="fixed right-8 z-50 w-12 h-12 rounded-full bg-[#9b3f1c] text-white shadow-lg shadow-black/20 flex items-center justify-center opacity-100 transition-all duration-300 hover:scale-110 hover:bg-[#7a3015]"
   style="bottom: 112px; margin-right: 8px;">
   <span class="material-symbols-outlined text-[28px]">arrow_upward</span>
 </button>
@@ -1185,18 +1185,6 @@ document.getElementById('quick-request-modal').addEventListener('click', functio
 (function(){
   var btn = document.getElementById('back-to-top');
   if (!btn) return;
-  var footer = document.getElementById('main-footer');
-  function show(){ btn.classList.remove('opacity-0','pointer-events-none','translate-y-3'); btn.classList.add('opacity-100'); }
-  function hide(){ btn.classList.add('opacity-0','pointer-events-none','translate-y-3'); btn.classList.remove('opacity-100'); }
-  function check(){
-    if (!footer) return;
-    var rect = footer.getBoundingClientRect();
-    // показываем, как только верх подвала вошёл в зону видимости
-    if (rect.top <= window.innerHeight) { show(); } else { hide(); }
-  }
-  window.addEventListener('scroll', check, { passive: true });
-  window.addEventListener('resize', check);
-  check();
   btn.addEventListener('click', function(){
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
