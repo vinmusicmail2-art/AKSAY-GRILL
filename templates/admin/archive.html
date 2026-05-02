@@ -54,10 +54,17 @@
         <label class="block text-sm font-medium mb-1" for="archive_dir">
           Папка для сохранения (на сервере)
         </label>
-        <input type="text" id="archive_dir" name="archive_dir"
-               value="{{ archive_dir }}"
-               placeholder="/home/user  или  /var/data"
-               class="w-full px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-mono text-sm"/>
+        <div class="flex gap-2">
+          <input type="text" id="archive_dir" name="archive_dir"
+                 value="{{ archive_dir }}"
+                 placeholder="/home/user  или  /var/data"
+                 class="flex-1 px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-mono text-sm"/>
+          <button type="button" onclick="openDirBrowser('archive_dir')"
+                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-outline/40 text-sm text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+            <span class="material-icons text-base">folder_open</span>
+            Выбрать
+          </button>
+        </div>
         <p class="text-xs text-on-surface-variant mt-1">
           Внутри папки создастся подпапка <code class="font-mono bg-surface-low px-1 rounded">login_archive/login_log.csv</code>.
           Оставьте пустым, чтобы отключить CSV.

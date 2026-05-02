@@ -982,3 +982,38 @@ def admin_legal():
         return redirect(url_for("admin_legal"))
     finally:
         session.close()
+
+
+@app.route("/admin/browse-dirs")
+@login_required
+def admin_browse_dirs():
+    """Возвращает список подпапок заданного пути для браузера директорий."""
+    from flask import jsonify
+    import os
+
+    requested = request.args.get("path", "").strip()
+    if not requested:
+        requested = os.path.expanduser("~")
+
+    try:
+        target = os.path.realpath(requested)
+    except Exception:
+        target = os.path.expanduser("~")
+
+    dirs = []
+    try:
+        for entry in sorted(os.scandir(target), key=lambda e: e.name.lower()):
+            if entry.is_dir(follow_symlinks=False) and not entry.name.startswith("."):
+                dirs.append(entry.name)
+    except PermissionError:
+        pass
+    except Exception:
+        pass
+
+    parent = str(os.path.dirname(target)) if target != os.path.dirname(target) else None
+
+    return jsonify({
+        "current": target,
+        "parent": parent,
+        "dirs": dirs,
+    })

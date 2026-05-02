@@ -60,5 +60,113 @@
   <footer class="max-w-5xl mx-auto px-6 py-8 text-center text-xs text-on-surface-variant/70">
     © Аксай Гриль · служебная панель
   </footer>
+
+  <!-- Folder browser modal -->
+  <div id="dir-browser-modal"
+       class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col" style="max-height:80vh">
+
+      <div class="flex items-center justify-between px-6 py-4 border-b border-outline/20">
+        <div class="flex items-center gap-2 text-primary font-medium">
+          <span class="material-icons text-xl">folder_open</span>
+          Выбор папки
+        </div>
+        <button onclick="closeDirBrowser()" class="text-on-surface-variant hover:text-error transition-colors">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div id="dir-breadcrumb"
+           class="px-6 py-2 text-xs font-mono text-on-surface-variant bg-surface-low border-b border-outline/10 break-all select-all">
+        …
+      </div>
+
+      <div id="dir-list" class="flex-1 overflow-y-auto px-4 py-3 space-y-0.5">
+        <div class="text-sm text-on-surface-variant text-center py-6">Загрузка…</div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-outline/20 flex gap-3 items-center justify-between">
+        <button id="dir-up-btn" onclick="dirUp()"
+                class="flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors disabled:opacity-30">
+          <span class="material-icons text-base">arrow_upward</span>
+          На уровень выше
+        </button>
+        <button onclick="selectCurrentDir()"
+                class="px-5 py-2 rounded-lg bg-primary text-on-primary text-sm font-medium hover:opacity-90 transition-opacity shadow-md">
+          Выбрать эту папку
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var _dirTargetInput = null;
+    var _dirCurrent = '';
+    var _dirParent = null;
+
+    function openDirBrowser(inputId) {
+      _dirTargetInput = document.getElementById(inputId);
+      var startPath = (_dirTargetInput && _dirTargetInput.value.trim()) ? _dirTargetInput.value.trim() : '';
+      var modal = document.getElementById('dir-browser-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      loadDir(startPath);
+    }
+
+    function closeDirBrowser() {
+      var modal = document.getElementById('dir-browser-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function loadDir(path) {
+      var list = document.getElementById('dir-list');
+      list.innerHTML = '<div class="text-sm text-on-surface-variant text-center py-6">Загрузка…</div>';
+      var url = '/admin/browse-dirs' + (path ? '?path=' + encodeURIComponent(path) : '');
+      fetch(url)
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          _dirCurrent = data.current;
+          _dirParent  = data.parent;
+          document.getElementById('dir-breadcrumb').textContent = data.current;
+          var upBtn = document.getElementById('dir-up-btn');
+          upBtn.disabled = !data.parent;
+          upBtn.style.opacity = data.parent ? '' : '0.3';
+          upBtn.style.pointerEvents = data.parent ? '' : 'none';
+          if (data.dirs.length === 0) {
+            list.innerHTML = '<div class="text-sm text-on-surface-variant text-center py-6 italic">Нет вложенных папок</div>';
+          } else {
+            list.innerHTML = '';
+            data.dirs.forEach(function(name) {
+              var btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-surface-low text-on-surface transition-colors font-mono';
+              btn.innerHTML = '<span class="material-icons text-base text-amber-600">folder</span>' + name;
+              btn.onclick = function() { loadDir(_dirCurrent + '/' + name); };
+              list.appendChild(btn);
+            });
+          }
+        })
+        .catch(function() {
+          list.innerHTML = '<div class="text-sm text-error text-center py-6">Ошибка загрузки папок</div>';
+        });
+    }
+
+    function dirUp() {
+      if (_dirParent) loadDir(_dirParent);
+    }
+
+    function selectCurrentDir() {
+      if (_dirTargetInput && _dirCurrent) {
+        _dirTargetInput.value = _dirCurrent;
+      }
+      closeDirBrowser();
+    }
+
+    document.getElementById('dir-browser-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeDirBrowser();
+    });
+  </script>
+
 </body>
 </html>

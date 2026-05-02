@@ -217,7 +217,12 @@
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#events">Мероприятия</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#" onclick="openContactModal(); return false;">Контакты</a>
 <a class="py-3 text-[#9b3f1c] font-semibold" href="/about">О нас</a>
-<div class="mt-4 mb-2 text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">Меню</div>
+<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}"
+   class="flex items-center gap-2 py-3 mt-1 mb-1 text-white font-bold bg-[#9b3f1c] rounded-lg px-4 justify-center text-base tracking-wide shadow-md active:opacity-80">
+  <span class="material-symbols-outlined text-xl">call</span>
+  {{ texts.contact_phone }}
+</a>
+<div class="mt-3 mb-2 text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">Меню</div>
 {% for cat in menu_categories if cat.show_in_nav %}
 <a class="flex items-center gap-3 py-3 text-[#56423a] {{ 'border-b border-outline-variant/10' if not loop.last }}" href="#{{ cat.slug }}">
 <span class="material-symbols-outlined text-lg">{{ cat.nav_icon }}</span>{{ cat.name }}
