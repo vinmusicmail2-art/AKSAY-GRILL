@@ -3,6 +3,9 @@ import csv
 import io
 import json as _json
 import logging
+import os
+import re
+import time
 from datetime import datetime, timedelta
 
 from flask import Response, abort, flash, redirect, render_template, request, url_for
@@ -19,6 +22,26 @@ from login_archive import (
 )
 
 logger = logging.getLogger(__name__)
+
+_DISHES_DIR = os.path.join(os.path.dirname(__file__), "assets", "dishes")
+_ALLOWED_IMG_EXT = {"jpg", "jpeg", "png", "webp", "gif"}
+
+
+def _save_dish_image(file_storage, dish_name: str = "") -> str | None:
+    """Сохранить загруженное изображение блюда, вернуть относительный путь /assets/dishes/..."""
+    if not file_storage or not file_storage.filename:
+        return None
+    orig = file_storage.filename
+    ext = orig.rsplit(".", 1)[-1].lower() if "." in orig else "jpg"
+    if ext not in _ALLOWED_IMG_EXT:
+        return None
+    slug = re.sub(r"[^a-z0-9]", "-", dish_name.lower()) if dish_name else ""
+    slug = re.sub(r"-+", "-", slug).strip("-")[:40]
+    ts = int(time.time())
+    filename = f"{slug}-{ts}.{ext}" if slug else f"dish-{ts}.{ext}"
+    os.makedirs(_DISHES_DIR, exist_ok=True)
+    file_storage.save(os.path.join(_DISHES_DIR, filename))
+    return f"/assets/dishes/{filename}"
 
 
 @app.route("/admin/setup", methods=["GET", "POST"])
@@ -1020,12 +1043,14 @@ def admin_menu_dish_add():
                     categories=categories,
                     preselect_cat_id=preselect_cat_id,
                 )
+            uploaded = _save_dish_image(request.files.get("image_file"), name)
+            image_src = uploaded or (request.form.get("image_src") or "").strip()
             dish = Dish(
                 category_id=category_id,
                 name=name,
                 description=(request.form.get("description") or "").strip(),
                 price=int(request.form.get("price") or 0),
-                image_src=(request.form.get("image_src") or "").strip(),
+                image_src=image_src,
                 is_available=bool(request.form.get("is_available")),
                 sort_order=int(request.form.get("sort_order") or 0),
             )
@@ -1072,11 +1097,12 @@ def admin_menu_dish_edit(dish_id: int):
                     categories=categories,
                     preselect_cat_id=dish.category_id,
                 )
+            uploaded = _save_dish_image(request.files.get("image_file"), name)
             dish.name = name
             dish.category_id = category_id
             dish.description = (request.form.get("description") or "").strip()
             dish.price = int(request.form.get("price") or 0)
-            dish.image_src = (request.form.get("image_src") or "").strip()
+            dish.image_src = uploaded or (request.form.get("image_src") or "").strip()
             dish.is_available = bool(request.form.get("is_available"))
             dish.sort_order = int(request.form.get("sort_order") or 0)
             session.commit()

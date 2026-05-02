@@ -15,7 +15,7 @@
   </div>
 
   <section class="bg-surface-card rounded-xl shadow-lg p-8">
-    <form method="POST" class="space-y-5">
+    <form method="POST" enctype="multipart/form-data" class="space-y-5">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
       <div>
@@ -61,21 +61,51 @@
         </div>
       </div>
 
+      <!-- Фотография блюда -->
       <div>
-        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">URL изображения</label>
-        <input name="image_src" type="text" maxlength="512"
-               value="{{ dish.image_src if dish else '' }}"
-               placeholder="/assets/dishes/shashlyk.webp или https://..."
-               class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
-        <p class="text-xs text-on-surface-variant mt-1">Относительный путь к файлу в /assets/dishes/ или внешний URL изображения.</p>
-        {% if dish and dish.image_src %}
-        <div class="mt-3">
-          <p class="text-xs text-on-surface-variant mb-1">Текущее изображение:</p>
-          <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
-               class="w-24 h-24 object-cover rounded-lg border border-outline/20"
-               onerror="this.replaceWith(document.createTextNode('Изображение не загружено'))"/>
+        <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-2">Фотография блюда</label>
+
+        <div class="flex gap-4 items-start">
+          <!-- Превью -->
+          <div class="flex-shrink-0">
+            <div id="img-preview-wrap" class="w-28 h-28 rounded-xl border-2 border-dashed border-outline/30 bg-surface-container flex items-center justify-center overflow-hidden">
+              {% if dish and dish.image_src %}
+              <img id="img-preview" src="{{ dish.image_src }}" alt="{{ dish.name }}"
+                   class="w-full h-full object-cover"
+                   onerror="this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-3xl text-on-surface-variant/40\'>restaurant</span>'"/>
+              {% else %}
+              <span class="material-symbols-outlined text-3xl text-on-surface-variant/40" id="img-placeholder">restaurant</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Загрузка -->
+          <div class="flex-1 space-y-3">
+            <label for="image_file"
+                   class="flex items-center gap-2 cursor-pointer bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary px-4 py-2.5 rounded-lg text-sm font-medium transition-all w-fit">
+              <span class="material-symbols-outlined text-lg">upload</span>
+              Загрузить фото
+            </label>
+            <input type="file" name="image_file" id="image_file" accept="image/*"
+                   class="hidden" onchange="previewImage(this)"/>
+            <p id="file-name" class="text-xs text-on-surface-variant">Файл не выбран</p>
+            <p class="text-xs text-on-surface-variant/60">JPG, PNG, WebP · до 5 МБ</p>
+          </div>
         </div>
-        {% endif %}
+
+        <!-- URL вручную (свёрнуто) -->
+        <details class="mt-3">
+          <summary class="text-xs text-on-surface-variant cursor-pointer hover:text-primary transition-colors select-none">
+            Или указать URL вручную
+          </summary>
+          <div class="mt-2">
+            <input name="image_src" type="text" maxlength="512"
+                   value="{{ dish.image_src if dish else '' }}"
+                   placeholder="/assets/dishes/shashlyk.webp или https://..."
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+            <p class="text-xs text-on-surface-variant mt-1">Если выбран файл выше — URL игнорируется.</p>
+          </div>
+        </details>
       </div>
 
       <div>
@@ -101,4 +131,27 @@
   </section>
 
 </div>
+
+<script>
+function previewImage(input) {
+  const wrap = document.getElementById('img-preview-wrap');
+  const nameEl = document.getElementById('file-name');
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      nameEl.textContent = 'Файл слишком большой (максимум 5 МБ)';
+      nameEl.classList.add('text-red-500');
+      input.value = '';
+      return;
+    }
+    nameEl.textContent = file.name;
+    nameEl.classList.remove('text-red-500');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      wrap.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover" alt="Превью"/>';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+</script>
 {% endblock %}
