@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="light" lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{% block title %}{{ texts.site_title }}{% endblock %}</title>
+<link rel="icon" type="image/jpeg" href="/assets/logo.jpg"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#9b3f1c",
+          "on-primary": "#ffffff",
+          "primary-container": "#bb5732",
+          "on-primary-container": "#fffbff",
+          "secondary": "#805533",
+          "on-secondary": "#ffffff",
+          "tertiary": "#735c00",
+          "tertiary-container": "#cba72f",
+          "on-tertiary-container": "#4e3d00",
+          "surface": "#cbc7bf",
+          "surface-container": "#c1bdb5",
+          "surface-container-low": "#c6c2ba",
+          "surface-container-high": "#bcb9b1",
+          "on-surface": "#1d1c16",
+          "on-surface-variant": "#56423a",
+          "outline": "#897269",
+          "outline-variant": "#dcc1b6",
+          "background": "#cbc7bf",
+          "error": "#ba1a1a",
+          "error-container": "#ffdad6",
+          "on-error-container": "#93000a",
+        },
+        borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+        fontFamily: { "headline": ["Montserrat","sans-serif"], "body": ["Montserrat","sans-serif"] },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: "Montserrat", sans-serif; background: #cbc7bf; color: #1d1c16; }
+  h1, h2, h3, .font-headline { font-weight: 200; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .field-input {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(137,114,105,0.35);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #1d1c16;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: #9b3f1c;
+    box-shadow: 0 0 0 3px rgba(155,63,28,0.15);
+  }
+  .field-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #56423a;
+    margin-bottom: 0.4rem;
+  }
+  {% block extra_styles %}{% endblock %}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-[rgba(203,199,191,0.92)] backdrop-blur sticky top-0 z-30 border-b border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3">
+      <div class="bg-[#cbc7bf] p-2 rounded-lg">
+        <img src="/assets/logo.jpg" alt="Аксай Гриль" class="h-10 w-auto object-contain"
+             style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.15);"/>
+      </div>
+      <div>
+        <div class="font-headline text-xl text-[#9b3f1c]">Аксай Гриль</div>
+        <div class="text-[11px] text-on-surface-variant">{{ texts.tagline }}</div>
+      </div>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm">
+      <a href="/" class="text-on-surface-variant hover:text-primary transition-colors">На главную</a>
+      <a href="tel:{{ texts.contact_phone }}" class="font-bold text-primary">{{ texts.contact_phone }}</a>
+    </nav>
+    <a href="/" class="sm:hidden text-on-surface-variant hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+  </div>
+</header>
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer class="bg-[#b0aca4] py-8 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+    <div>{{ texts.operator_name }} · ИНН {{ texts.operator_inn }}</div>
+    <div class="flex items-center gap-4">
+      <a href="/" class="hover:text-primary transition-colors">На главную</a>
+      <a href="/privacy.html" class="hover:text-primary transition-colors">Политика конфиденциальности</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

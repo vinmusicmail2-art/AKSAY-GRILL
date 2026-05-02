@@ -13,12 +13,15 @@ A Flask-based web application for the Aksay Grill restaurant in Aksay, Russia. I
 
 ## Project Structure
 - `main.py` — Entry point, imports app from app.py
-- `app.py` — All Flask routes (public + admin), app factory, DB init
-- `models.py` — SQLAlchemy models: Admin, LoginLog, BusinessLunchOrder, CateringRequest, HallReservation, SiteText, DeliveryOrder
+- `app.py` — App factory, extensions (CSRF, LoginManager), DB init, helper functions; imports routes at bottom
+- `routes_public.py` — All public routes (home, business-lunch, catering, events, about, privacy, uploads, healthz, order/delivery, quick-request)
+- `routes_admin.py` — All admin routes (/admin/*)
+- `models.py` — SQLAlchemy models: Admin, LoginLog, BusinessLunchOrder, CateringRequest, HallReservation, SiteText, DeliveryOrder, QuickRequest
 - `db.py` — SQLAlchemy engine/session setup (SQLite)
 - `forms.py` — WTForms form definitions
-- `mailer.py` — Background email notifications via SMTP
-- `templates/` — Jinja2 templates (public pages + admin panel)
+- `mailer.py` — Background email notifications via SMTP; shared helpers: `_render_email_html`, `_send_notification_async`
+- `templates/base_public.html` — Base template for public sub-pages (shared head, header, footer)
+- `templates/` — Jinja2 templates; admin templates inherit from `templates/admin/base.html`
 - `assets/` — Static files (images, CSS, JS)
 
 ## Running the App
@@ -44,6 +47,7 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
 
 ## Public Pages
 - `/` — Main restaurant homepage with cart, checkout, reviews carousel
+- `/about` — About the restaurant
 - `/business-lunch` — Business lunch menu and order form
 - `/catering` — Catering service request form
 - `/events` — Hall reservation form
@@ -51,15 +55,23 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
 
 ## API Endpoints
 - `POST /order/delivery` — Submit delivery order (JSON, CSRF-exempt); saves to DeliveryOrder table
+- `POST /quick-request` — Quick delivery request from homepage delivery section
 
 ## Homepage Features
 - **Cart / Drawer** — All menu sections (incl. mangal) have "Add to order" buttons; cart drawer opens from hero CTA or floating button
 - **Checkout modal** — Collects name, phone, email, address, comment; POSTs JSON to `/order/delivery`
+- **Quick Request modal** — "Оставить заявку" button in delivery section; POSTs form to `/quick-request`
 - **Reviews section** (`#reviews`) — 10 hardcoded reviews in a carousel (3-up desktop / 1-up mobile), arrow nav + dot indicators + scroll-to-top button
 - **Hero CTA** — "Заказать доставку" opens cart, "Посмотреть отзывы" scrolls to `#reviews`
 
 ## Layout Notes
-- Left sidebar: `fixed`, `w-1/4` — all content areas use `md:ml-[25%]` to offset
-- `TEMPLATES_AUTO_RELOAD = True` in app.py — Jinja2 always reads templates fresh (no caching with gunicorn)
+- Left sidebar: `fixed`, `w-1/4` — all content areas use `md:ml-[25%]` to offset (index.html only)
+- Public sub-pages (about, business-lunch, catering, events, privacy) use `base_public.html` with shared header/footer
+- `TEMPLATES_AUTO_RELOAD = True` in app.py — Jinja2 always reads templates fresh
 - `html { overflow-x: hidden; overflow-y: scroll }` — prevents horizontal shift from carousel and always reserves vertical scrollbar space
-- Scroll lock for modals uses `lockScroll()`/`unlockScroll()` with `padding-right` compensation to prevent layout shift when scrollbar appears/disappears
+- Scroll lock for modals uses `lockScroll()`/`unlockScroll()` with `padding-right` compensation
+
+## Security
+- All redirects use `_safe_referrer()` helper to prevent open redirect via Referer header
+- CSRF protection via Flask-WTF on all forms; only `/order/delivery` is explicitly exempt (JSON API)
+- Admin routes protected with `@login_required`

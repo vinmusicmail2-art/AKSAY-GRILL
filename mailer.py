@@ -1,16 +1,8 @@
 """
 Отправка e-mail-уведомлений администратору.
 
-Используется стандартная smtplib через переменные окружения:
-- SMTP_HOST       — например, smtp.yandex.ru
-- SMTP_PORT       — 465 (SSL) или 587 (STARTTLS)
-- SMTP_USER       — логин (обычно совпадает с e-mail отправителя)
-- SMTP_PASSWORD   — пароль приложения SMTP
-- SMTP_FROM       — адрес «От кого» (если не задан — берётся SMTP_USER)
-
-Если хотя бы одно из обязательных значений не задано или адрес получателя
-не настроен в админке — функция возвращает (False, "причина") без падений,
-чтобы не сломать оформление заказа.
+Переменные окружения:
+- SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM
 """
 from __future__ import annotations
 
@@ -26,10 +18,13 @@ from db import SessionLocal
 
 logger = logging.getLogger(__name__)
 
+_BRAND = "#9b3f1c"
+_BODY_BG = "#f5f1e8"
+_LABEL_COLOR = "#56423a"
+
 
 def _get_smtp_config() -> dict:
     import os
-
     return {
         "host": (os.environ.get("SMTP_HOST") or "").strip(),
         "port": (os.environ.get("SMTP_PORT") or "").strip(),
@@ -42,7 +37,6 @@ def _get_smtp_config() -> dict:
 
 
 def smtp_status() -> dict:
-    """Вернуть статус конфигурации SMTP (без раскрытия пароля)."""
     cfg = _get_smtp_config()
     required = ["host", "port", "user", "password", "from_addr"]
     missing = [k for k in required if not cfg.get(k)]
@@ -58,7 +52,6 @@ def smtp_status() -> dict:
 
 
 def _get_recipient_and_toggle() -> Tuple[Optional[str], bool]:
-    """Прочитать e-mail получателя и флаг включения уведомлений из site_texts."""
     from models import load_site_texts
 
     session = SessionLocal()
@@ -75,7 +68,6 @@ def _get_recipient_and_toggle() -> Tuple[Optional[str], bool]:
 
 def _send_smtp(subject: str, body_text: str, body_html: Optional[str],
                to_addr: str) -> Tuple[bool, str]:
-    """Низкоуровневая отправка письма. Возвращает (ok, message)."""
     cfg = _get_smtp_config()
     if smtp_status()["missing"]:
         return False, "SMTP не настроен (нет одного из SMTP_* секретов)."
@@ -107,35 +99,96 @@ def _send_smtp(subject: str, body_text: str, body_html: Optional[str],
                     s.starttls(context=ssl.create_default_context())
                     s.ehlo()
                 except smtplib.SMTPException:
-                    pass  # сервер без TLS
+                    pass
                 s.login(cfg["user"], cfg["password"])
                 s.send_message(msg)
         return True, f"Отправлено на {to_addr}"
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.exception("SMTP send failed")
         return False, f"Ошибка SMTP: {exc.__class__.__name__}: {exc}"
 
 
+def _render_email_html(
+    order_id: int,
+    subtitle: str,
+    intro: str,
+    rows_html: str,
+    extras_html: str,
+    admin_link: str,
+) -> str:
+    """Собрать полное HTML-письмо из секций."""
+    return f"""\
+<!doctype html>
+<html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d1c16;background:{_BODY_BG};padding:24px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
+    <tr><td style="background:{_BRAND};color:#fff;padding:18px 24px;">
+      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · {subtitle}</div>
+      <div style="font-size:20px;font-weight:600;margin-top:4px;">Новая заявка #{order_id}</div>
+    </td></tr>
+    <tr><td style="padding:20px 24px;">
+      <p style="margin:0 0 14px;">{intro}</p>
+      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">{rows_html}</table>
+      {extras_html}
+      <div style="margin-top:24px;">
+        <a href="{admin_link}" style="display:inline-block;background:{_BRAND};color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Открыть в админке</a>
+      </div>
+    </td></tr>
+    <tr><td style="background:{_BODY_BG};padding:14px 24px;font-size:11px;color:{_LABEL_COLOR};">
+      Это автоматическое уведомление. На него отвечать не нужно.
+    </td></tr>
+  </table>
+</body></html>"""
+
+
+def _td_label(text: str) -> str:
+    return f'<td style="color:{_LABEL_COLOR};width:40%;">{text}</td>'
+
+
+def _comment_block(comment: str) -> str:
+    if not comment:
+        return ""
+    return (
+        f'<div style="margin-top:18px;">'
+        f'<div style="font-size:12px;color:{_LABEL_COLOR};text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Комментарий</div>'
+        f'<div style="white-space:pre-wrap;">{comment}</div></div>'
+    )
+
+
+def _send_notification_async(send_fn, data: dict, base_url: str, thread_name: str) -> None:
+    """Универсальный фоновый запуск уведомления."""
+    class _Shim:
+        pass
+
+    o = _Shim()
+    for k, v in data.items():
+        setattr(o, k, v)
+
+    def _run():
+        try:
+            ok, msg = send_fn(o, base_url=base_url)
+            if ok:
+                logger.info("%s notification sent: %s", thread_name, msg)
+            else:
+                logger.warning("%s notification skipped: %s", thread_name, msg)
+        except Exception:
+            logger.exception("%s notification crashed", thread_name)
+
+    threading.Thread(target=_run, daemon=True, name=thread_name).start()
+
+
+# ──────────────────────────── Бизнес-ланч ────────────────────────────
+
 def _format_order_email(order, base_url: str = "") -> Tuple[str, str, str]:
-    """Сформировать subject + plain + html для письма по заявке."""
     from models import BUSINESS_LUNCH_MENU
 
     titles = {i["key"]: i["title"] for i in BUSINESS_LUNCH_MENU}
     prices = {i["key"]: i["price"] for i in BUSINESS_LUNCH_MENU}
-
     combo_keys = [k for k in (order.selected_combos or "").split(",") if k]
-    combo_lines = [
-        f"  • {titles.get(k, k)} — {prices.get(k, '?')}₽"
-        for k in combo_keys
-    ]
 
-    subject = (
-        f"Новая заявка на бизнес-ланч #{order.id}"
-        f" — {order.persons} чел., {order.delivery_date}"
-    )
+    subject = f"Новая заявка на бизнес-ланч #{order.id} — {order.persons} чел., {order.delivery_date}"
     admin_link = f"{base_url}/admin/business-lunches" if base_url else "/admin/business-lunches"
 
-    plain_lines = [
+    plain = "\n".join([
         f"Получена новая заявка на бизнес-ланч #{order.id}.",
         "",
         f"Контактное лицо: {order.contact_name}",
@@ -143,120 +196,79 @@ def _format_order_email(order, base_url: str = "") -> Tuple[str, str, str]:
         f"Телефон: {order.phone}",
         f"E-mail: {order.email or '—'}",
         "",
-        f"Дата доставки: {order.delivery_date}"
-        + (f", время: {order.delivery_time}" if order.delivery_time else ""),
+        f"Дата доставки: {order.delivery_date}" + (f", время: {order.delivery_time}" if order.delivery_time else ""),
         f"Адрес: {order.delivery_address}",
         f"Количество персон: {order.persons}",
         "",
         "Выбранные комплексы:",
-        *(combo_lines or ["  • не выбраны (уточнить у клиента)"]),
+        *(f"  • {titles.get(k, k)} — {prices.get(k, '?')}₽" for k in combo_keys)
+        or ["  • не выбраны (уточнить у клиента)"],
         "",
         f"Комментарий: {order.comment or '—'}",
         "",
         f"Открыть в админке: {admin_link}",
-    ]
-    plain = "\n".join(plain_lines)
+    ])
 
     combos_html = "".join(
         f"<li>{titles.get(k, k)} — <strong>{prices.get(k, '?')}₽</strong></li>"
         for k in combo_keys
     ) or "<li><em>не выбраны (уточнить у клиента)</em></li>"
 
-    html = f"""\
-<!doctype html>
-<html><body style="font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#1d1c16; background:#f5f1e8; padding:24px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; margin:0 auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,0.06);">
-    <tr><td style="background:#9b3f1c; color:#fff; padding:18px 24px;">
-      <div style="font-size:11px; letter-spacing:0.15em; text-transform:uppercase; opacity:0.85;">Аксай Гриль · уведомление</div>
-      <div style="font-size:20px; font-weight:600; margin-top:4px;">Новая заявка #{order.id}</div>
-    </td></tr>
-    <tr><td style="padding:20px 24px;">
-      <p style="margin:0 0 14px;">Получена новая заявка на бизнес-ланч от компании.</p>
-      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
-        <tr><td style="color:#56423a; width:40%;">Контактное лицо</td><td><strong>{order.contact_name}</strong></td></tr>
-        <tr><td style="color:#56423a;">Компания</td><td>{order.company or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Телефон</td><td><a href="tel:{order.phone}" style="color:#9b3f1c;">{order.phone}</a></td></tr>
-        <tr><td style="color:#56423a;">E-mail</td><td>{order.email or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Дата / время</td><td>{order.delivery_date}{', ' + order.delivery_time if order.delivery_time else ''}</td></tr>
-        <tr><td style="color:#56423a;">Адрес</td><td>{order.delivery_address}</td></tr>
-        <tr><td style="color:#56423a;">Персон</td><td><strong>{order.persons}</strong></td></tr>
-      </table>
-      <div style="margin-top:18px;">
-        <div style="font-size:12px; color:#56423a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Выбранные комплексы</div>
-        <ul style="margin:0; padding-left:18px;">{combos_html}</ul>
-      </div>
-      {f'<div style="margin-top:18px;"><div style="font-size:12px; color:#56423a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Комментарий</div><div style="white-space:pre-wrap;">{order.comment}</div></div>' if order.comment else ''}
-      <div style="margin-top:24px;">
-        <a href="{admin_link}" style="display:inline-block; background:#9b3f1c; color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px;">Открыть в админке</a>
-      </div>
-    </td></tr>
-    <tr><td style="background:#f5f1e8; padding:14px 24px; font-size:11px; color:#56423a;">
-      Это автоматическое уведомление. На него отвечать не нужно.
-    </td></tr>
-  </table>
-</body></html>"""
+    rows_html = (
+        f"<tr>{_td_label('Контактное лицо')}<td><strong>{order.contact_name}</strong></td></tr>"
+        f"<tr>{_td_label('Компания')}<td>{order.company or '—'}</td></tr>"
+        f"<tr>{_td_label('Телефон')}<td><a href='tel:{order.phone}' style='color:{_BRAND};'>{order.phone}</a></td></tr>"
+        f"<tr>{_td_label('E-mail')}<td>{order.email or '—'}</td></tr>"
+        f"<tr>{_td_label('Дата / время')}<td>{order.delivery_date}{', ' + order.delivery_time if order.delivery_time else ''}</td></tr>"
+        f"<tr>{_td_label('Адрес')}<td>{order.delivery_address}</td></tr>"
+        f"<tr>{_td_label('Персон')}<td><strong>{order.persons}</strong></td></tr>"
+    )
+    extras_html = (
+        f'<div style="margin-top:18px;">'
+        f'<div style="font-size:12px;color:{_LABEL_COLOR};text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Выбранные комплексы</div>'
+        f'<ul style="margin:0;padding-left:18px;">{combos_html}</ul></div>'
+        + _comment_block(order.comment or "")
+    )
 
+    html = _render_email_html(
+        order.id, "уведомление",
+        "Получена новая заявка на бизнес-ланч от компании.",
+        rows_html, extras_html, admin_link,
+    )
     return subject, plain, html
 
 
 def send_order_notification(order, base_url: str = "") -> Tuple[bool, str]:
-    """Послать уведомление о новой заявке. Возвращает (ok, message)."""
     recipient, enabled = _get_recipient_and_toggle()
     if not enabled:
         return False, "Уведомления выключены в настройках."
     if not recipient:
         return False, "Не задан e-mail получателя в настройках."
-
     subject, plain, html = _format_order_email(order, base_url=base_url)
     return _send_smtp(subject, plain, html, recipient)
 
 
 def send_order_notification_async(order_data: dict, base_url: str = "") -> None:
-    """Отправить уведомление в фоне, чтобы не задерживать ответ HTTP.
+    _send_notification_async(send_order_notification, order_data, base_url, "order-notify")
 
-    Принимает dict с примитивами (не объект SQLA), чтобы не таскать сессию
-    в другой поток.
-    """
-    class _OrderShim:
-        pass
 
-    o = _OrderShim()
-    for k, v in order_data.items():
-        setattr(o, k, v)
-
-    def _run():
-        try:
-            ok, msg = send_order_notification(o, base_url=base_url)
-            if ok:
-                logger.info("Order notification sent: %s", msg)
-            else:
-                logger.warning("Order notification skipped: %s", msg)
-        except Exception:  # noqa: BLE001
-            logger.exception("Order notification crashed")
-
-    threading.Thread(target=_run, daemon=True, name="order-notify").start()
-
+# ──────────────────────────── Кейтеринг ────────────────────────────
 
 def _format_catering_email(req, base_url: str = "") -> Tuple[str, str, str]:
-    """Сформировать subject + plain + html для письма по заявке на кейтеринг."""
     from models import CATERING_FORMATS
 
     formats = {f["key"]: f["title"] for f in CATERING_FORMATS}
     fmt_title = formats.get(req.event_format, req.event_format)
-
-    subject = (
-        f"Новая заявка на кейтеринг #{req.id}"
-        f" — {fmt_title}, {req.guests} гостей, {req.event_date}"
-    )
     admin_link = f"{base_url}/admin/catering" if base_url else "/admin/catering"
 
     budget_line = (
-        f"Бюджет на гостя: {req.budget_per_guest}₽"
-        f" (≈ {req.budget_per_guest * req.guests}₽ на всех)"
+        f"Бюджет на гостя: {req.budget_per_guest}₽ (≈ {req.budget_per_guest * req.guests}₽ на всех)"
         if req.budget_per_guest else "Бюджет на гостя: не указан"
     )
 
-    plain_lines = [
+    subject = f"Новая заявка на кейтеринг #{req.id} — {fmt_title}, {req.guests} гостей, {req.event_date}"
+
+    plain = "\n".join([
         f"Получена новая заявка на кейтеринг #{req.id}.",
         "",
         f"Контактное лицо: {req.contact_name}",
@@ -265,8 +277,7 @@ def _format_catering_email(req, base_url: str = "") -> Tuple[str, str, str]:
         f"E-mail: {req.email or '—'}",
         "",
         f"Формат: {fmt_title}",
-        f"Дата мероприятия: {req.event_date}"
-        + (f", время: {req.event_time}" if req.event_time else ""),
+        f"Дата мероприятия: {req.event_date}" + (f", время: {req.event_time}" if req.event_time else ""),
         f"Площадка: {req.venue}",
         f"Количество гостей: {req.guests}",
         budget_line,
@@ -274,46 +285,33 @@ def _format_catering_email(req, base_url: str = "") -> Tuple[str, str, str]:
         f"Комментарий: {req.comment or '—'}",
         "",
         f"Открыть в админке: {admin_link}",
-    ]
-    plain = "\n".join(plain_lines)
+    ])
 
-    html = f"""\
-<!doctype html>
-<html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d1c16;background:#f5f1e8;padding:24px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
-    <tr><td style="background:#9b3f1c;color:#fff;padding:18px 24px;">
-      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · кейтеринг</div>
-      <div style="font-size:20px;font-weight:600;margin-top:4px;">Новая заявка #{req.id}</div>
-    </td></tr>
-    <tr><td style="padding:20px 24px;">
-      <p style="margin:0 0 14px;">Получена новая заявка на обслуживание мероприятия.</p>
-      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
-        <tr><td style="color:#56423a;width:40%;">Контактное лицо</td><td><strong>{req.contact_name}</strong></td></tr>
-        <tr><td style="color:#56423a;">Компания</td><td>{req.company or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Телефон</td><td><a href="tel:{req.phone}" style="color:#9b3f1c;">{req.phone}</a></td></tr>
-        <tr><td style="color:#56423a;">E-mail</td><td>{req.email or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Формат</td><td><strong>{fmt_title}</strong></td></tr>
-        <tr><td style="color:#56423a;">Дата / время</td><td>{req.event_date}{', ' + req.event_time if req.event_time else ''}</td></tr>
-        <tr><td style="color:#56423a;">Площадка</td><td>{req.venue}</td></tr>
-        <tr><td style="color:#56423a;">Гостей</td><td><strong>{req.guests}</strong></td></tr>
-        <tr><td style="color:#56423a;">Бюджет на гостя</td><td>{(str(req.budget_per_guest) + '₽ (≈ ' + str(req.budget_per_guest * req.guests) + '₽ на всех)') if req.budget_per_guest else '<em>не указан</em>'}</td></tr>
-      </table>
-      {f'<div style="margin-top:18px;"><div style="font-size:12px;color:#56423a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Комментарий</div><div style="white-space:pre-wrap;">{req.comment}</div></div>' if req.comment else ''}
-      <div style="margin-top:24px;">
-        <a href="{admin_link}" style="display:inline-block;background:#9b3f1c;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Открыть в админке</a>
-      </div>
-    </td></tr>
-    <tr><td style="background:#f5f1e8;padding:14px 24px;font-size:11px;color:#56423a;">
-      Это автоматическое уведомление. На него отвечать не нужно.
-    </td></tr>
-  </table>
-</body></html>"""
+    budget_html = (
+        f"{req.budget_per_guest}₽ (≈ {req.budget_per_guest * req.guests}₽ на всех)"
+        if req.budget_per_guest else "<em>не указан</em>"
+    )
+    rows_html = (
+        f"<tr>{_td_label('Контактное лицо')}<td><strong>{req.contact_name}</strong></td></tr>"
+        f"<tr>{_td_label('Компания')}<td>{req.company or '—'}</td></tr>"
+        f"<tr>{_td_label('Телефон')}<td><a href='tel:{req.phone}' style='color:{_BRAND};'>{req.phone}</a></td></tr>"
+        f"<tr>{_td_label('E-mail')}<td>{req.email or '—'}</td></tr>"
+        f"<tr>{_td_label('Формат')}<td><strong>{fmt_title}</strong></td></tr>"
+        f"<tr>{_td_label('Дата / время')}<td>{req.event_date}{', ' + req.event_time if req.event_time else ''}</td></tr>"
+        f"<tr>{_td_label('Площадка')}<td>{req.venue}</td></tr>"
+        f"<tr>{_td_label('Гостей')}<td><strong>{req.guests}</strong></td></tr>"
+        f"<tr>{_td_label('Бюджет на гостя')}<td>{budget_html}</td></tr>"
+    )
 
+    html = _render_email_html(
+        req.id, "кейтеринг",
+        "Получена новая заявка на обслуживание мероприятия.",
+        rows_html, _comment_block(req.comment or ""), admin_link,
+    )
     return subject, plain, html
 
 
 def send_catering_notification(req, base_url: str = "") -> Tuple[bool, str]:
-    """Отправить уведомление о новой заявке на кейтеринг."""
     recipient, enabled = _get_recipient_and_toggle()
     if not enabled:
         return False, "Уведомления выключены в настройках."
@@ -324,71 +322,25 @@ def send_catering_notification(req, base_url: str = "") -> Tuple[bool, str]:
 
 
 def send_catering_notification_async(data: dict, base_url: str = "") -> None:
-    """Фоновая отправка уведомления о заявке на кейтеринг."""
-    class _Shim:
-        pass
-
-    o = _Shim()
-    for k, v in data.items():
-        setattr(o, k, v)
-
-    def _run():
-        try:
-            ok, msg = send_catering_notification(o, base_url=base_url)
-            if ok:
-                logger.info("Catering notification sent: %s", msg)
-            else:
-                logger.warning("Catering notification skipped: %s", msg)
-        except Exception:  # noqa: BLE001
-            logger.exception("Catering notification crashed")
-
-    threading.Thread(target=_run, daemon=True, name="catering-notify").start()
+    _send_notification_async(send_catering_notification, data, base_url, "catering-notify")
 
 
-def send_test_email(to_addr: str) -> Tuple[bool, str]:
-    """Отправить тестовое письмо для проверки настроек SMTP."""
-    subject = "Тест уведомлений · Аксай Гриль"
-    plain = (
-        "Это тестовое письмо от Аксай Гриль.\n\n"
-        "Если вы видите это сообщение, значит настройки SMTP работают, "
-        "и админка сможет присылать уведомления о новых заявках на бизнес-ланчи."
-    )
-    html = """\
-<!doctype html><html><body style="font-family:Arial,sans-serif;background:#f5f1e8;padding:24px;">
-<div style="max-width:520px;margin:0 auto;background:#fff;padding:24px;border-radius:12px;">
-  <div style="font-size:11px;color:#56423a;text-transform:uppercase;letter-spacing:0.15em;">Аксай Гриль</div>
-  <h2 style="color:#9b3f1c;margin:6px 0 12px;font-weight:300;">Тест уведомлений</h2>
-  <p>Это тестовое письмо. Если вы его видите — настройки SMTP работают,
-  и уведомления о новых заявках на бизнес-ланчи будут приходить на этот адрес.</p>
-</div></body></html>"""
-    return _send_smtp(subject, plain, html, to_addr)
-
+# ──────────────────────────── Банкет / зал ────────────────────────────
 
 def _format_hall_email(req, base_url: str = "") -> Tuple[str, str, str]:
-    """Сформировать subject + plain + html для бронирования зала."""
     from models import EVENT_TYPES
 
     types = {t["key"]: t["title"] for t in EVENT_TYPES}
     type_title = types.get(req.event_type, req.event_type)
-
-    subject = (
-        f"Новая заявка на банкет #{req.id}"
-        f" — {type_title}, {req.guests} гостей, {req.event_date}"
-    )
     admin_link = f"{base_url}/admin/events" if base_url else "/admin/events"
 
-    extras = []
-    if req.needs_decor:
-        extras.append("оформление зала")
-    if req.needs_menu_help:
-        extras.append("помощь с меню")
+    extras = [x for x, flag in (("оформление зала", req.needs_decor), ("помощь с меню", req.needs_menu_help)) if flag]
     extras_line = ", ".join(extras) if extras else "—"
+    duration_line = f"{req.duration_hours} ч" if req.duration_hours else "не указана"
 
-    duration_line = (
-        f"{req.duration_hours} ч" if req.duration_hours else "не указана"
-    )
+    subject = f"Новая заявка на банкет #{req.id} — {type_title}, {req.guests} гостей, {req.event_date}"
 
-    plain_lines = [
+    plain = "\n".join([
         f"Получена новая заявка на бронирование зала #{req.id}.",
         "",
         f"Контактное лицо: {req.contact_name}",
@@ -405,46 +357,29 @@ def _format_hall_email(req, base_url: str = "") -> Tuple[str, str, str]:
         f"Комментарий: {req.comment or '—'}",
         "",
         f"Открыть в админке: {admin_link}",
-    ]
-    plain = "\n".join(plain_lines)
+    ])
 
-    html = f"""\
-<!doctype html>
-<html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1d1c16;background:#f5f1e8;padding:24px;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
-    <tr><td style="background:#9b3f1c;color:#fff;padding:18px 24px;">
-      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · банкеты</div>
-      <div style="font-size:20px;font-weight:600;margin-top:4px;">Новая заявка #{req.id}</div>
-    </td></tr>
-    <tr><td style="padding:20px 24px;">
-      <p style="margin:0 0 14px;">Получена новая заявка на бронирование зала.</p>
-      <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
-        <tr><td style="color:#56423a;width:40%;">Контактное лицо</td><td><strong>{req.contact_name}</strong></td></tr>
-        <tr><td style="color:#56423a;">Компания</td><td>{req.company or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Телефон</td><td><a href="tel:{req.phone}" style="color:#9b3f1c;">{req.phone}</a></td></tr>
-        <tr><td style="color:#56423a;">E-mail</td><td>{req.email or '—'}</td></tr>
-        <tr><td style="color:#56423a;">Тип</td><td><strong>{type_title}</strong></td></tr>
-        <tr><td style="color:#56423a;">Дата / начало</td><td>{req.event_date} в {req.event_time}</td></tr>
-        <tr><td style="color:#56423a;">Длительность</td><td>{duration_line}</td></tr>
-        <tr><td style="color:#56423a;">Гостей</td><td><strong>{req.guests}</strong></td></tr>
-        <tr><td style="color:#56423a;">Доп. услуги</td><td>{extras_line}</td></tr>
-      </table>
-      {f'<div style="margin-top:18px;"><div style="font-size:12px;color:#56423a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Комментарий</div><div style="white-space:pre-wrap;">{req.comment}</div></div>' if req.comment else ''}
-      <div style="margin-top:24px;">
-        <a href="{admin_link}" style="display:inline-block;background:#9b3f1c;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Открыть в админке</a>
-      </div>
-    </td></tr>
-    <tr><td style="background:#f5f1e8;padding:14px 24px;font-size:11px;color:#56423a;">
-      Это автоматическое уведомление. На него отвечать не нужно.
-    </td></tr>
-  </table>
-</body></html>"""
+    rows_html = (
+        f"<tr>{_td_label('Контактное лицо')}<td><strong>{req.contact_name}</strong></td></tr>"
+        f"<tr>{_td_label('Компания')}<td>{req.company or '—'}</td></tr>"
+        f"<tr>{_td_label('Телефон')}<td><a href='tel:{req.phone}' style='color:{_BRAND};'>{req.phone}</a></td></tr>"
+        f"<tr>{_td_label('E-mail')}<td>{req.email or '—'}</td></tr>"
+        f"<tr>{_td_label('Тип')}<td><strong>{type_title}</strong></td></tr>"
+        f"<tr>{_td_label('Дата / начало')}<td>{req.event_date} в {req.event_time}</td></tr>"
+        f"<tr>{_td_label('Длительность')}<td>{duration_line}</td></tr>"
+        f"<tr>{_td_label('Гостей')}<td><strong>{req.guests}</strong></td></tr>"
+        f"<tr>{_td_label('Доп. услуги')}<td>{extras_line}</td></tr>"
+    )
 
+    html = _render_email_html(
+        req.id, "банкеты",
+        "Получена новая заявка на бронирование зала.",
+        rows_html, _comment_block(req.comment or ""), admin_link,
+    )
     return subject, plain, html
 
 
 def send_hall_notification(req, base_url: str = "") -> Tuple[bool, str]:
-    """Отправить уведомление о новой заявке на бронирование зала."""
     recipient, enabled = _get_recipient_and_toggle()
     if not enabled:
         return False, "Уведомления выключены в настройках."
@@ -455,22 +390,23 @@ def send_hall_notification(req, base_url: str = "") -> Tuple[bool, str]:
 
 
 def send_hall_notification_async(data: dict, base_url: str = "") -> None:
-    """Фоновая отправка уведомления о бронировании зала."""
-    class _Shim:
-        pass
+    _send_notification_async(send_hall_notification, data, base_url, "hall-notify")
 
-    o = _Shim()
-    for k, v in data.items():
-        setattr(o, k, v)
 
-    def _run():
-        try:
-            ok, msg = send_hall_notification(o, base_url=base_url)
-            if ok:
-                logger.info("Hall reservation notification sent: %s", msg)
-            else:
-                logger.warning("Hall reservation notification not sent: %s", msg)
-        except Exception:
-            logger.exception("Hall reservation notification failed")
+# ──────────────────────────── Тест ────────────────────────────
 
-    threading.Thread(target=_run, daemon=True).start()
+def send_test_email(to_addr: str) -> Tuple[bool, str]:
+    subject = "Тест уведомлений · Аксай Гриль"
+    plain = (
+        "Это тестовое письмо от Аксай Гриль.\n\n"
+        "Если вы видите это сообщение, значит настройки SMTP работают."
+    )
+    html = f"""\
+<!doctype html><html><body style="font-family:Arial,sans-serif;background:{_BODY_BG};padding:24px;">
+<div style="max-width:520px;margin:0 auto;background:#fff;padding:24px;border-radius:12px;">
+  <div style="font-size:11px;color:{_LABEL_COLOR};text-transform:uppercase;letter-spacing:0.15em;">Аксай Гриль</div>
+  <h2 style="color:{_BRAND};margin:6px 0 12px;font-weight:300;">Тест уведомлений</h2>
+  <p>Это тестовое письмо. Если вы его видите — настройки SMTP работают,
+  и уведомления о новых заявках будут приходить на этот адрес.</p>
+</div></body></html>"""
+    return _send_smtp(subject, plain, html, to_addr)
