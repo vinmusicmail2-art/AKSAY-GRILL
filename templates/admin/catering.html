@@ -18,6 +18,18 @@
       </div>
 
       <div class="flex flex-col gap-3 items-end">
+        <!-- Поиск -->
+        <form method="GET" action="{{ url_for('admin_catering') }}" class="flex items-center gap-2">
+          <input type="hidden" name="show" value="{{ show }}"/>
+          <input type="hidden" name="sort" value="{{ sort }}"/>
+          <input type="hidden" name="period" value="{{ period }}"/>
+          <input type="hidden" name="admin" value="{{ admin_filter }}"/>
+          <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border {% if search_q %}border-primary bg-primary/5{% else %}border-outline/30 bg-surface-low{% endif %}">
+            <span class="material-symbols-outlined text-base text-on-surface-variant">search</span>
+            <input type="text" name="q" value="{{ search_q }}" placeholder="Имя, телефон, площадка..." class="bg-transparent border-none focus:outline-none text-sm w-44 text-on-surface placeholder-on-surface-variant/50"/>
+            {% if search_q %}<a href="{{ url_for('admin_catering', show=show, sort=sort, period=period, admin=admin_filter) }}" class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm leading-none">close</span></a>{% endif %}
+          </div>
+        </form>
         <!-- Кнопка экспорта -->
         <a href="{{ url_for('admin_catering_export', show=show) }}"
            class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-surface-low text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors border border-outline/20">

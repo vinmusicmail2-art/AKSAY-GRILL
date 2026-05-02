@@ -422,6 +422,7 @@ def admin_business_lunches():
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
     period       = (request.args.get("period") or "").strip()
+    search_q     = (request.args.get("q") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -445,6 +446,15 @@ def admin_business_lunches():
             q = q.filter(BusinessLunchOrder.created_at >= now - timedelta(days=7))
         elif period == "month":
             q = q.filter(BusinessLunchOrder.created_at >= now - timedelta(days=30))
+        if search_q:
+            like = f"%{search_q}%"
+            from sqlalchemy import or_
+            q = q.filter(or_(
+                BusinessLunchOrder.contact_name.like(like),
+                BusinessLunchOrder.phone.like(like),
+                BusinessLunchOrder.company.like(like),
+                BusinessLunchOrder.comment.like(like),
+            ))
         _LUNCH_SORT = {
             "date_desc": [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()],
             "date_asc":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.asc()],
@@ -465,6 +475,7 @@ def admin_business_lunches():
             admin_filter=admin_filter,
             all_admins=all_admins,
             period=period,
+            search_q=search_q,
             combo_titles={item["key"]: item["title"] for item in BUSINESS_LUNCH_MENU},
             combo_prices={item["key"]: item["price"] for item in BUSINESS_LUNCH_MENU},
         )
@@ -508,6 +519,7 @@ def admin_catering():
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
     period       = (request.args.get("period") or "").strip()
+    search_q     = (request.args.get("q") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -531,6 +543,16 @@ def admin_catering():
             q = q.filter(CateringRequest.created_at >= now - timedelta(days=7))
         elif period == "month":
             q = q.filter(CateringRequest.created_at >= now - timedelta(days=30))
+        if search_q:
+            like = f"%{search_q}%"
+            from sqlalchemy import or_
+            q = q.filter(or_(
+                CateringRequest.contact_name.like(like),
+                CateringRequest.phone.like(like),
+                CateringRequest.company.like(like),
+                CateringRequest.comment.like(like),
+                CateringRequest.venue.like(like),
+            ))
         _CAT_SORT = {
             "date_desc":   [CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()],
             "date_asc":    [CateringRequest.is_processed.asc(), CateringRequest.created_at.asc()],
@@ -553,6 +575,7 @@ def admin_catering():
             admin_filter=admin_filter,
             all_admins=all_admins,
             period=period,
+            search_q=search_q,
             format_titles={item["key"]: item["title"] for item in CATERING_FORMATS},
         )
     finally:
@@ -595,6 +618,7 @@ def admin_events():
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
     period       = (request.args.get("period") or "").strip()
+    search_q     = (request.args.get("q") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -618,6 +642,15 @@ def admin_events():
             q = q.filter(HallReservation.created_at >= now - timedelta(days=7))
         elif period == "month":
             q = q.filter(HallReservation.created_at >= now - timedelta(days=30))
+        if search_q:
+            like = f"%{search_q}%"
+            from sqlalchemy import or_
+            q = q.filter(or_(
+                HallReservation.contact_name.like(like),
+                HallReservation.phone.like(like),
+                HallReservation.company.like(like),
+                HallReservation.comment.like(like),
+            ))
         _EV_SORT = {
             "date_desc":   [HallReservation.is_processed.asc(), HallReservation.created_at.desc()],
             "date_asc":    [HallReservation.is_processed.asc(), HallReservation.created_at.asc()],
@@ -638,6 +671,7 @@ def admin_events():
             admin_filter=admin_filter,
             all_admins=all_admins,
             period=period,
+            search_q=search_q,
             type_titles={item["key"]: item["title"] for item in EVENT_TYPES},
         )
     finally:
@@ -680,6 +714,7 @@ def admin_delivery_orders():
     sort         = request.args.get("sort", "date_desc")
     admin_filter = (request.args.get("admin") or "").strip()
     period       = (request.args.get("period") or "").strip()
+    search_q     = (request.args.get("q") or "").strip()
     session = SessionLocal()
     try:
         all_admins = sorted({
@@ -703,6 +738,15 @@ def admin_delivery_orders():
             q = q.filter(DeliveryOrder.created_at >= now - timedelta(days=7))
         elif period == "month":
             q = q.filter(DeliveryOrder.created_at >= now - timedelta(days=30))
+        if search_q:
+            like = f"%{search_q}%"
+            from sqlalchemy import or_
+            q = q.filter(or_(
+                DeliveryOrder.contact_name.like(like),
+                DeliveryOrder.phone.like(like),
+                DeliveryOrder.delivery_address.like(like),
+                DeliveryOrder.comment.like(like),
+            ))
         _DEL_SORT = {
             "date_desc":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()],
             "date_asc":   [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.asc()],
@@ -729,6 +773,7 @@ def admin_delivery_orders():
             admin_filter=admin_filter,
             all_admins=all_admins,
             period=period,
+            search_q=search_q,
             parse_items=parse_items,
         )
     finally:
