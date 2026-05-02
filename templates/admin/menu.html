@@ -157,10 +157,11 @@
     </div>
 
     {% if cat.dishes %}
-    <div class="overflow-x-auto mb-6">
-      <table class="w-full text-sm">
+    <div class="overflow-x-auto mb-4">
+      <table class="w-full text-sm" id="dish-table-{{ cat.id }}">
         <thead class="text-left text-xs uppercase tracking-wider text-on-surface-variant border-b border-outline/30">
           <tr>
+            <th class="py-2 pr-2 w-8"></th>
             <th class="py-2 pr-3 w-14">Фото</th>
             <th class="py-2 pr-3">Название / описание</th>
             <th class="py-2 pr-3 w-20 text-right">Цена</th>
@@ -168,9 +169,14 @@
             <th class="py-2 text-right w-20">Действия</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="dishes-{{ cat.id }}">
           {% for dish in cat.dishes %}
-          <tr class="border-b border-outline/10 {{ 'opacity-50' if not dish.is_available }}">
+          <tr class="border-b border-outline/10 dish-row {{ 'opacity-50' if not dish.is_available }}"
+              data-dish-id="{{ dish.id }}" draggable="true">
+            <td class="py-2 pr-2">
+              <span class="drag-handle material-symbols-outlined text-on-surface-variant/30 hover:text-primary cursor-grab active:cursor-grabbing text-xl select-none"
+                    title="Перетащить для изменения порядка">drag_indicator</span>
+            </td>
             <td class="py-2 pr-3">
               {% if dish.image_src %}
               <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
@@ -221,6 +227,25 @@
         </tbody>
       </table>
     </div>
+
+    <form method="POST" action="{{ url_for('admin_menu_category_reorder_dishes', cat_id=cat.id) }}"
+          id="reorder-form-{{ cat.id }}" class="hidden mb-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="order" id="reorder-input-{{ cat.id }}" value=""/>
+      <div class="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-xl">
+        <span class="material-symbols-outlined text-primary text-lg">swap_vert</span>
+        <span class="text-sm text-primary flex-1">Порядок изменён — сохраните, чтобы применить на сайте</span>
+        <button type="submit"
+                class="bg-primary text-on-primary px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+          Сохранить порядок
+        </button>
+        <button type="button" onclick="cancelReorder({{ cat.id }})"
+                class="px-4 py-2 rounded-lg text-sm border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">
+          Отмена
+        </button>
+      </div>
+    </form>
+
     {% else %}
     <p class="text-sm text-on-surface-variant mb-6 italic">Блюд пока нет — добавьте первое.</p>
     {% endif %}
@@ -238,10 +263,86 @@
   {% endfor %}
 
 </div>
+
+<style>
+.dish-row.drag-over { outline: 2px dashed var(--color-primary, #8B4513); background: rgba(139,69,19,.05); }
+.dish-row.dragging  { opacity: .35; }
+</style>
+
 <script>
 function togglePanel(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('hidden');
+}
+
+(function () {
+  let dragged = null;
+
+  document.querySelectorAll('[id^="dishes-"]').forEach(function (tbody) {
+    const catId = tbody.id.replace('dishes-', '');
+
+    function getOriginalOrder() {
+      return Array.from(tbody.querySelectorAll('tr[data-dish-id]'))
+        .map(r => r.dataset.dishId).join(',');
+    }
+    const originalOrder = getOriginalOrder();
+
+    function syncForm() {
+      const current = getOriginalOrder();
+      const form = document.getElementById('reorder-form-' + catId);
+      const input = document.getElementById('reorder-input-' + catId);
+      if (!form || !input) return;
+      if (current !== originalOrder) {
+        input.value = current;
+        form.classList.remove('hidden');
+      } else {
+        form.classList.add('hidden');
+      }
+    }
+
+    tbody.querySelectorAll('tr[data-dish-id]').forEach(function (row) {
+      row.addEventListener('dragstart', function (e) {
+        dragged = row;
+        setTimeout(() => row.classList.add('dragging'), 0);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      row.addEventListener('dragend', function () {
+        row.classList.remove('dragging');
+        tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+        dragged = null;
+        syncForm();
+      });
+      row.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (dragged && dragged !== row) {
+          tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+          row.classList.add('drag-over');
+        }
+      });
+      row.addEventListener('dragleave', function () {
+        row.classList.remove('drag-over');
+      });
+      row.addEventListener('drop', function (e) {
+        e.preventDefault();
+        row.classList.remove('drag-over');
+        if (dragged && dragged !== row) {
+          const rows = Array.from(tbody.querySelectorAll('tr[data-dish-id]'));
+          const fromIdx = rows.indexOf(dragged);
+          const toIdx = rows.indexOf(row);
+          if (fromIdx < toIdx) {
+            tbody.insertBefore(dragged, row.nextSibling);
+          } else {
+            tbody.insertBefore(dragged, row);
+          }
+        }
+      });
+    });
+  });
+}());
+
+function cancelReorder(catId) {
+  location.reload();
 }
 </script>
 {% endblock %}

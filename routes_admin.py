@@ -1153,6 +1153,36 @@ def admin_menu_dish_delete(dish_id: int):
     return redirect(url_for("admin_menu"))
 
 
+@app.route("/admin/menu/category/<int:cat_id>/reorder-dishes", methods=["POST"])
+@login_required
+def admin_menu_category_reorder_dishes(cat_id: int):
+    from models import Dish, MenuCategory
+
+    session = SessionLocal()
+    try:
+        cat = session.get(MenuCategory, cat_id)
+        if cat is None:
+            abort(404)
+        raw = (request.form.get("order") or "").strip()
+        if not raw:
+            flash("Порядок не передан.", "error")
+            return redirect(url_for("admin_menu"))
+        ids = [int(x) for x in raw.split(",") if x.strip().isdigit()]
+        for rank, dish_id in enumerate(ids):
+            dish = session.get(Dish, dish_id)
+            if dish and dish.category_id == cat_id:
+                dish.sort_order = rank
+        session.commit()
+        flash(f"Порядок блюд в «{cat.name}» сохранён.", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error reordering dishes in cat %d: %s", cat_id, exc)
+        flash("Ошибка при сохранении порядка.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
 @app.route("/admin/menu/dish/<int:dish_id>/toggle", methods=["POST"])
 @login_required
 def admin_menu_dish_toggle(dish_id: int):
