@@ -63,6 +63,11 @@ def about():
     return render_template("about.html")
 
 
+@app.route("/spasibo")
+def spasibo():
+    return render_template("spasibo.html")
+
+
 @app.route("/business-lunch", methods=["GET", "POST"])
 def business_lunch():
     from forms import BusinessLunchOrderForm
@@ -109,8 +114,7 @@ def business_lunch():
             from mailer import send_order_notification_async
             send_order_notification_async(order_snapshot, base_url=request.host_url.rstrip("/"))
 
-            flash("Заявка принята. Мы свяжемся с вами для подтверждения.", "success")
-            return redirect(url_for("business_lunch"))
+            return redirect(url_for("spasibo"))
         finally:
             session.close()
 
@@ -165,11 +169,7 @@ def catering():
             from mailer import send_catering_notification_async
             send_catering_notification_async(req_snapshot, base_url=request.host_url.rstrip("/"))
 
-            flash(
-                "Заявка принята. Менеджер свяжется с вами для расчёта меню и согласования деталей.",
-                "success",
-            )
-            return redirect(url_for("catering"))
+            return redirect(url_for("spasibo"))
         finally:
             session.close()
 
@@ -226,12 +226,7 @@ def events():
             from mailer import send_hall_notification_async
             send_hall_notification_async(req_snapshot, base_url=request.host_url.rstrip("/"))
 
-            flash(
-                "Заявка на бронирование принята. Менеджер свяжется с вами, чтобы "
-                "подтвердить дату, обсудить меню и оформление.",
-                "success",
-            )
-            return redirect(url_for("events"))
+            return redirect(url_for("spasibo"))
         finally:
             session.close()
 
@@ -311,7 +306,6 @@ def quick_request():
         )
         session.add(req)
         session.commit()
-        flash("Заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
-        return redirect(url_for("home") + "#dostavka")
+        return redirect(url_for("spasibo"))
     finally:
         session.close()

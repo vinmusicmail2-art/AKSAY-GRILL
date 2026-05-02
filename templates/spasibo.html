@@ -1,0 +1,44 @@
+{% extends "base_public.html" %}
+
+{% block title %}Спасибо за заявку · {{ texts.site_title }}{% endblock %}
+{% block meta_description %}Ваша заявка принята. Мы свяжемся с вами в ближайшее время.{% endblock %}
+{% block og_title %}Спасибо · {{ texts.site_title }}{% endblock %}
+{% block og_description %}Ваша заявка принята. Мы свяжемся с вами в ближайшее время.{% endblock %}
+
+{% block extra_styles %}
+  .thank-bg {
+    background-color: #f5f1e8;
+    min-height: 100vh;
+  }
+{% endblock %}
+
+{% block content %}
+<div class="thank-bg flex flex-col items-center justify-center px-4 py-24 text-center">
+  <div class="bg-white rounded-2xl shadow-xl px-10 py-14 max-w-lg w-full">
+
+    <div class="flex items-center justify-center w-20 h-20 rounded-full bg-[#9b3f1c]/10 mx-auto mb-6">
+      <span class="material-symbols-outlined text-[48px] text-[#9b3f1c]">check_circle</span>
+    </div>
+
+    <h1 class="font-headline text-3xl text-[#3a2c26] mb-3" style="font-family:'Yanone Kaffeesatz',sans-serif; font-weight:300;">
+      Спасибо за заявку!
+    </h1>
+
+    <p class="text-[#56423a] text-base mb-2">
+      Ваша заявка принята. Менеджер свяжется с вами в ближайшее время для подтверждения.
+    </p>
+    <p class="text-[#56423a]/70 text-sm mb-10">
+      Если вопрос срочный — позвоните нам напрямую:
+      <a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}"
+         class="font-bold text-[#9b3f1c] hover:underline">{{ texts.contact_phone }}</a>
+    </p>
+
+    <a href="/"
+       class="inline-flex items-center gap-2 bg-[#9b3f1c] text-white px-8 py-3 rounded-lg font-medium hover:opacity-90 hover:scale-105 transition-all duration-200 text-sm">
+      <span class="material-symbols-outlined text-lg leading-none">arrow_back</span>
+      Вернуться на главную
+    </a>
+
+  </div>
+</div>
+{% endblock %}
