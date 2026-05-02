@@ -1098,11 +1098,17 @@ def admin_menu_dish_edit(dish_id: int):
                     preselect_cat_id=dish.category_id,
                 )
             uploaded = _save_dish_image(request.files.get("image_file"), name)
+            remove_image = request.form.get("remove_image") == "1"
             dish.name = name
             dish.category_id = category_id
             dish.description = (request.form.get("description") or "").strip()
             dish.price = int(request.form.get("price") or 0)
-            dish.image_src = uploaded or (request.form.get("image_src") or "").strip()
+            if uploaded:
+                dish.image_src = uploaded
+            elif remove_image:
+                dish.image_src = ""
+            else:
+                dish.image_src = (request.form.get("image_src") or "").strip()
             dish.is_available = bool(request.form.get("is_available"))
             dish.sort_order = int(request.form.get("sort_order") or 0)
             session.commit()

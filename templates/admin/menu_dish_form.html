@@ -79,15 +79,26 @@
             </div>
           </div>
 
-          <!-- Загрузка -->
+          <!-- Загрузка и удаление -->
           <div class="flex-1 space-y-3">
-            <label for="image_file"
-                   class="flex items-center gap-2 cursor-pointer bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary px-4 py-2.5 rounded-lg text-sm font-medium transition-all w-fit">
-              <span class="material-symbols-outlined text-lg">upload</span>
-              Загрузить фото
-            </label>
+            <div class="flex flex-wrap gap-2">
+              <label for="image_file"
+                     class="flex items-center gap-2 cursor-pointer bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary px-4 py-2.5 rounded-lg text-sm font-medium transition-all">
+                <span class="material-symbols-outlined text-lg">upload</span>
+                Загрузить фото
+              </label>
+              {% if dish and dish.image_src %}
+              <button type="button" id="remove-btn"
+                      onclick="removeImage()"
+                      class="flex items-center gap-2 border border-red-300 text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-lg text-sm font-medium transition-all">
+                <span class="material-symbols-outlined text-lg">delete</span>
+                Убрать фото
+              </button>
+              {% endif %}
+            </div>
             <input type="file" name="image_file" id="image_file" accept="image/*"
                    class="hidden" onchange="previewImage(this)"/>
+            <input type="hidden" name="remove_image" id="remove_image" value=""/>
             <p id="file-name" class="text-xs text-on-surface-variant">Файл не выбран</p>
             <p class="text-xs text-on-surface-variant/60">JPG, PNG, WebP · до 5 МБ</p>
           </div>
@@ -136,6 +147,7 @@
 function previewImage(input) {
   const wrap = document.getElementById('img-preview-wrap');
   const nameEl = document.getElementById('file-name');
+  const removeInput = document.getElementById('remove_image');
   if (input.files && input.files[0]) {
     const file = input.files[0];
     if (file.size > 5 * 1024 * 1024) {
@@ -146,12 +158,27 @@ function previewImage(input) {
     }
     nameEl.textContent = file.name;
     nameEl.classList.remove('text-red-500');
+    if (removeInput) removeInput.value = '';
     const reader = new FileReader();
     reader.onload = function(e) {
       wrap.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover" alt="Превью"/>';
     };
     reader.readAsDataURL(file);
   }
+}
+
+function removeImage() {
+  const wrap = document.getElementById('img-preview-wrap');
+  const nameEl = document.getElementById('file-name');
+  const removeInput = document.getElementById('remove_image');
+  const fileInput = document.getElementById('image_file');
+  const removeBtn = document.getElementById('remove-btn');
+
+  wrap.innerHTML = '<span class="material-symbols-outlined text-3xl text-on-surface-variant/40">restaurant</span>';
+  if (fileInput) { fileInput.value = ''; }
+  if (removeInput) { removeInput.value = '1'; }
+  if (nameEl) { nameEl.textContent = 'Файл не выбран'; nameEl.classList.remove('text-red-500'); }
+  if (removeBtn) { removeBtn.style.display = 'none'; }
 }
 </script>
 {% endblock %}
