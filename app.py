@@ -6,8 +6,9 @@ import logging
 import os
 from urllib.parse import urlparse
 
-from flask import Flask, request
+from flask import Flask, flash, jsonify, redirect, request, url_for
 from flask_compress import Compress
+from flask_limiter import Limiter
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -135,6 +136,42 @@ def _client_ip() -> str:
     if forwarded:
         return forwarded.split(",")[0].strip()
     return request.remote_addr or ""
+
+
+# ---------------------------------------------------------------------------
+# Rate limiting
+# ---------------------------------------------------------------------------
+
+limiter = Limiter(
+    key_func=_client_ip,
+    app=app,
+    storage_uri="memory://",
+    default_limits=[],
+)
+
+# Лимиты, применяемые к публичным POST-роутам:
+#   5 запросов в минуту И 30 запросов в час с одного IP.
+FORM_RATE_LIMIT = "5 per minute; 30 per hour"
+
+
+@app.errorhandler(429)
+def _too_many_requests(e):
+    """Обработчик превышения лимита запросов (HTTP 429).
+
+    JSON-клиентам (fetch/AJAX) возвращает JSON-ошибку.
+    Обычным браузерным запросам — flash-сообщение + редирект назад.
+    """
+    if request.is_json or request.path.startswith("/order/") or request.path == "/contact":
+        return jsonify({"ok": False, "error": "Слишком много запросов. Попробуйте через минуту."}), 429
+    flash("Слишком много попыток. Пожалуйста, подождите минуту и попробуйте снова.", "error")
+    ref = request.referrer
+    if ref:
+        from urllib.parse import urlparse as _up
+        p = _up(ref)
+        safe = p.path + (("?" + p.query) if p.query else "")
+        if safe.startswith("/"):
+            return redirect(safe), 429
+    return redirect(url_for("home")), 429
 
 
 def _is_safe_next(target: str) -> bool:

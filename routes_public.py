@@ -3,13 +3,14 @@ import logging
 
 from flask import flash, jsonify, redirect, render_template, request, send_from_directory, url_for
 
-from app import app, csrf, _client_ip
+from app import FORM_RATE_LIMIT, app, csrf, limiter, _client_ip
 from db import BASE_DIR, SessionLocal
 
 logger = logging.getLogger(__name__)
 
 
 @app.route("/contact", methods=["POST"])
+@limiter.limit(FORM_RATE_LIMIT)
 def contact():
     """Принять вопрос с публичной контактной формы и отправить e-mail администратору."""
     from mailer import send_contact_question
@@ -99,6 +100,7 @@ def spasibo_meropriyatiya():
 
 
 @app.route("/business-lunch", methods=["GET", "POST"])
+@limiter.limit(FORM_RATE_LIMIT, methods=["POST"])
 def business_lunch():
     """Страница и форма заявки на корпоративные бизнес-ланчи.
 
@@ -157,6 +159,7 @@ def business_lunch():
 
 
 @app.route("/catering", methods=["GET", "POST"])
+@limiter.limit(FORM_RATE_LIMIT, methods=["POST"])
 def catering():
     """Страница и форма заявки на кейтеринговое обслуживание мероприятий.
 
@@ -217,6 +220,7 @@ def catering():
 
 
 @app.route("/events", methods=["GET", "POST"])
+@limiter.limit(FORM_RATE_LIMIT, methods=["POST"])
 def events():
     """Страница и форма бронирования зала для мероприятий (банкет, свадьба и др.).
 
@@ -292,6 +296,7 @@ def healthz():
 
 @app.route("/order/delivery", methods=["POST"])
 @csrf.exempt
+@limiter.limit(FORM_RATE_LIMIT)
 def order_delivery():
     """Принять JSON-заказ из корзины на главной странице.
 
@@ -346,6 +351,7 @@ def order_delivery():
 
 
 @app.route("/quick-request", methods=["POST"])
+@limiter.limit(FORM_RATE_LIMIT)
 def quick_request():
     """Принять быструю заявку на доставку с главной страницы (форма, не JSON).
 
