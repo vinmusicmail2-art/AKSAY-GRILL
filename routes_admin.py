@@ -1,9 +1,11 @@
 """Административные маршруты Аксай Гриль."""
+import csv
+import io
 import json as _json
 import logging
 from datetime import datetime
 
-from flask import abort, flash, redirect, render_template, request, url_for
+from flask import Response, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from app import app, _client_ip, _is_safe_next, _safe_referrer
@@ -1097,3 +1099,164 @@ def admin_browse_dirs():
         "parent": parent,
         "dirs": dirs,
     })
+
+
+# ---------------------------------------------------------------------------
+# CSV-экспорт заявок
+# ---------------------------------------------------------------------------
+
+def _csv_response(filename: str, rows: list[list]) -> Response:
+    buf = io.StringIO()
+    buf.write("\ufeff")  # BOM для Excel
+    writer = csv.writer(buf, delimiter=";", quoting=csv.QUOTE_ALL)
+    for row in rows:
+        writer.writerow(row)
+    output = buf.getvalue()
+    return Response(
+        output,
+        mimetype="text/csv; charset=utf-8-sig",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@app.route("/admin/delivery-orders/export")
+@login_required
+def admin_delivery_orders_export():
+    from models import DeliveryOrder
+    show = request.args.get("show", "all")
+    session = SessionLocal()
+    try:
+        q = session.query(DeliveryOrder)
+        if show == "pending":
+            q = q.filter(DeliveryOrder.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(DeliveryOrder.is_processed.is_(True))
+        orders = q.order_by(DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()).all()
+
+        rows = [["#", "Имя", "Телефон", "E-mail", "Адрес доставки",
+                 "Сумма (₽)", "Комментарий", "Дата заявки", "Статус",
+                 "Дата обработки", "Обработал"]]
+        for o in orders:
+            rows.append([
+                o.id, o.contact_name, o.phone, o.email or "",
+                o.delivery_address, o.total_amount or "",
+                o.comment or "",
+                o.created_at.strftime("%d.%m.%Y %H:%M"),
+                "Выполнен" if o.is_processed else "Новый",
+                o.processed_at.strftime("%d.%m.%Y %H:%M") if o.processed_at else "",
+                o.processed_by or "",
+            ])
+        ts = datetime.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"dostavka_{ts}.csv", rows)
+    finally:
+        session.close()
+
+
+@app.route("/admin/business-lunches/export")
+@login_required
+def admin_business_lunches_export():
+    from models import BusinessLunchOrder
+    show = request.args.get("show", "all")
+    session = SessionLocal()
+    try:
+        q = session.query(BusinessLunchOrder)
+        if show == "pending":
+            q = q.filter(BusinessLunchOrder.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(BusinessLunchOrder.is_processed.is_(True))
+        orders = q.order_by(BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()).all()
+
+        rows = [["#", "Имя", "Компания", "Телефон", "E-mail",
+                 "Количество чел.", "Дата доставки", "Время доставки",
+                 "Адрес доставки", "Комплексы", "Комментарий",
+                 "Дата заявки", "Статус", "Дата обработки", "Обработал"]]
+        for o in orders:
+            rows.append([
+                o.id, o.contact_name, o.company or "", o.phone, o.email or "",
+                o.persons, o.delivery_date, o.delivery_time or "",
+                o.delivery_address, o.selected_combos or "",
+                o.comment or "",
+                o.created_at.strftime("%d.%m.%Y %H:%M"),
+                "Обработана" if o.is_processed else "Новая",
+                o.processed_at.strftime("%d.%m.%Y %H:%M") if o.processed_at else "",
+                o.processed_by or "",
+            ])
+        ts = datetime.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"biznes_lanchi_{ts}.csv", rows)
+    finally:
+        session.close()
+
+
+@app.route("/admin/catering/export")
+@login_required
+def admin_catering_export():
+    from models import CateringRequest
+    show = request.args.get("show", "all")
+    session = SessionLocal()
+    try:
+        q = session.query(CateringRequest)
+        if show == "pending":
+            q = q.filter(CateringRequest.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(CateringRequest.is_processed.is_(True))
+        reqs = q.order_by(CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()).all()
+
+        rows = [["#", "Имя", "Компания", "Телефон", "E-mail",
+                 "Формат", "Гостей", "Дата мероприятия", "Время",
+                 "Место проведения", "Бюджет на гостя (₽)", "Итого (₽)",
+                 "Комментарий", "Дата заявки", "Статус",
+                 "Дата обработки", "Обработал"]]
+        for r in reqs:
+            total = (r.budget_per_guest * r.guests) if r.budget_per_guest else ""
+            rows.append([
+                r.id, r.contact_name, r.company or "", r.phone, r.email or "",
+                r.event_format, r.guests, r.event_date, r.event_time or "",
+                r.venue, r.budget_per_guest or "", total,
+                r.comment or "",
+                r.created_at.strftime("%d.%m.%Y %H:%M"),
+                "Обработана" if r.is_processed else "Новая",
+                r.processed_at.strftime("%d.%m.%Y %H:%M") if r.processed_at else "",
+                r.processed_by or "",
+            ])
+        ts = datetime.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"kejtering_{ts}.csv", rows)
+    finally:
+        session.close()
+
+
+@app.route("/admin/events/export")
+@login_required
+def admin_events_export():
+    from models import HallReservation
+    show = request.args.get("show", "all")
+    session = SessionLocal()
+    try:
+        q = session.query(HallReservation)
+        if show == "pending":
+            q = q.filter(HallReservation.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(HallReservation.is_processed.is_(True))
+        reqs = q.order_by(HallReservation.is_processed.asc(), HallReservation.created_at.desc()).all()
+
+        rows = [["#", "Имя", "Компания", "Телефон", "E-mail",
+                 "Тип мероприятия", "Гостей", "Дата", "Время",
+                 "Длительность (ч)", "Оформление зала", "Помощь с меню",
+                 "Комментарий", "Дата заявки", "Статус",
+                 "Дата обработки", "Обработал"]]
+        for r in reqs:
+            rows.append([
+                r.id, r.contact_name, r.company or "", r.phone, r.email or "",
+                r.event_type, r.guests, r.event_date, r.event_time,
+                r.duration_hours or "",
+                "Да" if r.needs_decor else "Нет",
+                "Да" if r.needs_menu_help else "Нет",
+                r.comment or "",
+                r.created_at.strftime("%d.%m.%Y %H:%M"),
+                "Обработана" if r.is_processed else "Новая",
+                r.processed_at.strftime("%d.%m.%Y %H:%M") if r.processed_at else "",
+                r.processed_by or "",
+            ])
+        ts = datetime.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"bankety_{ts}.csv", rows)
+    finally:
+        session.close()
