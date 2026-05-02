@@ -305,6 +305,18 @@ def order_delivery():
         )
         session.add(order)
         session.commit()
+        order_snapshot = {
+            "id": order.id,
+            "contact_name": order.contact_name,
+            "phone": order.phone,
+            "email": order.email,
+            "delivery_address": order.delivery_address,
+            "items_json": order.items_json,
+            "total_amount": order.total_amount,
+            "comment": order.comment,
+        }
+        from mailer import send_delivery_notification_async
+        send_delivery_notification_async(order_snapshot, base_url=request.host_url.rstrip("/"))
         return {"ok": True, "id": order.id}
     finally:
         session.close()

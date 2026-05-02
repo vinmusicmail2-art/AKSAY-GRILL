@@ -413,6 +413,83 @@ def send_hall_notification_async(data: dict, base_url: str = "") -> None:
     _send_notification_async(send_hall_notification, data, base_url, "hall-notify")
 
 
+# ──────────────────────────── Доставка ────────────────────────────
+
+def _format_delivery_email(order, base_url: str = "") -> Tuple[str, str, str]:
+    admin_link = f"{base_url}/admin/delivery-orders" if base_url else "/admin/delivery-orders"
+
+    subject = f"Новый заказ на доставку #{order.id} — {order.contact_name}, {order.total_amount or 0}₽"
+
+    # Пытаемся распарсить состав заказа
+    try:
+        import json as _json
+        items = _json.loads(order.items_json) if order.items_json else []
+    except Exception:
+        items = []
+
+    items_lines = "\n".join(
+        f"  • {i.get('name', '?')} × {i.get('qty', 1)} — {i.get('price', 0) * i.get('qty', 1)}₽"
+        for i in items
+    ) or "  (состав не распознан)"
+
+    plain = "\n".join([
+        f"Получен новый заказ на доставку #{order.id}.",
+        "",
+        f"Клиент:  {order.contact_name}",
+        f"Телефон: {order.phone}",
+        f"E-mail:  {order.email or '—'}",
+        f"Адрес:   {order.delivery_address}",
+        "",
+        "Состав заказа:",
+        items_lines,
+        "",
+        f"Итого: {order.total_amount or 0}₽",
+        f"Комментарий: {order.comment or '—'}",
+        "",
+        f"Открыть в админке: {admin_link}",
+    ])
+
+    items_html = "".join(
+        f"<li>{i.get('name','?')} × {i.get('qty',1)} — <strong>{i.get('price',0)*i.get('qty',1)}₽</strong></li>"
+        for i in items
+    ) or "<li><em>состав не распознан</em></li>"
+
+    rows_html = (
+        f"<tr>{_td_label('Клиент')}<td><strong>{order.contact_name}</strong></td></tr>"
+        f"<tr>{_td_label('Телефон')}<td><a href='tel:{order.phone}' style='color:{_BRAND};'>{order.phone}</a></td></tr>"
+        f"<tr>{_td_label('E-mail')}<td>{order.email or '—'}</td></tr>"
+        f"<tr>{_td_label('Адрес доставки')}<td>{order.delivery_address}</td></tr>"
+        f"<tr>{_td_label('Сумма')}<td><strong style='color:{_BRAND};font-size:16px;'>{order.total_amount or 0}₽</strong></td></tr>"
+    )
+    extras_html = (
+        f'<div style="margin-top:18px;">'
+        f'<div style="font-size:12px;color:{_LABEL_COLOR};text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Состав заказа</div>'
+        f'<ul style="margin:0;padding-left:18px;">{items_html}</ul></div>'
+        + _comment_block(order.comment or "")
+    )
+
+    html = _render_email_html(
+        order.id, "доставка",
+        "Получен новый заказ из корзины на сайте.",
+        rows_html, extras_html, admin_link,
+    )
+    return subject, plain, html
+
+
+def send_delivery_notification(order, base_url: str = "") -> Tuple[bool, str]:
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
+    subject, plain, html = _format_delivery_email(order, base_url=base_url)
+    return _send_smtp(subject, plain, html, recipient)
+
+
+def send_delivery_notification_async(order_data: dict, base_url: str = "") -> None:
+    _send_notification_async(send_delivery_notification, order_data, base_url, "delivery-notify")
+
+
 # ──────────────────────────── Контакт (вопрос с сайта) ────────────────────────────
 
 def send_contact_question(name: str, phone: str, message: str) -> Tuple[bool, str]:
