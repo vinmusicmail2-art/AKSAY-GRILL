@@ -857,12 +857,12 @@
       btn.replaceWith(slot);
     });
   }
-  function lockScroll(){
+  window.lockScroll = function(){
     const sw = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.paddingRight = sw + 'px';
     document.documentElement.style.overflow = 'hidden';
   }
-  function unlockScroll(){
+  window.unlockScroll = function(){
     document.documentElement.style.overflow = '';
     document.body.style.paddingRight = '';
   }
