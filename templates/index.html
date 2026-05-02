@@ -4,12 +4,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>{{ texts.site_title }}</title>
-<link rel="icon" type="image/jpeg" href="/assets/logo.webp"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/webp" href="/assets/logo.webp"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;family=Yanone+Kaffeesatz:wght@200..700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;family=Yanone+Kaffeesatz:wght@200..700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
@@ -268,7 +268,7 @@
 </a>
 <div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/15 mt-4">
 <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+<input id="dish-search-mobile" class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
 </nav>
 </div>
@@ -1889,7 +1889,7 @@
 </div>
 
 <!-- Footer Section -->
-<footer class="w-full md:ml-[25%] md:w-[75%] py-5 mt-[15px] border-none md:rounded-tl-xl">
+<footer id="main-footer" class="w-full md:ml-[25%] md:w-[75%] py-5 mt-[15px] border-none md:rounded-tl-xl">
 <div class="flex flex-col items-center justify-center gap-3 px-4">
 <p class="font-body text-xl text-[#56423a] font-medium">Напишите нам на <a href="mailto:aksaygryl@mail.ru" class="text-[#9b3f1c] hover:underline transition-colors">aksaygryl@mail.ru</a></p>
 <div class="flex items-center gap-3">
@@ -2054,6 +2054,7 @@
   function plural(n, forms){ const n10 = n % 10, n100 = n % 100; if(n10===1 && n100!==11) return forms[0]; if(n10>=2 && n10<=4 && (n100<10||n100>=20)) return forms[1]; return forms[2]; }
   function totalQty(){ return Object.values(cart).reduce((s,i)=>s+i.qty,0); }
   function totalSum(){ return Object.values(cart).reduce((s,i)=>s+i.qty*i.price,0); }
+  function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
   function render(){
     const qty = totalQty();
     const sum = totalSum();
@@ -2080,13 +2081,13 @@
         div.className = 'cart-item-row flex items-center justify-between bg-white rounded-lg p-3 shadow-sm';
         div.innerHTML = `
           <div class="flex-1 min-w-0 pr-3">
-            <div class="font-medium text-on-surface text-sm truncate">${i.name}</div>
-            <div class="text-xs text-on-surface-variant">${i.price}₽ × ${i.qty}</div>
+            <div class="font-medium text-on-surface text-sm truncate">${esc(i.name)}</div>
+            <div class="text-xs text-on-surface-variant">${esc(String(i.price))}₽ × ${esc(String(i.qty))}</div>
           </div>
           <div class="flex items-center gap-2">
-            <button data-act="dec" data-name="${i.name}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
-            <span class="w-6 text-center text-sm font-bold">${i.qty}</span>
-            <button data-act="inc" data-name="${i.name}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
+            <button data-act="dec" data-name="${esc(i.name)}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
+            <span class="w-6 text-center text-sm font-bold">${esc(String(i.qty))}</span>
+            <button data-act="inc" data-name="${esc(i.name)}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
           </div>`;
         list.appendChild(div);
       });
@@ -2106,13 +2107,13 @@
       if(inCart && inCart.qty > 0){
         slot.innerHTML = `
           <div class="w-full flex items-center justify-between bg-primary text-on-primary py-2 px-3 rounded-lg">
-            <button data-act="dec" data-name="${name}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">−</button>
-            <span class="font-bold text-sm">В заказе: ${inCart.qty}</span>
-            <button data-act="inc" data-name="${name}" data-price="${price}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">+</button>
+            <button data-act="dec" data-name="${esc(name)}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">−</button>
+            <span class="font-bold text-sm">В заказе: ${esc(String(inCart.qty))}</span>
+            <button data-act="inc" data-name="${esc(name)}" data-price="${esc(String(price))}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">+</button>
           </div>`;
       } else {
         slot.innerHTML = `
-          <button data-act="add" data-name="${name}" data-price="${price}" class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs mt-auto">
+          <button data-act="add" data-name="${esc(name)}" data-price="${esc(String(price))}" class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs mt-auto">
             <span class="material-symbols-outlined text-lg">add_circle</span>
             Добавить в заказ
           </button>`;
@@ -2296,6 +2297,13 @@
       }
     }
     searchInput.addEventListener('input', applyFilter);
+    const mobileSearch = document.getElementById('dish-search-mobile');
+    if(mobileSearch){
+      mobileSearch.addEventListener('input', function(){
+        searchInput.value = this.value;
+        applyFilter();
+      });
+    }
   }
 })();
 </script>
@@ -2311,7 +2319,7 @@
 <span class="text-[10px] font-medium uppercase tracking-wider">Корзина</span>
 <span id="cart-badge-mobile" class="absolute top-1 right-6 bg-primary text-on-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
 </button>
-<button class="flex flex-col items-center justify-center py-2 gap-1 bg-primary text-on-primary rounded-lg shadow-md shadow-primary/20 active:opacity-80 transition-all">
+<button onclick="openCart()" class="flex flex-col items-center justify-center py-2 gap-1 bg-primary text-on-primary rounded-lg shadow-md shadow-primary/20 active:opacity-80 transition-all">
 <span class="material-symbols-outlined text-2xl">delivery_dining</span>
 <span class="text-[10px] font-bold uppercase tracking-wider">Заказать</span>
 </button>
@@ -2448,7 +2456,7 @@ document.getElementById('quick-request-modal').addEventListener('click', functio
 (function(){
   var btn = document.getElementById('back-to-top');
   if (!btn) return;
-  var footer = document.querySelector('footer');
+  var footer = document.getElementById('main-footer');
   function show(){ btn.classList.remove('opacity-0','pointer-events-none','translate-y-3'); btn.classList.add('opacity-100'); }
   function hide(){ btn.classList.add('opacity-0','pointer-events-none','translate-y-3'); btn.classList.remove('opacity-100'); }
   function check(){
@@ -2475,11 +2483,11 @@ function openContactModal() {
   if (success) success.classList.add('hidden');
   if (err) { err.classList.add('hidden'); err.textContent = ''; }
   overlay.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
 }
 function closeContactModal() {
   document.getElementById('contact-modal-overlay').classList.add('hidden');
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 function submitContactForm(e) {
   e.preventDefault();
