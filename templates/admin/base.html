@@ -14,13 +14,12 @@
 <body class="min-h-screen">
   <header class="bg-surface-low/80 backdrop-blur-xl border-b border-outline/20">
     <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3 hover:opacity-80">
-        <img src="/assets/logo.webp" alt="Аксай Гриль" class="w-10 h-10 rounded-full object-cover" style="filter: brightness(1.15);"/>
+      <div class="flex items-center gap-3">
         <div>
           <div class="text-xs uppercase tracking-widest text-on-surface-variant">Аксай Гриль</div>
           <div class="text-sm font-medium">Админка</div>
         </div>
-      </a>
+      </div>
       {% if current_user.is_authenticated %}
       <div class="flex items-center gap-3">
         <a href="{{ url_for('admin_profile') }}"
@@ -28,6 +27,11 @@
            class="flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary transition-colors hidden sm:flex">
           <span class="material-symbols-outlined text-base">manage_accounts</span>
           {{ current_user.username }}
+        </a>
+        <a href="/"
+           class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-outline/40 text-sm font-medium text-on-surface-variant hover:text-primary hover:border-primary transition-colors">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          На сайт
         </a>
         <form method="POST" action="{{ url_for('admin_logout') }}" class="m-0">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
