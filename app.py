@@ -7,6 +7,7 @@ import os
 from urllib.parse import urlparse
 
 from flask import Flask, request
+from flask_compress import Compress
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -26,7 +27,12 @@ app.secret_key = os.environ.get("SESSION_SECRET") or os.environ.get(
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["COMPRESS_ALGORITHM"] = "gzip"
+app.config["COMPRESS_LEVEL"] = 6
+app.config["COMPRESS_MIN_SIZE"] = 500
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+Compress(app)
 
 csrf = CSRFProtect(app)
 
@@ -128,6 +134,17 @@ def _safe_referrer(fallback: str) -> str:
     if _is_safe_next(path):
         return path
     return fallback
+
+
+@app.after_request
+def add_cache_headers(response):
+    path = request.path
+    if path.startswith("/assets/"):
+        ext = path.rsplit(".", 1)[-1].lower()
+        if ext in ("css", "js", "woff", "woff2", "ttf", "otf", "webp", "png", "jpg", "jpeg", "svg", "ico"):
+            response.cache_control.max_age = 2592000
+            response.cache_control.public = True
+    return response
 
 
 with app.app_context():
