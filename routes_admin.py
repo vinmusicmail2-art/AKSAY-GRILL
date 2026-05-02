@@ -191,6 +191,84 @@ def admin_dashboard():
         session.close()
 
 
+@app.route("/admin/stats")
+@login_required
+def admin_stats():
+    from datetime import datetime, timedelta
+
+    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation
+
+    period = request.args.get("period", "all")
+    now = datetime.utcnow()
+    if period == "today":
+        since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == "week":
+        since = now - timedelta(days=7)
+    elif period == "month":
+        since = now - timedelta(days=30)
+    else:
+        since = None
+
+    tables = [
+        (DeliveryOrder,       "delivery",  "Доставка"),
+        (BusinessLunchOrder,  "lunch",     "Ланчи"),
+        (CateringRequest,     "catering",  "Кейтеринг"),
+        (HallReservation,     "events",    "Банкеты"),
+    ]
+
+    session = SessionLocal()
+    try:
+        stats = {}
+
+        for model, key, _label in tables:
+            q = session.query(model).filter(
+                model.is_processed.is_(True),
+                model.processed_by.isnot(None),
+            )
+            if since:
+                q = q.filter(model.processed_at >= since)
+            for row in q.all():
+                by = row.processed_by
+                if by not in stats:
+                    stats[by] = {
+                        "delivery": 0, "lunch": 0,
+                        "catering": 0, "events": 0,
+                        "total": 0,
+                        "total_minutes": 0.0, "timed_count": 0,
+                        "last_at": None,
+                    }
+                stats[by][key] += 1
+                stats[by]["total"] += 1
+                if row.processed_at and row.created_at:
+                    diff = (row.processed_at - row.created_at).total_seconds() / 60.0
+                    if diff >= 0:
+                        stats[by]["total_minutes"] += diff
+                        stats[by]["timed_count"] += 1
+                if row.processed_at:
+                    if stats[by]["last_at"] is None or row.processed_at > stats[by]["last_at"]:
+                        stats[by]["last_at"] = row.processed_at
+
+        for by in stats:
+            tc = stats[by]["timed_count"]
+            stats[by]["avg_minutes"] = round(stats[by]["total_minutes"] / tc) if tc else None
+
+        stats_list = sorted(stats.items(), key=lambda x: x[1]["total"], reverse=True)
+
+        totals = {"delivery": 0, "lunch": 0, "catering": 0, "events": 0, "total": 0}
+        for _by, s in stats_list:
+            for k in totals:
+                totals[k] += s[k]
+
+        return render_template(
+            "admin/stats.html",
+            stats_list=stats_list,
+            totals=totals,
+            period=period,
+        )
+    finally:
+        session.close()
+
+
 _TEXTS_EXCLUDED_SECTIONS = {
     "Реквизиты оператора (ИП)",
     "Юридические страницы",
