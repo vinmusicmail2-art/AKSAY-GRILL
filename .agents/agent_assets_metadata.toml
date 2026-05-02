@@ -527,3 +527,9 @@ id = "jFNnalhLrwrV-g3MuYefd"
 uri = "file://GUIDE.txt"
 type = "text"
 title = "Руководство пользователя — TXT"
+
+[[outputs]]
+id = "SJpL1CoEjUENwDRY4aMOj"
+uri = "file://aksay-gril_2026-05-02_13-54-27_UTC.tar.gz"
+type = "unspecified"
+title = "Аксай Гриль — архив сайта 2026-05-02 13:54 UTC"

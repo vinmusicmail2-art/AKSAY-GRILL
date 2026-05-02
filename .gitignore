@@ -9,3 +9,5 @@ data.db-journal
 uploads/
 *.log
 .DS_Store
+node_modules/
+*.tar.gz
