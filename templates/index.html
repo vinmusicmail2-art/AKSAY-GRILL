@@ -148,7 +148,8 @@
 <!-- Contact strip (широкие экраны ≥1536px) — в одной строке с навигацией;
      position:absolute + inset-y-0 + items-center => вертикально по центру.
      НЕ влияет на высоту шапки и ничего не сдвигает -->
-<div class="hidden 2xl:flex absolute inset-y-0 items-center justify-center gap-x-4 text-[26px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 230px; right: 700px;">
+<div class="hidden 2xl:flex flex-col absolute inset-y-0 items-center justify-center text-[26px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 230px; right: 700px; transform: translateY(-15px);">
+<div class="flex items-center justify-center gap-x-4">
 <a href="#map"
    class="flex items-center gap-1.5 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
 <span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">location_on</span>
@@ -165,9 +166,12 @@
 <span class="font-semibold">{{ texts.contact_hours }}</span>
 </span>
 </div>
+<span class="font-semibold text-[#56423a] text-center pointer-events-none" style="font-size: 15px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</span>
+</div>
 <!-- Contact strip (средние экраны md..xl) — компактная полоса снизу шапки.
      position:absolute + bottom-1 => тоже не влияет на высоту шапки -->
-<div class="hidden md:flex 2xl:hidden absolute items-center justify-center gap-x-4 text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none bg-[#cbc7bf] dark:bg-[#1a1614] rounded-l-lg shadow-sm shadow-[#56423a]/10" style="left: 370px; right: 0; top: 100%; padding: 6px 16px;">
+<div class="hidden md:flex 2xl:hidden flex-col absolute items-center justify-center text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none bg-[#cbc7bf] dark:bg-[#1a1614] rounded-l-lg shadow-sm shadow-[#56423a]/10" style="left: 370px; right: 0; top: calc(100% - 15px); padding: 4px 16px 6px;">
+<div class="flex items-center justify-center gap-x-4">
 <a href="#map"
    class="flex items-center gap-1 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
 <span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
@@ -183,6 +187,8 @@
 <span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">schedule</span>
 <span class="font-semibold">{{ texts.contact_hours }}</span>
 </span>
+</div>
+<span class="font-semibold text-[#56423a] text-center pointer-events-none" style="font-size: 13px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</span>
 </div>
 <nav class="hidden md:flex items-center gap-6 text-sm tracking-wide font-medium">
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#dostavka">Доставка</a>
@@ -373,6 +379,7 @@
 <div class="bg-primary text-on-primary rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
 <div class="px-8 pt-6 pb-4 text-center">
 <p class="opacity-80 text-xs leading-relaxed mt-[32px]">{{ texts.map_address_text }}</p>
+<p class="font-semibold text-center mt-1" style="font-size: 15px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</p>
 </div>
 <div class="w-full" style="height: 380px;">
 <iframe
