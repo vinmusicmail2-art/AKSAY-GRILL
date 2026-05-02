@@ -388,15 +388,25 @@ def admin_email_settings():
 def admin_business_lunches():
     from models import BUSINESS_LUNCH_MENU, BusinessLunchOrder
 
-    show = request.args.get("show", "pending")
-    sort = request.args.get("sort", "date_desc")
+    show         = request.args.get("show", "pending")
+    sort         = request.args.get("sort", "date_desc")
+    admin_filter = (request.args.get("admin") or "").strip()
     session = SessionLocal()
     try:
+        all_admins = sorted({
+            row[0] for row in
+            session.query(BusinessLunchOrder.processed_by)
+            .filter(BusinessLunchOrder.is_processed.is_(True),
+                    BusinessLunchOrder.processed_by.isnot(None))
+            .distinct().all()
+        })
         q = session.query(BusinessLunchOrder)
         if show == "pending":
             q = q.filter(BusinessLunchOrder.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(BusinessLunchOrder.is_processed.is_(True))
+        if admin_filter:
+            q = q.filter(BusinessLunchOrder.processed_by == admin_filter)
         _LUNCH_SORT = {
             "date_desc": [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()],
             "date_asc":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.asc()],
@@ -414,6 +424,8 @@ def admin_business_lunches():
             orders=orders,
             show=show,
             sort=sort,
+            admin_filter=admin_filter,
+            all_admins=all_admins,
             combo_titles={item["key"]: item["title"] for item in BUSINESS_LUNCH_MENU},
             combo_prices={item["key"]: item["price"] for item in BUSINESS_LUNCH_MENU},
         )
@@ -453,15 +465,25 @@ def admin_business_lunch_toggle(order_id: int):
 def admin_catering():
     from models import CATERING_FORMATS, CateringRequest
 
-    show = request.args.get("show", "pending")
-    sort = request.args.get("sort", "date_desc")
+    show         = request.args.get("show", "pending")
+    sort         = request.args.get("sort", "date_desc")
+    admin_filter = (request.args.get("admin") or "").strip()
     session = SessionLocal()
     try:
+        all_admins = sorted({
+            row[0] for row in
+            session.query(CateringRequest.processed_by)
+            .filter(CateringRequest.is_processed.is_(True),
+                    CateringRequest.processed_by.isnot(None))
+            .distinct().all()
+        })
         q = session.query(CateringRequest)
         if show == "pending":
             q = q.filter(CateringRequest.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(CateringRequest.is_processed.is_(True))
+        if admin_filter:
+            q = q.filter(CateringRequest.processed_by == admin_filter)
         _CAT_SORT = {
             "date_desc":   [CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()],
             "date_asc":    [CateringRequest.is_processed.asc(), CateringRequest.created_at.asc()],
@@ -481,6 +503,8 @@ def admin_catering():
             requests=requests_list,
             show=show,
             sort=sort,
+            admin_filter=admin_filter,
+            all_admins=all_admins,
             format_titles={item["key"]: item["title"] for item in CATERING_FORMATS},
         )
     finally:
@@ -519,15 +543,25 @@ def admin_catering_toggle(request_id: int):
 def admin_events():
     from models import EVENT_TYPES, HallReservation
 
-    show = request.args.get("show", "pending")
-    sort = request.args.get("sort", "date_desc")
+    show         = request.args.get("show", "pending")
+    sort         = request.args.get("sort", "date_desc")
+    admin_filter = (request.args.get("admin") or "").strip()
     session = SessionLocal()
     try:
+        all_admins = sorted({
+            row[0] for row in
+            session.query(HallReservation.processed_by)
+            .filter(HallReservation.is_processed.is_(True),
+                    HallReservation.processed_by.isnot(None))
+            .distinct().all()
+        })
         q = session.query(HallReservation)
         if show == "pending":
             q = q.filter(HallReservation.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(HallReservation.is_processed.is_(True))
+        if admin_filter:
+            q = q.filter(HallReservation.processed_by == admin_filter)
         _EV_SORT = {
             "date_desc":   [HallReservation.is_processed.asc(), HallReservation.created_at.desc()],
             "date_asc":    [HallReservation.is_processed.asc(), HallReservation.created_at.asc()],
@@ -545,6 +579,8 @@ def admin_events():
             requests=requests_list,
             show=show,
             sort=sort,
+            admin_filter=admin_filter,
+            all_admins=all_admins,
             type_titles={item["key"]: item["title"] for item in EVENT_TYPES},
         )
     finally:
@@ -583,15 +619,25 @@ def admin_events_toggle(request_id: int):
 def admin_delivery_orders():
     from models import DeliveryOrder
 
-    show = request.args.get("show", "pending")
-    sort = request.args.get("sort", "date_desc")
+    show         = request.args.get("show", "pending")
+    sort         = request.args.get("sort", "date_desc")
+    admin_filter = (request.args.get("admin") or "").strip()
     session = SessionLocal()
     try:
+        all_admins = sorted({
+            row[0] for row in
+            session.query(DeliveryOrder.processed_by)
+            .filter(DeliveryOrder.is_processed.is_(True),
+                    DeliveryOrder.processed_by.isnot(None))
+            .distinct().all()
+        })
         q = session.query(DeliveryOrder)
         if show == "pending":
             q = q.filter(DeliveryOrder.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(DeliveryOrder.is_processed.is_(True))
+        if admin_filter:
+            q = q.filter(DeliveryOrder.processed_by == admin_filter)
         _DEL_SORT = {
             "date_desc":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()],
             "date_asc":   [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.asc()],
@@ -615,6 +661,8 @@ def admin_delivery_orders():
             orders=orders,
             show=show,
             sort=sort,
+            admin_filter=admin_filter,
+            all_admins=all_admins,
             parse_items=parse_items,
         )
     finally:

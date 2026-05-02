@@ -48,7 +48,7 @@
             ('status_done',  'Готовые вверху'),
           ] %}
           {% for value, label in sorts %}
-            <a href="{{ url_for('admin_business_lunches', show=show, sort=value) }}"
+            <a href="{{ url_for('admin_business_lunches', show=show, sort=value, admin=admin_filter) }}"
                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
                {% if sort == value %}bg-primary text-on-primary
                {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
@@ -56,6 +56,25 @@
             </a>
           {% endfor %}
         </div>
+        <!-- Фильтр по администратору -->
+        {% if all_admins %}
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Обработал:</span>
+          <a href="{{ url_for('admin_business_lunches', show=show, sort=sort, admin='') }}"
+             class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
+             {% if not admin_filter %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+            Все
+          </a>
+          {% for name in all_admins %}
+          <a href="{{ url_for('admin_business_lunches', show=show, sort=sort, admin=name) }}"
+             class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
+             {% if admin_filter == name %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full {% if admin_filter == name %}bg-white/30{% else %}bg-primary/20{% endif %} text-[9px] font-bold uppercase">{{ name[0] }}</span>
+            {{ name }}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
     </div>
   </section>
