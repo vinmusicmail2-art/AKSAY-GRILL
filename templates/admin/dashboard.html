@@ -45,18 +45,25 @@
     </button>
   </section>
 
-  <!-- Ссылка на статистику -->
+  <!-- Ссылки: статистика + журнал -->
   <section class="bg-surface-card rounded-xl shadow p-5">
     <div class="flex items-center justify-between gap-4 flex-wrap">
       <div>
-        <h2 class="text-base font-medium text-primary">Статистика администраторов</h2>
-        <p class="text-xs text-on-surface-variant mt-0.5">Кто и сколько заявок принял и обработал</p>
+        <h2 class="text-base font-medium text-primary">Аналитика</h2>
+        <p class="text-xs text-on-surface-variant mt-0.5">Статистика и журнал действий администраторов</p>
       </div>
-      <a href="{{ url_for('admin_stats') }}"
-         class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-base">bar_chart</span>
-        Открыть статистику
-      </a>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="{{ url_for('admin_journal') }}"
+           class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-all text-sm font-medium">
+          <span class="material-symbols-outlined text-base">history</span>
+          Журнал действий
+        </a>
+        <a href="{{ url_for('admin_stats') }}"
+           class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-all text-sm font-medium">
+          <span class="material-symbols-outlined text-base">bar_chart</span>
+          Статистика
+        </a>
+      </div>
     </div>
   </section>
 

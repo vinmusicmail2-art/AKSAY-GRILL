@@ -1340,6 +1340,154 @@ def admin_events_export():
         session.close()
 
 
+@app.route("/admin/journal")
+@login_required
+def admin_journal():
+    from datetime import datetime as _dt, timedelta
+
+    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation
+
+    admin_filter = (request.args.get("admin") or "").strip()
+    type_filter  = request.args.get("type", "all")
+    period       = request.args.get("period", "all")
+
+    now = _dt.utcnow()
+    if period == "today":
+        since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == "week":
+        since = now - timedelta(days=7)
+    elif period == "month":
+        since = now - timedelta(days=30)
+    else:
+        since = None
+
+    tables = [
+        (DeliveryOrder,      "delivery",  "Доставка",   "delivery_dining"),
+        (BusinessLunchOrder, "lunch",     "Ланчи",      "restaurant"),
+        (CateringRequest,    "catering",  "Кейтеринг",  "local_shipping"),
+        (HallReservation,    "events",    "Банкеты",    "celebration"),
+    ]
+
+    entries = []
+    all_admins = set()
+
+    session = SessionLocal()
+    try:
+        for model, key, label, icon in tables:
+            if type_filter != "all" and type_filter != key:
+                continue
+            q = session.query(model).filter(
+                model.is_processed.is_(True),
+                model.processed_by.isnot(None),
+            )
+            if since:
+                q = q.filter(model.processed_at >= since)
+            if admin_filter:
+                q = q.filter(model.processed_by == admin_filter)
+            for row in q.all():
+                all_admins.add(row.processed_by)
+                entries.append({
+                    "processed_at": row.processed_at or row.created_at,
+                    "admin":        row.processed_by,
+                    "type_key":     key,
+                    "type_label":   label,
+                    "type_icon":    icon,
+                    "order_id":     row.id,
+                    "customer":     row.contact_name,
+                    "phone":        row.phone,
+                    "created_at":   row.created_at,
+                })
+
+        # Collect all distinct admin names for the filter dropdown
+        if not admin_filter:
+            for model, *_ in tables:
+                for row in session.query(model.processed_by).filter(
+                    model.is_processed.is_(True),
+                    model.processed_by.isnot(None),
+                ).distinct():
+                    all_admins.add(row[0])
+
+        entries.sort(key=lambda e: e["processed_at"] or _dt.min, reverse=True)
+
+        return render_template(
+            "admin/journal.html",
+            entries=entries,
+            all_admins=sorted(all_admins),
+            admin_filter=admin_filter,
+            type_filter=type_filter,
+            period=period,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/journal/export")
+@login_required
+def admin_journal_export():
+    from datetime import datetime as _dt, timedelta
+
+    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation
+
+    admin_filter = (request.args.get("admin") or "").strip()
+    type_filter  = request.args.get("type", "all")
+    period       = request.args.get("period", "all")
+
+    now = _dt.utcnow()
+    if period == "today":
+        since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    elif period == "week":
+        since = now - timedelta(days=7)
+    elif period == "month":
+        since = now - timedelta(days=30)
+    else:
+        since = None
+
+    tables = [
+        (DeliveryOrder,      "delivery",  "Доставка"),
+        (BusinessLunchOrder, "lunch",     "Ланчи"),
+        (CateringRequest,    "catering",  "Кейтеринг"),
+        (HallReservation,    "events",    "Банкеты"),
+    ]
+
+    session = SessionLocal()
+    try:
+        rows = [["Дата обработки", "Администратор", "Тип заявки", "ID заявки",
+                 "Клиент", "Телефон", "Дата поступления"]]
+        entries = []
+        for model, key, label in tables:
+            if type_filter != "all" and type_filter != key:
+                continue
+            q = session.query(model).filter(
+                model.is_processed.is_(True),
+                model.processed_by.isnot(None),
+            )
+            if since:
+                q = q.filter(model.processed_at >= since)
+            if admin_filter:
+                q = q.filter(model.processed_by == admin_filter)
+            for row in q.all():
+                entries.append((
+                    row.processed_at or row.created_at,
+                    row.processed_by,
+                    label,
+                    row.id,
+                    row.contact_name,
+                    row.phone,
+                    row.created_at,
+                ))
+        entries.sort(key=lambda e: e[0] or _dt.min, reverse=True)
+        for e in entries:
+            rows.append([
+                e[0].strftime("%d.%m.%Y %H:%M") if e[0] else "",
+                e[1], e[2], e[3], e[4], e[5],
+                e[6].strftime("%d.%m.%Y %H:%M") if e[6] else "",
+            ])
+        ts = _dt.utcnow().strftime("%Y%m%d_%H%M")
+        return _csv_response(f"zhurnal_admin_{ts}.csv", rows)
+    finally:
+        session.close()
+
+
 @app.route("/admin/stats/export")
 @login_required
 def admin_stats_export():

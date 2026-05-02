@@ -1,0 +1,174 @@
+{% extends "admin/base.html" %}
+{% block title %}Журнал действий{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Заголовок -->
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-light text-primary mb-1">Журнал действий</h1>
+        <p class="text-on-surface-variant text-sm">Кто, когда и какую заявку обработал</p>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="{{ url_for('admin_journal_export', admin=admin_filter, type=type_filter, period=period) }}"
+           class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-all text-sm font-medium">
+          <span class="material-symbols-outlined text-base">download</span>
+          Скачать CSV
+        </a>
+        <a href="{{ url_for('admin_stats') }}"
+           class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary transition-colors text-sm">
+          <span class="material-symbols-outlined text-base">bar_chart</span>
+          Статистика
+        </a>
+        <a href="{{ url_for('admin_dashboard') }}"
+           class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary transition-colors text-sm">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          Назад
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Фильтры -->
+  <section class="bg-surface-card rounded-xl shadow p-5">
+    <form method="GET" action="{{ url_for('admin_journal') }}" class="flex flex-wrap gap-4 items-end">
+
+      <!-- Период -->
+      <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-widest text-on-surface-variant">Период</span>
+        <div class="flex gap-1 flex-wrap">
+          {% for val, label in [("today","Сегодня"),("week","7 дней"),("month","30 дней"),("all","Всё время")] %}
+            <button type="submit" name="period" value="{{ val }}"
+                    class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                           {{ 'bg-primary text-on-primary shadow' if period == val else 'bg-surface-low text-on-surface-variant hover:bg-primary/10' }}">
+              {{ label }}
+            </button>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="admin" value="{{ admin_filter }}"/>
+        <input type="hidden" name="type"  value="{{ type_filter }}"/>
+      </div>
+
+      <!-- Тип заявки -->
+      <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-widest text-on-surface-variant">Тип</span>
+        <div class="flex gap-1 flex-wrap">
+          {% for val, label in [("all","Все"),("delivery","Доставка"),("lunch","Ланчи"),("catering","Кейтеринг"),("events","Банкеты")] %}
+            <a href="{{ url_for('admin_journal', period=period, admin=admin_filter, type=val) }}"
+               class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                      {{ 'bg-primary text-on-primary shadow' if type_filter == val else 'bg-surface-low text-on-surface-variant hover:bg-primary/10' }}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Администратор -->
+      <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-widest text-on-surface-variant">Администратор</span>
+        <div class="flex gap-1 flex-wrap items-center">
+          <a href="{{ url_for('admin_journal', period=period, type=type_filter, admin='') }}"
+             class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                    {{ 'bg-primary text-on-primary shadow' if not admin_filter else 'bg-surface-low text-on-surface-variant hover:bg-primary/10' }}">
+            Все
+          </a>
+          {% for name in all_admins %}
+            <a href="{{ url_for('admin_journal', period=period, type=type_filter, admin=name) }}"
+               class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+                      {{ 'bg-primary text-on-primary shadow' if admin_filter == name else 'bg-surface-low text-on-surface-variant hover:bg-primary/10' }}">
+              {{ name }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- Счётчик -->
+  {% if entries %}
+  <div class="text-xs text-on-surface-variant px-1">
+    Найдено записей: <strong>{{ entries|length }}</strong>
+  </div>
+  {% endif %}
+
+  <!-- Таблица журнала -->
+  {% if not entries %}
+  <section class="bg-surface-card rounded-xl shadow p-10 text-center text-on-surface-variant">
+    <span class="material-symbols-outlined text-5xl mb-3 block opacity-30">history</span>
+    За выбранный период записей не найдено.
+  </section>
+
+  {% else %}
+  <section class="bg-surface-card rounded-xl shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-surface-low text-xs uppercase tracking-wide text-on-surface-variant border-b border-outline/20">
+          <tr>
+            <th class="px-5 py-3 text-left">Дата обработки</th>
+            <th class="px-4 py-3 text-left">Администратор</th>
+            <th class="px-4 py-3 text-left">Тип</th>
+            <th class="px-4 py-3 text-center">ID</th>
+            <th class="px-4 py-3 text-left">Клиент</th>
+            <th class="px-4 py-3 text-left">Телефон</th>
+            <th class="px-4 py-3 text-left">Поступила</th>
+            <th class="px-4 py-3 text-right">Ожидание</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline/10">
+          {% for e in entries %}
+          {% set wait_min = ((e.processed_at - e.created_at).total_seconds() // 60) | int if e.processed_at and e.created_at else none %}
+          <tr class="hover:bg-surface-low/50 transition-colors">
+            <td class="px-5 py-2.5 whitespace-nowrap font-medium text-primary">
+              {{ e.processed_at.strftime('%d.%m.%Y') }}<br>
+              <span class="text-on-surface-variant font-normal">{{ e.processed_at.strftime('%H:%M') }}</span>
+            </td>
+            <td class="px-4 py-2.5">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase shrink-0">
+                  {{ e.admin[0] }}
+                </span>
+                <span class="font-medium whitespace-nowrap">{{ e.admin }}</span>
+              </div>
+            </td>
+            <td class="px-4 py-2.5">
+              <div class="flex items-center gap-1.5 whitespace-nowrap">
+                <span class="material-symbols-outlined text-base text-on-surface-variant">{{ e.type_icon }}</span>
+                <span class="text-on-surface-variant">{{ e.type_label }}</span>
+              </div>
+            </td>
+            <td class="px-4 py-2.5 text-center text-on-surface-variant">#{{ e.order_id }}</td>
+            <td class="px-4 py-2.5 font-medium whitespace-nowrap">{{ e.customer }}</td>
+            <td class="px-4 py-2.5 whitespace-nowrap">
+              <a href="tel:{{ e.phone }}" class="text-primary hover:underline">{{ e.phone }}</a>
+            </td>
+            <td class="px-4 py-2.5 text-on-surface-variant text-xs whitespace-nowrap">
+              {{ e.created_at.strftime('%d.%m %H:%M') if e.created_at else '—' }}
+            </td>
+            <td class="px-4 py-2.5 text-right whitespace-nowrap">
+              {% if wait_min is not none and wait_min >= 0 %}
+                {% if wait_min < 60 %}
+                  <span class="text-xs {{ 'text-green-700' if wait_min < 30 else 'text-amber-600' if wait_min < 120 else 'text-error' }}">
+                    {{ wait_min }} мин
+                  </span>
+                {% else %}
+                  <span class="text-xs text-error">
+                    {{ (wait_min // 60)|int }} ч {{ (wait_min % 60)|int }} м
+                  </span>
+                {% endif %}
+              {% else %}
+                <span class="text-on-surface-variant/40 text-xs">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}
