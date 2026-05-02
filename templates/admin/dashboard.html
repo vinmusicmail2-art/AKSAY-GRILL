@@ -89,7 +89,7 @@
                   <th class="px-4 py-2 text-left">Адрес</th>
                   <th class="px-4 py-2 text-right">Сумма</th>
                   <th class="px-4 py-2 text-left">Дата</th>
-                  <th class="px-4 py-2 text-center">Статус</th>
+                  <th class="px-4 py-2 text-center">Действие</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-outline/10">
@@ -103,11 +103,23 @@
                   <td class="px-4 py-2 text-right whitespace-nowrap">{% if o.total_amount %}{{ o.total_amount }} ₽{% else %}—{% endif %}</td>
                   <td class="px-4 py-2 whitespace-nowrap text-on-surface-variant text-xs">{{ o.created_at.strftime('%d.%m %H:%M') }}</td>
                   <td class="px-4 py-2 text-center">
-                    {% if o.is_processed %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-surface-low text-on-surface-variant">готово</span>
-                    {% else %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary font-medium">новая</span>
-                    {% endif %}
+                    <form method="POST"
+                          action="{{ url_for('admin_delivery_order_toggle', order_id=o.id) }}"
+                          class="inline">
+                      {% if o.is_processed %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                          вернуть
+                        </button>
+                      {% else %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                          <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                          готово
+                        </button>
+                      {% endif %}
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}
@@ -141,7 +153,7 @@
                   <th class="px-4 py-2 text-left">Компания</th>
                   <th class="px-4 py-2 text-center">Чел.</th>
                   <th class="px-4 py-2 text-left">На дату</th>
-                  <th class="px-4 py-2 text-center">Статус</th>
+                  <th class="px-4 py-2 text-center">Действие</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-outline/10">
@@ -155,11 +167,23 @@
                   <td class="px-4 py-2 text-center">{{ o.persons }}</td>
                   <td class="px-4 py-2 whitespace-nowrap text-xs text-on-surface-variant">{{ o.delivery_date }}</td>
                   <td class="px-4 py-2 text-center">
-                    {% if o.is_processed %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-surface-low text-on-surface-variant">готово</span>
-                    {% else %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary font-medium">новая</span>
-                    {% endif %}
+                    <form method="POST"
+                          action="{{ url_for('admin_business_lunch_toggle', order_id=o.id) }}"
+                          class="inline">
+                      {% if o.is_processed %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                          вернуть
+                        </button>
+                      {% else %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                          <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                          готово
+                        </button>
+                      {% endif %}
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}
@@ -197,7 +221,7 @@
                   <th class="px-4 py-2 text-left">Телефон</th>
                   <th class="px-4 py-2 text-left">Формат · гостей</th>
                   <th class="px-4 py-2 text-left">Дата</th>
-                  <th class="px-4 py-2 text-center">Статус</th>
+                  <th class="px-4 py-2 text-center">Действие</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-outline/10">
@@ -210,11 +234,23 @@
                   <td class="px-4 py-2 text-on-surface-variant text-xs">{{ o.event_format }} · {{ o.guests }} чел.</td>
                   <td class="px-4 py-2 whitespace-nowrap text-xs text-on-surface-variant">{{ o.event_date }}</td>
                   <td class="px-4 py-2 text-center">
-                    {% if o.is_processed %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-surface-low text-on-surface-variant">готово</span>
-                    {% else %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary font-medium">новая</span>
-                    {% endif %}
+                    <form method="POST"
+                          action="{{ url_for('admin_catering_toggle', request_id=o.id) }}"
+                          class="inline">
+                      {% if o.is_processed %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                          вернуть
+                        </button>
+                      {% else %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                          <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                          готово
+                        </button>
+                      {% endif %}
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}
@@ -247,7 +283,7 @@
                   <th class="px-4 py-2 text-left">Телефон</th>
                   <th class="px-4 py-2 text-left">Тип · гостей</th>
                   <th class="px-4 py-2 text-left">Дата</th>
-                  <th class="px-4 py-2 text-center">Статус</th>
+                  <th class="px-4 py-2 text-center">Действие</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-outline/10">
@@ -260,11 +296,23 @@
                   <td class="px-4 py-2 text-on-surface-variant text-xs">{{ o.event_type }} · {{ o.guests }} чел.</td>
                   <td class="px-4 py-2 whitespace-nowrap text-xs text-on-surface-variant">{{ o.event_date }}</td>
                   <td class="px-4 py-2 text-center">
-                    {% if o.is_processed %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-surface-low text-on-surface-variant">готово</span>
-                    {% else %}
-                      <span class="px-2 py-0.5 rounded-full text-xs bg-primary/10 text-primary font-medium">новая</span>
-                    {% endif %}
+                    <form method="POST"
+                          action="{{ url_for('admin_events_toggle', request_id=o.id) }}"
+                          class="inline">
+                      {% if o.is_processed %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                          вернуть
+                        </button>
+                      {% else %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                          <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                          готово
+                        </button>
+                      {% endif %}
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}
