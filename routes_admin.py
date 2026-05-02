@@ -149,25 +149,25 @@ def admin_dashboard():
         )
         all_delivery = (
             session.query(DeliveryOrder)
-            .order_by(DeliveryOrder.created_at.desc())
+            .order_by(DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc())
             .limit(50)
             .all()
         )
         all_lunch = (
             session.query(BusinessLunchOrder)
-            .order_by(BusinessLunchOrder.created_at.desc())
+            .order_by(BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc())
             .limit(50)
             .all()
         )
         all_catering = (
             session.query(CateringRequest)
-            .order_by(CateringRequest.created_at.desc())
+            .order_by(CateringRequest.is_processed.asc(), CateringRequest.created_at.desc())
             .limit(50)
             .all()
         )
         all_events = (
             session.query(HallReservation)
-            .order_by(HallReservation.created_at.desc())
+            .order_by(HallReservation.is_processed.asc(), HallReservation.created_at.desc())
             .limit(50)
             .all()
         )
@@ -309,6 +309,7 @@ def admin_business_lunches():
     from models import BUSINESS_LUNCH_MENU, BusinessLunchOrder
 
     show = request.args.get("show", "pending")
+    sort = request.args.get("sort", "date_desc")
     session = SessionLocal()
     try:
         q = session.query(BusinessLunchOrder)
@@ -316,12 +317,23 @@ def admin_business_lunches():
             q = q.filter(BusinessLunchOrder.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(BusinessLunchOrder.is_processed.is_(True))
-        orders = q.order_by(BusinessLunchOrder.created_at.desc()).limit(200).all()
+        _LUNCH_SORT = {
+            "date_desc": [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()],
+            "date_asc":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.asc()],
+            "persons_desc": [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.persons.desc()],
+            "persons_asc":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.persons.asc()],
+            "status_new":  [BusinessLunchOrder.is_processed.asc(), BusinessLunchOrder.created_at.desc()],
+            "status_done": [BusinessLunchOrder.is_processed.desc(), BusinessLunchOrder.created_at.desc()],
+        }
+        for col in _LUNCH_SORT.get(sort, _LUNCH_SORT["date_desc"]):
+            q = q.order_by(col)
+        orders = q.limit(200).all()
 
         return render_template(
             "admin/business_lunches.html",
             orders=orders,
             show=show,
+            sort=sort,
             combo_titles={item["key"]: item["title"] for item in BUSINESS_LUNCH_MENU},
             combo_prices={item["key"]: item["price"] for item in BUSINESS_LUNCH_MENU},
         )
@@ -362,6 +374,7 @@ def admin_catering():
     from models import CATERING_FORMATS, CateringRequest
 
     show = request.args.get("show", "pending")
+    sort = request.args.get("sort", "date_desc")
     session = SessionLocal()
     try:
         q = session.query(CateringRequest)
@@ -369,12 +382,25 @@ def admin_catering():
             q = q.filter(CateringRequest.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(CateringRequest.is_processed.is_(True))
-        requests_list = q.order_by(CateringRequest.created_at.desc()).limit(200).all()
+        _CAT_SORT = {
+            "date_desc":   [CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()],
+            "date_asc":    [CateringRequest.is_processed.asc(), CateringRequest.created_at.asc()],
+            "guests_desc": [CateringRequest.is_processed.asc(), CateringRequest.guests.desc()],
+            "guests_asc":  [CateringRequest.is_processed.asc(), CateringRequest.guests.asc()],
+            "price_desc":  [CateringRequest.is_processed.asc(), CateringRequest.budget_per_guest.desc()],
+            "price_asc":   [CateringRequest.is_processed.asc(), CateringRequest.budget_per_guest.asc()],
+            "status_new":  [CateringRequest.is_processed.asc(), CateringRequest.created_at.desc()],
+            "status_done": [CateringRequest.is_processed.desc(), CateringRequest.created_at.desc()],
+        }
+        for col in _CAT_SORT.get(sort, _CAT_SORT["date_desc"]):
+            q = q.order_by(col)
+        requests_list = q.limit(200).all()
 
         return render_template(
             "admin/catering.html",
             requests=requests_list,
             show=show,
+            sort=sort,
             format_titles={item["key"]: item["title"] for item in CATERING_FORMATS},
         )
     finally:
@@ -414,6 +440,7 @@ def admin_events():
     from models import EVENT_TYPES, HallReservation
 
     show = request.args.get("show", "pending")
+    sort = request.args.get("sort", "date_desc")
     session = SessionLocal()
     try:
         q = session.query(HallReservation)
@@ -421,12 +448,23 @@ def admin_events():
             q = q.filter(HallReservation.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(HallReservation.is_processed.is_(True))
-        requests_list = q.order_by(HallReservation.created_at.desc()).limit(200).all()
+        _EV_SORT = {
+            "date_desc":   [HallReservation.is_processed.asc(), HallReservation.created_at.desc()],
+            "date_asc":    [HallReservation.is_processed.asc(), HallReservation.created_at.asc()],
+            "guests_desc": [HallReservation.is_processed.asc(), HallReservation.guests.desc()],
+            "guests_asc":  [HallReservation.is_processed.asc(), HallReservation.guests.asc()],
+            "status_new":  [HallReservation.is_processed.asc(), HallReservation.created_at.desc()],
+            "status_done": [HallReservation.is_processed.desc(), HallReservation.created_at.desc()],
+        }
+        for col in _EV_SORT.get(sort, _EV_SORT["date_desc"]):
+            q = q.order_by(col)
+        requests_list = q.limit(200).all()
 
         return render_template(
             "admin/events.html",
             requests=requests_list,
             show=show,
+            sort=sort,
             type_titles={item["key"]: item["title"] for item in EVENT_TYPES},
         )
     finally:
@@ -466,6 +504,7 @@ def admin_delivery_orders():
     from models import DeliveryOrder
 
     show = request.args.get("show", "pending")
+    sort = request.args.get("sort", "date_desc")
     session = SessionLocal()
     try:
         q = session.query(DeliveryOrder)
@@ -473,7 +512,17 @@ def admin_delivery_orders():
             q = q.filter(DeliveryOrder.is_processed.is_(False))
         elif show == "processed":
             q = q.filter(DeliveryOrder.is_processed.is_(True))
-        orders = q.order_by(DeliveryOrder.created_at.desc()).limit(200).all()
+        _DEL_SORT = {
+            "date_desc":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()],
+            "date_asc":   [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.asc()],
+            "price_desc": [DeliveryOrder.is_processed.asc(), DeliveryOrder.total_amount.desc()],
+            "price_asc":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.total_amount.asc()],
+            "status_new":  [DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc()],
+            "status_done": [DeliveryOrder.is_processed.desc(), DeliveryOrder.created_at.desc()],
+        }
+        for col in _DEL_SORT.get(sort, _DEL_SORT["date_desc"]):
+            q = q.order_by(col)
+        orders = q.limit(200).all()
 
         def parse_items(o):
             try:
@@ -485,6 +534,7 @@ def admin_delivery_orders():
             "admin/delivery_orders.html",
             orders=orders,
             show=show,
+            sort=sort,
             parse_items=parse_items,
         )
     finally:

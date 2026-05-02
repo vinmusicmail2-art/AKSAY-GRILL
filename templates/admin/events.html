@@ -17,16 +17,39 @@
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        {% set tabs = [('pending', 'В работе'), ('processed', 'Обработанные'), ('all', 'Все')] %}
-        {% for value, label in tabs %}
-          <a href="{{ url_for('admin_events', show=value) }}"
-             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-             {% if show == value %}bg-primary text-on-primary shadow-md
-             {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
-            {{ label }}
-          </a>
-        {% endfor %}
+      <div class="flex flex-col gap-3 items-end">
+        <!-- Фильтр статуса -->
+        <div class="flex flex-wrap gap-2">
+          {% set tabs = [('pending', 'В работе'), ('processed', 'Обработанные'), ('all', 'Все')] %}
+          {% for value, label in tabs %}
+            <a href="{{ url_for('admin_events', show=value, sort=sort) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+               {% if show == value %}bg-primary text-on-primary shadow-md
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+        <!-- Сортировка -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Сортировка:</span>
+          {% set sorts = [
+            ('date_desc',   'Дата ↓'),
+            ('date_asc',    'Дата ↑'),
+            ('guests_desc', 'Гостей ↓'),
+            ('guests_asc',  'Гостей ↑'),
+            ('status_new',  'Новые вверху'),
+            ('status_done', 'Готовые вверху'),
+          ] %}
+          {% for value, label in sorts %}
+            <a href="{{ url_for('admin_events', show=show, sort=value) }}"
+               class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
+               {% if sort == value %}bg-primary text-on-primary
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </section>
