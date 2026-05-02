@@ -1,0 +1,32 @@
+[Unit]
+Description=Aksay Grill Flask Application
+After=network.target
+
+[Service]
+Type=simple
+User=aksaygril
+Group=aksaygril
+WorkingDirectory=/var/www/aksaygril
+Environment="PATH=/var/www/aksaygril/venv/bin"
+
+# Переменные окружения — заполнить перед запуском
+Environment="SESSION_SECRET=ЗАМЕНИТЕ_НА_СЛУЧАЙНУЮ_СТРОКУ_32_СИМВОЛА"
+Environment="SMTP_HOST=smtp.yandex.ru"
+Environment="SMTP_PORT=465"
+Environment="SMTP_USER=zakazy@aksaygril.ru"
+Environment="SMTP_PASSWORD=ПАРОЛЬ_ПРИЛОЖЕНИЯ"
+Environment="SMTP_FROM=zakazy@aksaygril.ru"
+
+ExecStart=/var/www/aksaygril/venv/bin/gunicorn \
+    --bind 127.0.0.1:5000 \
+    --workers 2 \
+    --timeout 60 \
+    --access-logfile /var/log/aksaygril/access.log \
+    --error-logfile /var/log/aksaygril/error.log \
+    main:app
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

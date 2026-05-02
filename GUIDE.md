@@ -501,4 +501,165 @@ SMTP_FROM    = ваш-ящик@yandex.ru
 
 ---
 
+## Приложение: Перенос сайта на российский VPS (для разработчика)
+
+> Этот раздел предназначен для технического специалиста, выполняющего перенос сайта с Replit на российский VPS-сервер.
+
+В папке `deploy/` проекта находятся все необходимые файлы:
+
+```
+deploy/
+├── install.sh          — скрипт автоматической установки
+├── nginx.conf          — конфигурация веб-сервера nginx
+├── aksaygril.service   — systemd-сервис для автозапуска приложения
+└── requirements.txt    — список Python-зависимостей
+```
+
+### Требования к серверу
+
+- ОС: **Ubuntu 22.04 LTS**
+- CPU: 1 ядро (рекомендуется 2)
+- RAM: **1 ГБ** (рекомендуется 2 ГБ)
+- Диск: 10 ГБ SSD
+- Открытые порты: 22 (SSH), 80 (HTTP), 443 (HTTPS)
+
+### Шаг 1 — Скачать файлы проекта на сервер
+
+Подключитесь к серверу по SSH и скачайте проект с Replit (или передайте архивом по SCP):
+
+```bash
+# Вариант А — клонировать из git-репозитория (если подключён)
+git clone https://github.com/ваш-репозиторий/aksaygril.git /tmp/aksaygril
+
+# Вариант Б — передать архив с локальной машины
+scp -r ./aksaygril root@ВАШ_IP:/tmp/aksaygril
+```
+
+Перейдите в папку проекта:
+```bash
+cd /tmp/aksaygril
+```
+
+### Шаг 2 — Запустить скрипт установки
+
+```bash
+bash deploy/install.sh
+```
+
+Скрипт автоматически:
+- Установит Python 3.11, nginx, certbot
+- Создаст системного пользователя `aksaygril`
+- Скопирует файлы в `/var/www/aksaygril/`
+- Создаст виртуальное окружение и установит все зависимости
+- Настроит nginx и зарегистрирует systemd-сервис
+
+### Шаг 3 — Заполнить переменные окружения
+
+Откройте файл сервиса:
+```bash
+nano /etc/systemd/system/aksaygril.service
+```
+
+Заполните значения в блоке `Environment=`:
+
+| Переменная | Что поставить |
+|------------|---------------|
+| `SESSION_SECRET` | Случайная строка 32+ символа (сгенерировать: `python3 -c "import secrets; print(secrets.token_hex(32))"`) |
+| `SMTP_HOST` | `smtp.yandex.ru` |
+| `SMTP_PORT` | `465` |
+| `SMTP_USER` | Почтовый ящик отправителя |
+| `SMTP_PASSWORD` | Пароль приложения (не обычный пароль!) |
+| `SMTP_FROM` | Тот же ящик, что и SMTP_USER |
+
+### Шаг 4 — Запустить приложение
+
+```bash
+systemctl daemon-reload
+systemctl start aksaygril
+systemctl status aksaygril
+```
+
+Убедитесь, что статус `active (running)`.
+
+### Шаг 5 — Выпустить SSL-сертификат
+
+Убедитесь, что DNS домена уже указывает на IP сервера, затем:
+
+```bash
+certbot --nginx -d aksaygril.ru -d www.aksaygril.ru
+```
+
+После успешного выпуска раскомментируйте HTTPS-блок в `/etc/nginx/sites-available/aksaygril` и перезагрузите nginx:
+
+```bash
+systemctl reload nginx
+```
+
+### Шаг 6 — Перенести базу данных
+
+Если на сервере уже есть `data.db` с данными (заказами, текстами сайта):
+
+```bash
+# Скопировать с Replit на сервер
+scp data.db root@ВАШ_IP:/var/www/aksaygril/data.db
+
+# Установить правильного владельца
+chown aksaygril:aksaygril /var/www/aksaygril/data.db
+chmod 640 /var/www/aksaygril/data.db
+
+# Перезапустить сервис
+systemctl restart aksaygril
+```
+
+### Полезные команды после установки
+
+```bash
+# Просмотр логов в реальном времени
+journalctl -u aksaygril -f
+
+# Логи nginx
+tail -f /var/log/aksaygril/error.log
+tail -f /var/log/aksaygril/access.log
+
+# Перезапуск после обновления кода
+systemctl restart aksaygril
+
+# Обновление кода из git
+cd /var/www/aksaygril
+git pull
+systemctl restart aksaygril
+
+# Статус всех сервисов
+systemctl status aksaygril nginx
+```
+
+### Отличия от Replit
+
+| Параметр | Replit | VPS |
+|----------|--------|-----|
+| Запуск | gunicorn --reload (авто-перезагрузка) | systemd (ручной рестарт при изменениях) |
+| Статика | Flask отдаёт `/assets/` | nginx отдаёт `/assets/` напрямую (быстрее) |
+| Переменные окружения | Secrets в интерфейсе Replit | `Environment=` в `.service` файле |
+| База данных | `data.db` в корне проекта | `/var/www/aksaygril/data.db` |
+| Логи | Консоль Replit | `/var/log/aksaygril/` + journalctl |
+| HTTPS | Автоматически | Настраивается через certbot |
+
+---
+
+## Быстрый справочник — адреса разделов
+
+| Раздел | Адрес |
+|--------|-------|
+| Вход | `/admin/login` |
+| Дашборд | `/admin` |
+| Заказы доставки | `/admin/delivery-orders` |
+| Бизнес-ланчи | `/admin/business-lunches` |
+| Кейтеринг | `/admin/catering` |
+| Мероприятия / Зал | `/admin/events` |
+| Тексты сайта | `/admin/texts` |
+| E-mail настройки | `/admin/email-settings` |
+| Реестр РКН | https://pd.rkn.gov.ru |
+
+---
+
 *Руководство подготовлено для сайта ресторана «Аксай Гриль». По вопросам технической поддержки обращайтесь к разработчику.*
