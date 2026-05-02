@@ -6,10 +6,7 @@
 {% block og_description %}Ваша заявка принята. Мы свяжемся с вами в ближайшее время.{% endblock %}
 
 {% block extra_styles %}
-  .thank-bg {
-    background-color: #f5f1e8;
-    min-height: 100vh;
-  }
+  .thank-bg { background-color: #f5f1e8; min-height: 100vh; }
 {% endblock %}
 
 {% block content %}
@@ -17,16 +14,16 @@
   <div class="bg-white rounded-2xl shadow-xl px-10 py-14 max-w-lg w-full">
 
     <div class="flex items-center justify-center w-20 h-20 rounded-full bg-[#9b3f1c]/10 mx-auto mb-6">
-      <span class="material-symbols-outlined text-[48px] text-[#9b3f1c]">check_circle</span>
+      <span class="material-symbols-outlined text-[48px] text-[#9b3f1c]">{{ icon }}</span>
     </div>
+
+    <p class="text-xs uppercase tracking-widest text-[#9b3f1c] font-bold mb-2">{{ category }}</p>
 
     <h1 class="font-headline text-3xl text-[#3a2c26] mb-3" style="font-family:'Yanone Kaffeesatz',sans-serif; font-weight:300;">
       Спасибо за заявку!
     </h1>
 
-    <p class="text-[#56423a] text-base mb-2">
-      Ваша заявка принята. Менеджер свяжется с вами в ближайшее время для подтверждения.
-    </p>
+    <p class="text-[#56423a] text-base mb-2">{{ message }}</p>
     <p class="text-[#56423a]/70 text-sm mb-10">
       Если вопрос срочный — позвоните нам напрямую:
       <a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}"

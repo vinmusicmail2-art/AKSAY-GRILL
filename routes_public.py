@@ -63,9 +63,37 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/spasibo")
-def spasibo():
-    return render_template("spasibo.html")
+@app.route("/spasibo/dostavka")
+def spasibo_dostavka():
+    return render_template("spasibo.html",
+        icon="delivery_dining",
+        category="Доставка",
+        message="Ваш заказ принят. Менеджер свяжется с вами в ближайшее время для подтверждения и уточнения деталей доставки."
+    )
+
+@app.route("/spasibo/biznes-lanch")
+def spasibo_biznes_lanch():
+    return render_template("spasibo.html",
+        icon="restaurant",
+        category="Бизнес-ланчи",
+        message="Заявка на бизнес-ланч принята. Мы свяжемся с вами для подтверждения заказа и уточнения деталей доставки."
+    )
+
+@app.route("/spasibo/kejtering")
+def spasibo_kejtering():
+    return render_template("spasibo.html",
+        icon="outdoor_grill",
+        category="Кейтеринг",
+        message="Заявка принята. Менеджер свяжется с вами для расчёта меню и согласования всех деталей мероприятия."
+    )
+
+@app.route("/spasibo/meropriyatiya")
+def spasibo_meropriyatiya():
+    return render_template("spasibo.html",
+        icon="celebration",
+        category="Мероприятия",
+        message="Заявка на бронирование зала принята. Менеджер свяжется с вами, чтобы подтвердить дату и обсудить меню и оформление."
+    )
 
 
 @app.route("/business-lunch", methods=["GET", "POST"])
@@ -114,7 +142,7 @@ def business_lunch():
             from mailer import send_order_notification_async
             send_order_notification_async(order_snapshot, base_url=request.host_url.rstrip("/"))
 
-            return redirect(url_for("spasibo"))
+            return redirect(url_for("spasibo_biznes_lanch"))
         finally:
             session.close()
 
@@ -169,7 +197,7 @@ def catering():
             from mailer import send_catering_notification_async
             send_catering_notification_async(req_snapshot, base_url=request.host_url.rstrip("/"))
 
-            return redirect(url_for("spasibo"))
+            return redirect(url_for("spasibo_kejtering"))
         finally:
             session.close()
 
@@ -226,7 +254,7 @@ def events():
             from mailer import send_hall_notification_async
             send_hall_notification_async(req_snapshot, base_url=request.host_url.rstrip("/"))
 
-            return redirect(url_for("spasibo"))
+            return redirect(url_for("spasibo_meropriyatiya"))
         finally:
             session.close()
 
@@ -306,6 +334,6 @@ def quick_request():
         )
         session.add(req)
         session.commit()
-        return redirect(url_for("spasibo"))
+        return redirect(url_for("spasibo_dostavka"))
     finally:
         session.close()
