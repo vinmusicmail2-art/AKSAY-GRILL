@@ -139,17 +139,26 @@ def admin_dashboard():
         session.close()
 
 
+_TEXTS_EXCLUDED_SECTIONS = {
+    "Реквизиты оператора (ИП)",
+    "Юридические страницы",
+}
+
+
 @app.route("/admin/texts", methods=["GET", "POST"])
 @login_required
 def admin_texts():
     from models import SITE_TEXT_CATALOG, SiteText, get_catalog_grouped
+
+    editable = [i for i in SITE_TEXT_CATALOG
+                if i.get("section") not in _TEXTS_EXCLUDED_SECTIONS]
 
     session = SessionLocal()
     try:
         rows = {t.key: t for t in session.query(SiteText).all()}
 
         if request.method == "POST":
-            for item in SITE_TEXT_CATALOG:
+            for item in editable:
                 key = item["key"]
                 value = request.form.get(key, "")
                 if key in rows:
@@ -162,12 +171,18 @@ def admin_texts():
 
         values = {
             item["key"]: rows[item["key"]].value if item["key"] in rows else item["default"]
-            for item in SITE_TEXT_CATALOG
+            for item in editable
         }
+
+        grouped: list[tuple] = [
+            (sec, items) for sec, items in get_catalog_grouped()
+            if sec not in _TEXTS_EXCLUDED_SECTIONS
+        ]
+
         return render_template(
             "admin/texts.html",
-            catalog=SITE_TEXT_CATALOG,
-            grouped_catalog=get_catalog_grouped(),
+            catalog=editable,
+            grouped_catalog=grouped,
             values=values,
         )
     finally:
@@ -801,6 +816,7 @@ REQUISITES_KEYS = [
     "operator_reg_date",
     "operator_phone",
     "operator_email",
+    "contact_email",
     "operator_tax_authority",
     "operator_address",
 ]

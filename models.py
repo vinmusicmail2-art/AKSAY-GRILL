@@ -151,6 +151,13 @@ SITE_TEXT_CATALOG: list[dict] = [
         "default": "",
         "section": "Реквизиты оператора (ИП)",
     },
+    {
+        "key": "contact_email",
+        "label": "Реквизиты: публичный e-mail для отображения на сайте",
+        "kind": "text",
+        "default": "aksaygryl@mail.ru",
+        "section": "Реквизиты оператора (ИП)",
+    },
     # ----- Контактная строка в шапке сайта -----
     {
         "key": "contact_address",

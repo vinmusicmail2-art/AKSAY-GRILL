@@ -73,10 +73,18 @@
         </div>
 
         <div>
-          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Контактный e-mail</label>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Контактный e-mail (для политики конфиденциальности)</label>
           <input name="operator_email" type="email" maxlength="120"
                  value="{{ texts.operator_email }}"
                  placeholder="info@aksaygryl.ru"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Публичный e-mail (отображается в подвале сайта)</label>
+          <input name="contact_email" type="email" maxlength="120"
+                 value="{{ texts.contact_email }}"
+                 placeholder="aksaygryl@mail.ru"
                  class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
         </div>
 

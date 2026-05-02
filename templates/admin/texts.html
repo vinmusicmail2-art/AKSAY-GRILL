@@ -16,6 +16,13 @@
        class="text-sm text-on-surface-variant hover:text-primary">← в кабинет</a>
   </div>
 
+  <div class="flex flex-wrap gap-3 p-4 rounded-xl bg-surface-card border border-outline/20 text-sm text-on-surface-variant">
+    <span class="font-medium text-on-surface">Отдельные разделы →</span>
+    <a href="{{ url_for('admin_requisites') }}" class="text-primary hover:underline">Реквизиты оператора (ИП)</a>
+    <span class="opacity-40">·</span>
+    <a href="{{ url_for('admin_legal') }}" class="text-primary hover:underline">Юридические страницы</a>
+  </div>
+
   <form method="POST" class="space-y-6">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 

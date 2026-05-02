@@ -58,6 +58,21 @@ def init_db() -> None:
             logging.getLogger(__name__).warning(
                 "business_lunch_orders migration skipped: %s", exc)
 
+        try:
+            cols = {row[1] for row in conn.exec_driver_sql(
+                "PRAGMA table_info(menu_categories)").fetchall()}
+            if cols:
+                for col, definition in (
+                    ("show_in_nav", "BOOLEAN NOT NULL DEFAULT 1"),
+                    ("description", "TEXT NOT NULL DEFAULT ''"),
+                ):
+                    if col not in cols:
+                        conn.exec_driver_sql(
+                            f"ALTER TABLE menu_categories ADD COLUMN {col} {definition}")
+        except Exception as exc:
+            logging.getLogger(__name__).warning(
+                "menu_categories migration skipped: %s", exc)
+
     session = SessionLocal()
     try:
         models.seed_site_texts(session)
