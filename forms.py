@@ -191,6 +191,30 @@ class CateringRequestForm(FlaskForm):
     submit = SubmitField("Отправить заявку")
 
 
+class ChangePasswordForm(FlaskForm):
+    """Форма смены пароля администратора."""
+
+    current_password = PasswordField(
+        "Текущий пароль",
+        validators=[DataRequired(message="Введите текущий пароль")],
+    )
+    new_password = PasswordField(
+        "Новый пароль",
+        validators=[
+            DataRequired(message="Введите новый пароль"),
+            Length(min=8, max=128, message="Пароль должен быть от 8 символов"),
+        ],
+    )
+    new_password_confirm = PasswordField(
+        "Повторите новый пароль",
+        validators=[
+            DataRequired(message="Повторите новый пароль"),
+            EqualTo("new_password", message="Пароли не совпадают"),
+        ],
+    )
+    submit = SubmitField("Сменить пароль")
+
+
 class HallReservationForm(FlaskForm):
     """Заявка на бронирование зала ресторана для мероприятия."""
 

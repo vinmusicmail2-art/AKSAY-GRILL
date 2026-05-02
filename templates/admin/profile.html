@@ -1,0 +1,97 @@
+{% extends "admin/base.html" %}
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto space-y-6">
+
+  <div>
+    <h1 class="text-2xl font-light text-primary">Профиль</h1>
+    <p class="text-sm text-on-surface-variant mt-1">Управление учётной записью <strong>{{ current_user.username }}</strong></p>
+  </div>
+
+  <!-- Информация об аккаунте -->
+  <section class="bg-surface-card rounded-xl shadow p-6 space-y-3">
+    <h2 class="text-base font-medium text-on-surface flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary text-xl">account_circle</span>
+      Учётная запись
+    </h2>
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <span class="text-on-surface-variant">Логин</span>
+      <span class="font-medium">{{ current_user.username }}</span>
+      {% if current_user.last_login_at %}
+      <span class="text-on-surface-variant">Последний вход</span>
+      <span>{{ current_user.last_login_at.strftime('%d.%m.%Y %H:%M') }} (UTC)</span>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Форма смены пароля -->
+  <section class="bg-surface-card rounded-xl shadow p-6">
+    <h2 class="text-base font-medium text-on-surface flex items-center gap-2 mb-5">
+      <span class="material-symbols-outlined text-primary text-xl">lock_reset</span>
+      Сменить пароль
+    </h2>
+
+    <form method="POST" action="{{ url_for('admin_profile') }}" class="space-y-4">
+      {{ form.hidden_tag() }}
+
+      <div>
+        <label class="block text-sm font-medium text-on-surface mb-1" for="current_password">
+          {{ form.current_password.label.text }}
+        </label>
+        {{ form.current_password(
+            id="current_password",
+            class="w-full px-4 py-2.5 rounded-lg border text-sm bg-surface-low focus:outline-none focus:ring-2 focus:ring-primary/40 " ~
+              ("border-error" if form.current_password.errors else "border-outline/40")
+        ) }}
+        {% for err in form.current_password.errors %}
+          <p class="text-xs text-error mt-1">{{ err }}</p>
+        {% endfor %}
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-on-surface mb-1" for="new_password">
+          {{ form.new_password.label.text }}
+        </label>
+        {{ form.new_password(
+            id="new_password",
+            class="w-full px-4 py-2.5 rounded-lg border text-sm bg-surface-low focus:outline-none focus:ring-2 focus:ring-primary/40 " ~
+              ("border-error" if form.new_password.errors else "border-outline/40")
+        ) }}
+        {% for err in form.new_password.errors %}
+          <p class="text-xs text-error mt-1">{{ err }}</p>
+        {% endfor %}
+        <p class="text-xs text-on-surface-variant mt-1">Минимум 8 символов</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-on-surface mb-1" for="new_password_confirm">
+          {{ form.new_password_confirm.label.text }}
+        </label>
+        {{ form.new_password_confirm(
+            id="new_password_confirm",
+            class="w-full px-4 py-2.5 rounded-lg border text-sm bg-surface-low focus:outline-none focus:ring-2 focus:ring-primary/40 " ~
+              ("border-error" if form.new_password_confirm.errors else "border-outline/40")
+        ) }}
+        {% for err in form.new_password_confirm.errors %}
+          <p class="text-xs text-error mt-1">{{ err }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="pt-2">
+        {{ form.submit(
+            class="w-full py-2.5 rounded-lg bg-primary text-on-primary text-sm font-semibold hover:opacity-90 transition-opacity shadow-md cursor-pointer"
+        ) }}
+      </div>
+    </form>
+  </section>
+
+  <div class="text-center">
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="text-sm text-on-surface-variant hover:text-primary transition-colors">
+      ← Вернуться в кабинет
+    </a>
+  </div>
+
+</div>
+{% endblock %}

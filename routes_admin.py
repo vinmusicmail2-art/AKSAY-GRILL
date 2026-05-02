@@ -115,6 +115,38 @@ def admin_logout():
     return redirect(url_for("admin_login"))
 
 
+@app.route("/admin/profile", methods=["GET", "POST"])
+@login_required
+def admin_profile():
+    """Профиль текущего администратора: смена пароля."""
+    from forms import ChangePasswordForm
+    from models import Admin
+
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        session = SessionLocal()
+        try:
+            admin = session.get(Admin, current_user.id)
+            if not admin:
+                flash("Пользователь не найден.", "error")
+                return redirect(url_for("admin_profile"))
+
+            if not admin.check_password(form.current_password.data):
+                flash("Текущий пароль указан неверно.", "error")
+                return redirect(url_for("admin_profile"))
+
+            admin.set_password(form.new_password.data)
+            session.commit()
+            flash("Пароль успешно изменён.", "success")
+            logger.info("Admin '%s' changed password from IP %s",
+                        current_user.username, _client_ip())
+            return redirect(url_for("admin_profile"))
+        finally:
+            session.close()
+
+    return render_template("admin/profile.html", form=form)
+
+
 @app.route("/admin")
 @app.route("/admin/")
 @login_required

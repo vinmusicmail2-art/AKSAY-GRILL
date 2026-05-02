@@ -289,6 +289,73 @@ def uploads(filename: str):
     return send_from_directory(uploads_dir, filename)
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    """Файл robots.txt: разрешить всем роботам всё, кроме /admin/.
+    Указывает на sitemap.xml для быстрой индексации Яндексом.
+    """
+    base = request.host_url.rstrip("/")
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin/\n"
+        "Disallow: /admin\n"
+        "Disallow: /healthz\n"
+        f"Sitemap: {base}/sitemap.xml\n"
+    )
+    return app.response_class(content, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    """Динамический sitemap.xml для Яндекс и Google.
+
+    Включает все публичные страницы сайта + видимые категории меню.
+    Приоритет и частота обновления подобраны для ресторанного сайта.
+    """
+    from datetime import date
+    from models import MenuCategory
+
+    base = request.host_url.rstrip("/")
+    today = date.today().isoformat()
+
+    static_pages = [
+        {"loc": "/",                "changefreq": "weekly",  "priority": "1.0"},
+        {"loc": "/about",           "changefreq": "monthly", "priority": "0.7"},
+        {"loc": "/business-lunch",  "changefreq": "weekly",  "priority": "0.9"},
+        {"loc": "/catering",        "changefreq": "monthly", "priority": "0.8"},
+        {"loc": "/events",          "changefreq": "monthly", "priority": "0.8"},
+        {"loc": "/privacy.html",    "changefreq": "yearly",  "priority": "0.3"},
+    ]
+
+    session = SessionLocal()
+    try:
+        cats = session.query(MenuCategory).filter(
+            MenuCategory.is_visible.is_(True)
+        ).order_by(MenuCategory.sort_order).all()
+        cat_pages = [
+            {"loc": f"/#menu-{c.slug}", "changefreq": "weekly", "priority": "0.6"}
+            for c in cats
+        ]
+    finally:
+        session.close()
+
+    all_pages = static_pages + cat_pages
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for p in all_pages:
+        lines.append("  <url>")
+        lines.append(f"    <loc>{base}{p['loc']}</loc>")
+        lines.append(f"    <lastmod>{today}</lastmod>")
+        lines.append(f"    <changefreq>{p['changefreq']}</changefreq>")
+        lines.append(f"    <priority>{p['priority']}</priority>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+
+    return app.response_class("\n".join(lines), mimetype="application/xml")
+
+
 @app.route("/healthz")
 def healthz():
     return {"status": "ok"}
