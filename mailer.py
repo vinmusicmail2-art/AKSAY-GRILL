@@ -490,6 +490,53 @@ def send_delivery_notification_async(order_data: dict, base_url: str = "") -> No
     _send_notification_async(send_delivery_notification, order_data, base_url, "delivery-notify")
 
 
+# ──────────────────────────── Быстрый заказ (главная страница) ────────────────────────────
+
+def _format_quick_request_email(req, base_url: str = "") -> Tuple[str, str, str]:
+    admin_link = f"{base_url}/admin/delivery-orders" if base_url else "/admin/delivery-orders"
+
+    subject = f"Быстрый заказ с сайта — {req.contact_name}, {req.phone}"
+
+    plain = "\n".join([
+        "Получен быстрый заказ с главной страницы сайта.",
+        "",
+        f"Клиент:  {req.contact_name}",
+        f"Телефон: {req.phone}",
+        f"Адрес:   {req.address}",
+        f"Комментарий: {req.comment or '—'}",
+        "",
+        f"Открыть заказы доставки в админке: {admin_link}",
+    ])
+
+    rows_html = (
+        f"<tr>{_td_label('Клиент')}<td><strong>{req.contact_name}</strong></td></tr>"
+        f"<tr>{_td_label('Телефон')}<td><a href='tel:{req.phone}' style='color:{_BRAND};'>{req.phone}</a></td></tr>"
+        f"<tr>{_td_label('Адрес доставки')}<td>{req.address}</td></tr>"
+    )
+
+    html = _render_email_html(
+        0, "быстрый заказ",
+        "Клиент оставил заявку через кнопку «Заказать» на главной странице.",
+        rows_html, _comment_block(req.comment or ""), admin_link,
+    ).replace("Новая заявка #0", "Быстрый заказ с сайта")
+
+    return subject, plain, html
+
+
+def send_quick_request_notification(req, base_url: str = "") -> Tuple[bool, str]:
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
+    subject, plain, html = _format_quick_request_email(req, base_url=base_url)
+    return _send_smtp(subject, plain, html, recipient)
+
+
+def send_quick_request_notification_async(data: dict, base_url: str = "") -> None:
+    _send_notification_async(send_quick_request_notification, data, base_url, "quick-request-notify")
+
+
 # ──────────────────────────── Контакт (вопрос с сайта) ────────────────────────────
 
 def send_contact_question(name: str, phone: str, message: str) -> Tuple[bool, str]:

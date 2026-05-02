@@ -346,6 +346,14 @@ def quick_request():
         )
         session.add(req)
         session.commit()
+        req_snapshot = {
+            "contact_name": req.contact_name,
+            "phone": req.phone,
+            "address": req.address,
+            "comment": req.comment,
+        }
+        from mailer import send_quick_request_notification_async
+        send_quick_request_notification_async(req_snapshot, base_url=request.host_url.rstrip("/"))
         return redirect(url_for("spasibo_dostavka"))
     finally:
         session.close()
