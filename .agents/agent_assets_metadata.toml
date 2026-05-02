@@ -515,3 +515,15 @@ id = "J8sdoj3pJxpNW_5jrRDWB"
 uri = "file://GUIDE.md"
 type = "text"
 title = "Руководство + инструкция по деплою — Аксай Гриль"
+
+[[outputs]]
+id = "86BVdY7kvfWpQW1LiVVC7"
+uri = "file://GUIDE.pdf"
+type = "pdf"
+title = "Руководство пользователя — PDF"
+
+[[outputs]]
+id = "jFNnalhLrwrV-g3MuYefd"
+uri = "file://GUIDE.txt"
+type = "text"
+title = "Руководство пользователя — TXT"
