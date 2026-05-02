@@ -393,6 +393,41 @@ def send_hall_notification_async(data: dict, base_url: str = "") -> None:
     _send_notification_async(send_hall_notification, data, base_url, "hall-notify")
 
 
+# ──────────────────────────── Контакт (вопрос с сайта) ────────────────────────────
+
+def send_contact_question(name: str, phone: str, message: str) -> Tuple[bool, str]:
+    """Отправить вопрос посетителя на aksaygryl@mail.ru."""
+    recipient = "aksaygryl@mail.ru"
+    subject = f"Вопрос с сайта от {name}"
+    plain = (
+        f"Имя: {name}\n"
+        f"Телефон: {phone}\n\n"
+        f"Вопрос:\n{message}"
+    )
+    html = f"""\
+<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:{_BODY_BG};padding:24px;">
+<div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.06);">
+  <div style="background:{_BRAND};color:#fff;padding:18px 24px;">
+    <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Аксай Гриль · сайт</div>
+    <div style="font-size:20px;font-weight:300;margin-top:4px;">Вопрос с сайта</div>
+  </div>
+  <div style="padding:20px 24px;">
+    <table width="100%" cellpadding="6" cellspacing="0" style="font-size:14px;">
+      <tr>{_td_label('Имя')}<td><strong>{name}</strong></td></tr>
+      <tr>{_td_label('Телефон')}<td><a href="tel:{phone}" style="color:{_BRAND};">{phone}</a></td></tr>
+    </table>
+    <div style="margin-top:16px;">
+      <div style="font-size:12px;color:{_LABEL_COLOR};text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Вопрос</div>
+      <div style="white-space:pre-wrap;font-size:14px;">{message}</div>
+    </div>
+  </div>
+  <div style="background:{_BODY_BG};padding:14px 24px;font-size:11px;color:{_LABEL_COLOR};">
+    Это автоматическое уведомление с сайта aksay-gril.ru
+  </div>
+</div></body></html>"""
+    return _send_smtp(subject, plain, html, recipient)
+
+
 # ──────────────────────────── Тест ────────────────────────────
 
 def send_test_email(to_addr: str) -> Tuple[bool, str]:

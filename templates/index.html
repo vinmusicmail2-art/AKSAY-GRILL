@@ -218,7 +218,7 @@
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#business-lunch">Бизнес-ланчи</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#catering">Кейтеринг</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#events">Мероприятия</a>
-<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#">Контакты</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#" onclick="openContactModal(); return false;">Контакты</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="/about">О нас</a>
 </nav>
 <div class="flex items-center gap-4">
@@ -242,7 +242,7 @@
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#business-lunch">Бизнес-ланчи</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#catering">Кейтеринг</a>
 <a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#events">Мероприятия</a>
-<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#">Контакты</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#" onclick="openContactModal(); return false;">Контакты</a>
 <a class="py-3 text-[#9b3f1c] font-semibold" href="/about">О нас</a>
 <div class="mt-4 mb-2 text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">Меню</div>
 <a class="flex items-center gap-3 py-3 text-[#56423a] border-b border-outline-variant/10" href="#mangal">
@@ -1916,6 +1916,51 @@
             0
         </div>
 </button>
+<!-- Contact Modal -->
+<div id="contact-modal-overlay" class="hidden fixed inset-0 bg-black/50 z-[80] flex items-center justify-center p-4" onclick="if(event.target===this)closeContactModal()">
+  <div class="bg-[#f5f1e8] dark:bg-[#1a1614] rounded-2xl shadow-2xl w-full max-w-md p-7 relative">
+    <button onclick="closeContactModal()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/10 text-[#56423a]">
+      <span class="material-symbols-outlined text-xl">close</span>
+    </button>
+    <h2 class="font-headline text-2xl text-[#9b3f1c] font-[200] mb-1">Задать вопрос</h2>
+    <p class="font-body text-sm text-[#56423a] mb-5">Напишите нам — ответим в ближайшее время</p>
+    <div id="contact-modal-success" class="hidden flex-col items-center text-center py-6 gap-3">
+      <span class="material-symbols-outlined text-5xl text-[#9b3f1c]" style="font-variation-settings:'FILL' 1;">check_circle</span>
+      <p class="font-headline text-xl text-[#3a2c26] font-[200]">Вопрос отправлен!</p>
+      <p class="font-body text-sm text-[#56423a]">Мы свяжемся с вами в ближайшее время.</p>
+      <button onclick="closeContactModal()" class="mt-2 px-6 py-2.5 bg-primary text-on-primary rounded-lg font-medium text-sm hover:opacity-90 transition-opacity">Закрыть</button>
+    </div>
+    <form id="contact-modal-form" onsubmit="submitContactForm(event)">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="space-y-4">
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Ваше имя *</label>
+          <input id="contact-name" name="name" type="text" required maxlength="100"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+            placeholder="Как к вам обращаться?"/>
+        </div>
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Телефон *</label>
+          <input id="contact-phone" name="phone" type="tel" required maxlength="30"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+            placeholder="+7 (___) ___-__-__"/>
+        </div>
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Ваш вопрос *</label>
+          <textarea id="contact-message" name="message" required maxlength="1000" rows="4"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition resize-none"
+            placeholder="Опишите ваш вопрос..."></textarea>
+        </div>
+        <div id="contact-error" class="hidden text-red-600 text-sm font-body"></div>
+        <button type="submit" id="contact-submit-btn"
+          class="w-full bg-primary text-on-primary py-3 rounded-lg font-medium text-sm hover:opacity-90 active:opacity-80 transition-opacity flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-lg leading-none">send</span>
+          Отправить вопрос
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 <!-- Cart Drawer -->
 <div id="cart-overlay" class="hidden fixed inset-0 bg-black/40 z-[60]" onclick="closeCart()"></div>
 <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#cbc7bf] z-[70] shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
@@ -2418,5 +2463,51 @@ document.getElementById('quick-request-modal').addEventListener('click', functio
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
+</script>
+<script>
+function openContactModal() {
+  var overlay = document.getElementById('contact-modal-overlay');
+  var form = document.getElementById('contact-modal-form');
+  var success = document.getElementById('contact-modal-success');
+  var err = document.getElementById('contact-error');
+  if (form) { form.reset(); form.classList.remove('hidden'); }
+  if (success) success.classList.add('hidden');
+  if (err) { err.classList.add('hidden'); err.textContent = ''; }
+  overlay.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal-overlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function submitContactForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById('contact-submit-btn');
+  var err = document.getElementById('contact-error');
+  err.classList.add('hidden'); err.textContent = '';
+  btn.disabled = true; btn.textContent = 'Отправляем...';
+  var form = document.getElementById('contact-modal-form');
+  var data = new FormData(form);
+  fetch('/contact', { method: 'POST', body: data })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if (res.ok) {
+        form.classList.add('hidden');
+        var s = document.getElementById('contact-modal-success');
+        s.classList.remove('hidden'); s.classList.add('flex');
+      } else {
+        err.textContent = res.error || 'Ошибка отправки. Попробуйте ещё раз.';
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg leading-none">send</span> Отправить вопрос';
+      }
+    })
+    .catch(function(){
+      err.textContent = 'Ошибка сети. Попробуйте ещё раз.';
+      err.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg leading-none">send</span> Отправить вопрос';
+    });
+}
 </script>
 </body></html>

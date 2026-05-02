@@ -38,3 +38,11 @@ externalPort = 80
 [deployment]
 deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+
+[userenv]
+
+[userenv.shared]
+SMTP_HOST = "smtp.mail.ru"
+SMTP_PORT = "465"
+SMTP_USER = "aksaygryl@mail.ru"
+SMTP_FROM = "aksaygryl@mail.ru"

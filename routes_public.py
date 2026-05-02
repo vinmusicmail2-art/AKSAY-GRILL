@@ -1,12 +1,27 @@
 """Публичные маршруты Аксай Гриль."""
 import logging
 
-from flask import flash, redirect, render_template, request, send_from_directory, url_for
+from flask import flash, jsonify, redirect, render_template, request, send_from_directory, url_for
 
 from app import app, csrf, _client_ip
 from db import BASE_DIR, SessionLocal
 
 logger = logging.getLogger(__name__)
+
+
+@app.route("/contact", methods=["POST"])
+def contact():
+    from mailer import send_contact_question
+    name = (request.form.get("name") or "").strip()
+    phone = (request.form.get("phone") or "").strip()
+    message = (request.form.get("message") or "").strip()
+    if not name or not phone or not message:
+        return jsonify({"ok": False, "error": "Пожалуйста, заполните все поля."})
+    ok, msg = send_contact_question(name, phone, message)
+    if ok:
+        return jsonify({"ok": True})
+    logger.warning("Contact email failed: %s", msg)
+    return jsonify({"ok": False, "error": "Не удалось отправить письмо. Попробуйте позже."})
 
 
 @app.route("/")
