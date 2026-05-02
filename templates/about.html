@@ -1,6 +1,9 @@
 {% extends "base_public.html" %}
 
 {% block title %}О нас · {{ texts.site_title }}{% endblock %}
+{% block meta_description %}{{ texts.meta_description_about }}{% endblock %}
+{% block og_title %}О нас · {{ texts.site_title }}{% endblock %}
+{% block og_description %}{{ texts.meta_description_about }}{% endblock %}
 
 {% block extra_styles %}
   .hero-bg {

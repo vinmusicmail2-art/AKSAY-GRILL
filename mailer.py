@@ -221,8 +221,8 @@ def _format_order_email(order, base_url: str = "") -> Tuple[str, str, str]:
         f"Количество персон: {order.persons}",
         "",
         "Выбранные комплексы:",
-        *(f"  • {titles.get(k, k)} — {prices.get(k, '?')}₽" for k in combo_keys)
-        or ["  • не выбраны (уточнить у клиента)"],
+        *([f"  • {titles.get(k, k)} — {prices.get(k, '?')}₽" for k in combo_keys]
+          or ["  • не выбраны (уточнить у клиента)"]),
         "",
         f"Комментарий: {order.comment or '—'}",
         "",

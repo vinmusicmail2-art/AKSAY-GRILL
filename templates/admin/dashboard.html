@@ -107,10 +107,15 @@
         </div>
         <div class="text-xs text-success mt-2">доступно</div>
       </a>
+      <a href="{{ url_for('admin_seo') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block">
+        <div class="font-medium text-primary">SEO</div>
+        <div class="text-xs text-on-surface-variant mt-1">Meta description, Яндекс.Метрика, Open Graph</div>
+        <div class="text-xs text-success mt-2">доступно</div>
+      </a>
       {% set sections = [
         ('Меню', 'CRUD блюд и категорий'),
         ('Реквизиты', 'ИП/ООО, ИНН, контакты'),
-        ('SEO', 'Метатеги и Я.Метрика'),
         ('Юридические страницы', 'Политика, оферта, cookies')
       ] %}
       {% for title, desc in sections %}

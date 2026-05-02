@@ -4,6 +4,37 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>{{ texts.site_title }}</title>
+<meta name="description" content="{{ texts.meta_description_main }}"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="{{ request.url }}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="{{ texts.site_title }}"/>
+<meta property="og:description" content="{{ texts.meta_description_main }}"/>
+<meta property="og:image" content="{{ texts.og_image }}"/>
+<meta property="og:url" content="{{ request.url }}"/>
+<meta property="og:locale" content="ru_RU"/>
+<meta property="og:site_name" content="Аксай Гриль"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Аксай Гриль",
+  "description": "Кафе-гриль в г. Аксай — шашлык, кейтеринг, доставка обедов на предприятия.",
+  "url": "{{ request.url_root }}",
+  "telephone": "{{ texts.contact_phone }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ texts.map_address_text }}",
+    "addressLocality": "Аксай",
+    "addressRegion": "Ростовская область",
+    "addressCountry": "RU"
+  },
+  "openingHours": "Mo-Su 10:00-22:00",
+  "servesCuisine": ["Русская кухня", "Кавказская кухня", "Гриль"],
+  "priceRange": "₽₽",
+  "image": "{{ request.url_root }}assets/about-hero.webp"
+}
+</script>
 <link rel="icon" type="image/webp" href="/assets/logo.webp"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>

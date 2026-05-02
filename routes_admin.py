@@ -426,6 +426,44 @@ def admin_delivery_orders():
         session.close()
 
 
+@app.route("/admin/seo", methods=["GET", "POST"])
+@login_required
+def admin_seo():
+    from models import load_site_texts, SiteText, SITE_TEXT_CATALOG
+
+    SEO_KEYS = [
+        "yandex_metrika_id",
+        "meta_description_main",
+        "meta_description_about",
+        "meta_description_catering",
+        "meta_description_events",
+        "meta_description_business_lunch",
+        "og_image",
+    ]
+    catalog = {item["key"]: item for item in SITE_TEXT_CATALOG}
+
+    session = SessionLocal()
+    try:
+        if request.method == "POST":
+            for key in SEO_KEYS:
+                value = (request.form.get(key) or "").strip()
+                row = session.query(SiteText).filter_by(key=key).first()
+                if row:
+                    row.value = value
+                else:
+                    session.add(SiteText(key=key, value=value))
+            session.commit()
+            flash("SEO-настройки сохранены.", "success")
+            return redirect(url_for("admin_seo"))
+
+        texts = load_site_texts(session)
+        fields = [catalog[k] for k in SEO_KEYS if k in catalog]
+        values = {k: texts.get(k, "") for k in SEO_KEYS}
+        return render_template("admin/seo.html", fields=fields, values=values)
+    finally:
+        session.close()
+
+
 @app.route("/admin/delivery-orders/<int:order_id>/toggle", methods=["POST"])
 @login_required
 def admin_delivery_order_toggle(order_id: int):
