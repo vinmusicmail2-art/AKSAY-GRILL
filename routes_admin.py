@@ -189,11 +189,16 @@ def admin_email_settings():
                 recipient = (request.form.get("notify_email_recipient") or "").strip()
                 enabled_raw = (request.form.get("notify_email_enabled") or "").strip()
                 enabled_value = "yes" if enabled_raw in ("on", "yes", "1", "true") else "no"
+                new_password = (request.form.get("smtp_password") or "").strip()
 
-                for key, value in (
+                pairs = [
                     ("notify_email_recipient", recipient),
                     ("notify_email_enabled", enabled_value),
-                ):
+                ]
+                if new_password:
+                    pairs.append(("smtp_password", new_password))
+
+                for key, value in pairs:
                     row = session.query(SiteText).filter(SiteText.key == key).first()
                     if row:
                         row.value = value
@@ -216,12 +221,18 @@ def admin_email_settings():
                 return redirect(url_for("admin_email_settings"))
 
         texts = load_site_texts(session)
+        from sqlalchemy import text as sa_text
+        pw_row = session.execute(
+            sa_text("SELECT value FROM site_texts WHERE key = 'smtp_password' LIMIT 1")
+        ).fetchone()
+        smtp_password_set = bool(pw_row and (pw_row[0] or "").strip())
         return render_template(
             "admin/email_settings.html",
             recipient=texts.get("notify_email_recipient", ""),
             enabled=(texts.get("notify_email_enabled", "yes") or "").strip().lower()
                     in ("yes", "y", "1", "true", "on", "да"),
             smtp=smtp_status(),
+            smtp_password_set=smtp_password_set,
         )
     finally:
         session.close()

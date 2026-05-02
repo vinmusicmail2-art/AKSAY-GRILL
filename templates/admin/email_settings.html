@@ -95,6 +95,22 @@
         <span class="text-sm">Присылать письма (можно временно отключить)</span>
       </label>
 
+      <label class="block">
+        <span class="block text-sm font-medium mb-2">Пароль от почты (aksaygryl@mail.ru)</span>
+        <input type="password" name="smtp_password"
+               autocomplete="new-password"
+               placeholder="{% if smtp_password_set %}••••••••  (сохранён — введите новый, чтобы изменить){% else %}Введите пароль от почты{% endif %}"
+               class="w-full px-4 py-2.5 rounded-lg border border-outline/40 bg-surface-lowest focus:border-primary focus:ring-2 focus:ring-primary/30 outline-none font-mono"/>
+        <span class="block text-xs text-on-surface-variant mt-1">
+          {% if smtp_password_set %}
+            <span class="text-green-600 font-medium">✓ Пароль сохранён.</span>
+            Оставьте поле пустым, чтобы не менять.
+          {% else %}
+            <span class="text-red-600 font-medium">Пароль не задан</span> — без него письма не отправляются.
+          {% endif %}
+        </span>
+      </label>
+
       <div class="pt-2">
         <button type="submit"
           class="px-5 py-2.5 rounded-lg bg-primary text-on-primary text-sm font-medium hover:bg-primary-container transition-colors shadow-md">

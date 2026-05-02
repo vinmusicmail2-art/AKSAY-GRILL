@@ -23,13 +23,33 @@ _BODY_BG = "#f5f1e8"
 _LABEL_COLOR = "#56423a"
 
 
+def _get_smtp_password_from_db() -> str:
+    """Читает пароль SMTP из БД, если он там сохранён."""
+    try:
+        from db import SessionLocal
+        from sqlalchemy import text
+        session = SessionLocal()
+        try:
+            row = session.execute(
+                text("SELECT value FROM site_texts WHERE key = 'smtp_password' LIMIT 1")
+            ).fetchone()
+            return (row[0] or "").strip() if row else ""
+        finally:
+            session.close()
+    except Exception:
+        return ""
+
+
 def _get_smtp_config() -> dict:
     import os
+    password = (os.environ.get("SMTP_PASSWORD") or "").strip()
+    if not password:
+        password = _get_smtp_password_from_db()
     return {
         "host": (os.environ.get("SMTP_HOST") or "").strip(),
         "port": (os.environ.get("SMTP_PORT") or "").strip(),
         "user": (os.environ.get("SMTP_USER") or "").strip(),
-        "password": os.environ.get("SMTP_PASSWORD") or "",
+        "password": password,
         "from_addr": (
             os.environ.get("SMTP_FROM") or os.environ.get("SMTP_USER") or ""
         ).strip(),
