@@ -210,7 +210,33 @@
               <div class="text-xs text-on-surface-variant mt-0.5 truncate max-w-xs">{{ dish.description }}</div>
               {% endif %}
             </td>
-            <td class="py-2 pr-3 text-right font-mono font-semibold text-primary whitespace-nowrap">{{ dish.price }}₽</td>
+            <td class="py-2 pr-3 text-right whitespace-nowrap">
+              <span id="price-display-{{ dish.id }}"
+                    class="font-mono font-semibold text-primary cursor-pointer hover:underline decoration-dashed decoration-primary/50 underline-offset-2"
+                    title="Нажмите, чтобы изменить цену"
+                    onclick="togglePriceEdit({{ dish.id }}, {{ dish.price }})">{{ dish.price }}₽</span>
+              <form id="price-form-{{ dish.id }}"
+                    method="POST"
+                    action="{{ url_for('admin_menu_dish_update_price', dish_id=dish.id) }}"
+                    class="hidden items-center gap-1 justify-end">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="number" name="price" min="0" max="99999"
+                       id="price-input-{{ dish.id }}"
+                       class="w-20 text-right border border-primary/40 rounded px-1.5 py-0.5 text-sm font-mono focus:outline-none focus:border-primary"
+                       onkeydown="if(event.key==='Escape') cancelPriceEdit({{ dish.id }})"/>
+                <button type="submit"
+                        class="p-1 rounded text-success hover:bg-success-container transition-all"
+                        title="Сохранить">
+                  <span class="material-symbols-outlined text-base leading-none">check</span>
+                </button>
+                <button type="button"
+                        class="p-1 rounded text-on-surface-variant hover:bg-surface-container transition-all"
+                        title="Отмена"
+                        onclick="cancelPriceEdit({{ dish.id }})">
+                  <span class="material-symbols-outlined text-base leading-none">close</span>
+                </button>
+              </form>
+            </td>
             <td class="py-2 pr-3 text-center">
               <form method="POST" action="{{ url_for('admin_menu_dish_toggle', dish_id=dish.id) }}" class="inline">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -290,6 +316,28 @@
 function togglePanel(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('hidden');
+}
+
+function togglePriceEdit(dishId, currentPrice) {
+  const display = document.getElementById('price-display-' + dishId);
+  const form    = document.getElementById('price-form-' + dishId);
+  const input   = document.getElementById('price-input-' + dishId);
+  if (!display || !form || !input) return;
+  display.classList.add('hidden');
+  form.classList.remove('hidden');
+  form.classList.add('flex');
+  input.value = currentPrice;
+  input.focus();
+  input.select();
+}
+
+function cancelPriceEdit(dishId) {
+  const display = document.getElementById('price-display-' + dishId);
+  const form    = document.getElementById('price-form-' + dishId);
+  if (!display || !form) return;
+  form.classList.add('hidden');
+  form.classList.remove('flex');
+  display.classList.remove('hidden');
 }
 
 (function () {

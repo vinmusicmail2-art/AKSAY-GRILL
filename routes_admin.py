@@ -1183,6 +1183,32 @@ def admin_menu_category_reorder_dishes(cat_id: int):
     return redirect(url_for("admin_menu"))
 
 
+@app.route("/admin/menu/dish/<int:dish_id>/update-price", methods=["POST"])
+@login_required
+def admin_menu_dish_update_price(dish_id: int):
+    from models import Dish
+
+    session = SessionLocal()
+    try:
+        dish = session.get(Dish, dish_id)
+        if dish is None:
+            abort(404)
+        new_price = request.form.get("price", "").strip()
+        if not new_price.isdigit():
+            flash("Цена должна быть числом.", "error")
+        else:
+            dish.price = int(new_price)
+            session.commit()
+            flash(f"Цена «{dish.name}» обновлена: {dish.price} ₽", "success")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error updating price for dish %d: %s", dish_id, exc)
+        flash("Ошибка при обновлении цены.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
 @app.route("/admin/menu/dish/<int:dish_id>/upload-image", methods=["POST"])
 @login_required
 def admin_menu_dish_upload_image(dish_id: int):
