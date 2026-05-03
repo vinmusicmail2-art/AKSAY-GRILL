@@ -246,7 +246,7 @@
 {% for cat in menu_categories if cat.show_in_nav %}
 <a class="flex items-center gap-4 wood-bg-light dark:bg-[#1a1614] text-[#FEF9EF] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300 origin-left hover:scale-105 hover:shadow-md hover:shadow-primary/20" href="#{{ cat.slug }}">
 <span class="material-symbols-outlined">{{ cat.nav_icon }}</span>
-<span class="font-body font-medium uppercase tracking-widest text-[10px]">{{ cat.name }}</span>
+<span class="font-body font-medium uppercase tracking-wide text-[10px] whitespace-nowrap overflow-hidden min-w-0 flex-1">{{ cat.name }}</span>
 </a>
 {% endfor %}
 </nav>
