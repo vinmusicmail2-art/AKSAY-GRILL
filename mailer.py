@@ -536,8 +536,12 @@ def send_quick_request_notification_async(data: dict, base_url: str = "") -> Non
 # ──────────────────────────── Контакт (вопрос с сайта) ────────────────────────────
 
 def send_contact_question(name: str, phone: str, message: str) -> Tuple[bool, str]:
-    """Отправить вопрос посетителя на aksaygryl@mail.ru."""
-    recipient = "aksaygryl@mail.ru"
+    """Отправить вопрос посетителя на адрес из настроек (notify_email_recipient)."""
+    recipient, enabled = _get_recipient_and_toggle()
+    if not enabled:
+        return False, "Уведомления выключены в настройках."
+    if not recipient:
+        return False, "Не задан e-mail получателя в настройках."
     subject = f"Вопрос с сайта от {name}"
     plain = (
         f"Имя: {name}\n"
