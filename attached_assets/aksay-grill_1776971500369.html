@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ru"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Аксай Гриль | Искусство живого огня</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#56423a",
+                    "primary-container": "#bb5732",
+                    "tertiary": "#735c00",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#cba72f",
+                    "on-primary-container": "#fffbff",
+                    "surface-container": "#f2ede3",
+                    "on-primary-fixed-variant": "#7f2b08",
+                    "on-tertiary-fixed": "#241a00",
+                    "surface-container-high": "#ece8de",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#fef9ef",
+                    "on-primary-fixed": "#390c00",
+                    "surface-container-low": "#f8f3e9",
+                    "inverse-surface": "#32302a",
+                    "surface-container-highest": "#e7e2d8",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#f5f0e6",
+                    "on-surface": "#1d1c16",
+                    "outline": "#897269",
+                    "on-secondary-container": "#794e2e",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffe088",
+                    "tertiary-fixed-dim": "#e9c349",
+                    "on-secondary-fixed": "#301400",
+                    "inverse-primary": "#ffb59c",
+                    "primary-fixed-dim": "#ffb59c",
+                    "primary": "#9b3f1c",
+                    "surface-variant": "#e7e2d8",
+                    "secondary-fixed-dim": "#f4bb92",
+                    "on-secondary-fixed-variant": "#653d1e",
+                    "secondary": "#805533",
+                    "surface-tint": "#9f411e",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#fdc39a",
+                    "outline-variant": "#dcc1b6",
+                    "background": "#fef9ef",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#4e3d00",
+                    "secondary-fixed": "#ffdcc5",
+                    "on-background": "#1d1c16",
+                    "surface-dim": "#dedad0",
+                    "primary-fixed": "#ffdbcf",
+                    "on-tertiary-fixed-variant": "#574500",
+                    "surface": "#fef9ef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Montserrat", "sans-serif"],
+                    "body": ["Montserrat", "sans-serif"],
+                    "label": ["Montserrat", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .brand-glow {
+        background: radial-gradient(circle at center, #bb5732 0%, #9b3f1c 100%);
+      }
+      .glass-nav {
+        background: rgba(254, 249, 239, 0.8);
+        backdrop-filter: blur(24px);
+      }
+      /* Apply specific weights for the request */
+      h1, h2, .font-headline {
+        font-weight: 200; /* Montserrat Thin-ish for headings */
+      }
+      body {
+        font-weight: 400; /* Montserrat Regular for body */
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased" data-mode="connect">
+<!-- Top Navigation Shell -->
+<header class="docked full-width top-0 sticky z-50 bg-[#fef9ef]/80 dark:bg-[#1a1614]/80 backdrop-blur-md shadow-sm shadow-[#56423a]/5 border-none">
+<div class="flex justify-between items-center px-8 py-6 w-full max-w-[1440px] mx-auto">
+<nav class="hidden md:flex items-center gap-8 text-sm tracking-wide font-medium">
+<a class="text-[#9b3f1c] border-b-2 border-[#9b3f1c] pb-1 transition-colors duration-300" href="#">О нас</a>
+<a class="text-[#56423a] opacity-80 hover:text-[#9b3f1c] transition-colors duration-300" href="#">Доставка</a>
+<a class="text-[#56423a] opacity-80 hover:text-[#9b3f1c] transition-colors duration-300" href="#">Контакты</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/15">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-medium hover:opacity-90 scale-95 active:opacity-80 transition-all">
+                    Заказать
+                </button>
+</div>
+</div>
+</header>
+<div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-1/4 border-r border-[#dcc1b6]/15 bg-[#f8f3e9] dark:bg-[#25211e] hidden md:block">
+<div class="flex flex-col pt-32 pb-12 w-full h-full">
+<div class="px-8 mb-12 bg-[#fef9ef]">
+<img alt="Aksai Grill Logo" class="w-full h-auto mb-2" src="https://lh3.googleusercontent.com/aida/ADBb0ujAkxYg5jLwVlMD-CcIaf_Us8kaarQUWAV42MlaCimoWX7YI5tU5MWwuVcq6dskDiG0uMG2OopN7HF8AyZkifluMyQt6XaUV2tgRNmRI8m2HC3EfY35M8oQrKSWGbuJz0_MCPZwqXpXdEfG3DX0TEMk49END7YhDiQmwQ0KFWGUedQtIt_nugcYlb8YElwCMWXEN591sc2Sow46ENusSpdKuheadi3wjOsqLvmt0f0AU_HllPsp_D9Ilq4T1pREG7dgBmozO9Oo" style="background-color: transparent; mix-blend-mode: multiply;"/>
+</div>
+<nav class="flex-1 space-y-2 pr-4">
+<a class="flex items-center gap-4 bg-[#fef9ef] dark:bg-[#1a1614] text-[#9b3f1c] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="soup_kitchen">soup_kitchen</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Первые блюда</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="rice_bowl">rice_bowl</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Гарниры</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Вторые блюда</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="local_bar">local_bar</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Напитки</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="bakery_dining">bakery_dining</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Выпечка</span>
+</a>
+<a class="flex items-center gap-4 text-[#56423a] py-4 pl-8 opacity-70 hover:bg-[#fef9ef] dark:hover:bg-[#1a1614] hover:pl-10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="flatware">flatware</span>
+<span class="font-body font-medium uppercase tracking-widest text-[10px]">Салаты</span>
+</a>
+</nav>
+<div class="px-8 mt-auto">
+<button class="w-full bg-secondary-container text-on-secondary-container py-4 rounded-lg font-medium text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-base">shopping_cart</span>
+                        Заказать сейчас
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="w-full md:ml-[25%] p-8 lg:p-16">
+<!-- Hero Section -->
+<section class="relative mb-20 overflow-hidden rounded-xl bg-surface-container-low min-h-[400px] flex items-center">
+<div class="absolute inset-0 z-0">
+<img alt="atmospheric kitchen scene" class="w-full h-full object-cover opacity-20 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxCTr8UkoybzUGz7z2xndyS3dSyLNGrtFCDCxZU91jvI5TFpOF1JMhaFZ34L4E9hTluwblUaz4GPW_oNpllHh69RiSohLvXjAmNxF_9LPgi68zpmGz65IkUqs9NT0gtOUYuMjs86YmpM00NFrfLyGNxNXpih3xOHdts6zbZSj3FGZi-wILjgvC2Z8LBftpXMkTC1Nin-Kfp1bzYkcSOGFkOnFhsSV1c_vTPxcF1UyhR8dnKAXYBld_lj1rKvgCWKmPiW0bTNUyBKY"/>
+</div>
+<div class="relative z-10 px-12 max-w-2xl">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Традиции вкуса</span>
+<h1 class="font-headline text-5xl md:text-6xl text-primary leading-tight mb-8 font-[200]">Свежие блюда домашней кухни, приготовленные с заботой</h1>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
+<span class="material-symbols-outlined">delivery_dining</span>
+                            Заказать доставку
+                        </button>
+<button class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm">
+                            Посмотреть отзывы
+                        </button>
+</div>
+</div>
+</section>
+<!-- Menu Content -->
+<section class="mb-16" id="menu-section">
+
+<!-- Category Tabs -->
+<div class="flex flex-wrap gap-2 mb-10">
+  <button onclick="showCategory('pervye')" id="tab-pervye" class="menu-tab active-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-primary text-white shadow-md">Первые блюда</button>
+  <button onclick="showCategory('garniry')" id="tab-garniry" class="menu-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-surface-container text-on-surface-variant hover:bg-primary hover:text-white">Гарниры</button>
+  <button onclick="showCategory('vtorye')" id="tab-vtorye" class="menu-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-surface-container text-on-surface-variant hover:bg-primary hover:text-white">Вторые блюда</button>
+  <button onclick="showCategory('napitki')" id="tab-napitki" class="menu-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-surface-container text-on-surface-variant hover:bg-primary hover:text-white">Напитки</button>
+  <button onclick="showCategory('vypechka')" id="tab-vypechka" class="menu-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-surface-container text-on-surface-variant hover:bg-primary hover:text-white">Выпечка</button>
+  <button onclick="showCategory('salaty')" id="tab-salaty" class="menu-tab px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase transition-all bg-surface-container text-on-surface-variant hover:bg-primary hover:text-white">Салаты</button>
+</div>
+
+<!-- ПЕРВЫЕ БЛЮДА -->
+<div id="cat-pervye" class="menu-category">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Первые блюда</h2><p class="text-on-surface-variant text-sm">Наваристые супы по старинным рецептам из свежих ингредиентов.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- список блюд как строки -->
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Борщ</h3><p class="text-on-surface-variant text-xs">Классический наваристый со свеклой и говядиной</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">220 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Суп Шурпа</h3><p class="text-on-surface-variant text-xs">Традиционный восточный суп с бараниной и овощами</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">250 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Солянка</h3><p class="text-on-surface-variant text-xs">Густой мясной суп с ассорти из копчёностей</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">250 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Суп Лагман</h3><p class="text-on-surface-variant text-xs">Среднеазиатский суп с лапшой и мясом</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">350 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Суп гороховый</h3><p class="text-on-surface-variant text-xs">Сытный суп с горохом и копчёностями</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">220 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Лапша куриная</h3><p class="text-on-surface-variant text-xs">Домашняя лапша на наваристом курином бульоне</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">200 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Суп с фасолью</h3><p class="text-on-surface-variant text-xs">Питательный суп с красной фасолью</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">220 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Суп Харчо</h3><p class="text-on-surface-variant text-xs">Грузинский суп с рисом, грецкими орехами и специями</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">220 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+    <div class="group bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all">
+      <div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Окрошка на кефире</h3><p class="text-on-surface-variant text-xs">Освежающий летний суп на кефире с зеленью</p></div>
+      <div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">250 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ГАРНИРЫ -->
+<div id="cat-garniry" class="menu-category hidden">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Гарниры</h2><p class="text-on-surface-variant text-sm">Домашние гарниры к любому блюду.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Картофельное пюре</h3><p class="text-on-surface-variant text-xs">Со сливочным маслом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">95 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Гречка отварная</h3><p class="text-on-surface-variant text-xs">Рассыпчатая, с маслом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Макароны отварные</h3><p class="text-on-surface-variant text-xs">С маслом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Рис отварной с овощами</h3><p class="text-on-surface-variant text-xs">Пропаренный рис с овощами</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Картофель по-деревенски</h3><p class="text-on-surface-variant text-xs">Запечённый с травами и специями</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Капуста тушёная</h3><p class="text-on-surface-variant text-xs">С морковью и луком</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Каша пшеничная рассыпчатая</h3><p class="text-on-surface-variant text-xs">С маслом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">70 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+  </div>
+</div>
+
+<!-- ВТОРЫЕ БЛЮДА -->
+<div id="cat-vtorye" class="menu-category hidden">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Вторые блюда</h2><p class="text-on-surface-variant text-sm">Сытные горячие блюда на каждый день.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Куриная котлета</h3><p class="text-on-surface-variant text-xs">Сочная котлета из куриного фарша</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Гуляш из говядины</h3><p class="text-on-surface-variant text-xs">Нежная говядина в томатном соусе</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">220 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Котлета «По-киевски»</h3><p class="text-on-surface-variant text-xs">С маслом и зеленью внутри</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">170 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Медвежья лапа</h3><p class="text-on-surface-variant text-xs">Фирменная котлета в хрустящей панировке</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">250 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Макароны по-флотски</h3><p class="text-on-surface-variant text-xs">С мясным фаршем</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">200 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Пельмени домашние со сметаной</h3><p class="text-on-surface-variant text-xs">Ручной лепки, с мясом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">350 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Курица тушёная в сливках</h3><p class="text-on-surface-variant text-xs">Нежное куриное филе в сливочном соусе</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">170 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Рыба жареная Хек</h3><p class="text-on-surface-variant text-xs">В хрустящей корочке</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">190 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Отбивная куриная</h3><p class="text-on-surface-variant text-xs">Сочная, в панировке</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">170 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Вареники со сметаной</h3><p class="text-on-surface-variant text-xs">С картофелем или творогом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">300 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Люля-кебаб из курицы</h3><p class="text-on-surface-variant text-xs">На мангале, с зеленью</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">160 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Куриное бедро жареное</h3><p class="text-on-surface-variant text-xs">Золотистая корочка, сочное мясо</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">170 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Яичница глазунья</h3><p class="text-on-surface-variant text-xs">Натуральная, на сливочном масле</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Яичница 2 яйца</h3><p class="text-on-surface-variant text-xs">Простая и сытная</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Крылья жареные</h3><p class="text-on-surface-variant text-xs">За килограмм</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">650 р/кг</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+  </div>
+</div>
+
+<!-- НАПИТКИ -->
+<div id="cat-napitki" class="menu-category hidden">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Напитки</h2><p class="text-on-surface-variant text-sm">Горячие и холодные напитки на любой вкус.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Компот из сухофруктов</h3><p class="text-on-surface-variant text-xs">Домашний, тёплый</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">50 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кока-кола 0,5 л</h3><p class="text-on-surface-variant text-xs">Охлаждённая</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">120 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Чай в пакетиках</h3><p class="text-on-surface-variant text-xs">Чёрный или зелёный</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">50 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кофе растворимый</h3><p class="text-on-surface-variant text-xs">Классический</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">50 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кофе 3 в 1</h3><p class="text-on-surface-variant text-xs">С сахаром и сливками</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">50 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">BURN 0,5 л</h3><p class="text-on-surface-variant text-xs">Энергетик</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Флеш 0,5 л</h3><p class="text-on-surface-variant text-xs">Энергетик</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">110 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Адреналин Раш 0,5 л</h3><p class="text-on-surface-variant text-xs">Энергетик</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">190 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Вода Аквадон 0,5 л</h3><p class="text-on-surface-variant text-xs">Негазированная</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">50 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кубай 1,5 л</h3><p class="text-on-surface-variant text-xs">Вода питьевая</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">90 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кока-кола 1 л</h3><p class="text-on-surface-variant text-xs">Охлаждённая</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Лимонад в стекле</h3><p class="text-on-surface-variant text-xs">Натуральный</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">110 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Вода питьевая 5 л</h3><p class="text-on-surface-variant text-xs">Для дома и офиса</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">160 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Холодный чай LIPTON зелёный персик</h3><p class="text-on-surface-variant text-xs">0,5 л</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Чай чёрный в чайнике</h3><p class="text-on-surface-variant text-xs">Заварной, с сахаром</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">300 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+  </div>
+</div>
+
+<!-- ВЫПЕЧКА -->
+<div id="cat-vypechka" class="menu-category hidden">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Выпечка</h2><p class="text-on-surface-variant text-sm">Свежая выпечка каждый день.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Хлеб пшеничный</h3><p class="text-on-surface-variant text-xs">Кусочек</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">5 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Пирожок жареный</h3><p class="text-on-surface-variant text-xs">С разными начинками</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">80 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Сосиска в тесте</h3><p class="text-on-surface-variant text-xs">Горячая, с горчицей</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Беляши</h3><p class="text-on-surface-variant text-xs">С мясом, жареные</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Сырники из творога</h3><p class="text-on-surface-variant text-xs">Со сметаной</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">170 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Булочка чесночная</h3><p class="text-on-surface-variant text-xs">С чесночным маслом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">40 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Блинчики с мясом</h3><p class="text-on-surface-variant text-xs">Тонкие, с начинкой</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">200 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Самса</h3><p class="text-on-surface-variant text-xs">Слоёная, с мясом</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">160 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Оладьи 2 шт.</h3><p class="text-on-surface-variant text-xs">Пышные, со сметаной</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">150 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+  </div>
+</div>
+
+<!-- САЛАТЫ -->
+<div id="cat-salaty" class="menu-category hidden">
+  <div class="mb-8"><h2 class="font-headline text-4xl text-on-surface mb-2 font-[200]">Салаты</h2><p class="text-on-surface-variant text-sm">Свежие и вкусные салаты к обеду.</p></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Свёкла с чесноком</h3><p class="text-on-surface-variant text-xs">Классический</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Салат «Оливье» с колбасой</h3><p class="text-on-surface-variant text-xs">По домашнему рецепту</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Капуста по-грузински</h3><p class="text-on-surface-variant text-xs">Маринованная, пикантная</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Салат из помидоров с огурцами</h3><p class="text-on-surface-variant text-xs">С заправкой</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Кабачки жареные</h3><p class="text-on-surface-variant text-xs">Со сметаной и чесноком</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Капуста с горошком</h3><p class="text-on-surface-variant text-xs">Свежая, хрустящая</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 flex items-center justify-between border border-outline-variant/10 hover:shadow-lg hover:shadow-primary/5 transition-all"><div><h3 class="font-headline text-base font-medium text-on-surface mb-1">Морковь с чесноком</h3><p class="text-on-surface-variant text-xs">Пикантная закуска</p></div><div class="flex flex-col items-end gap-2 ml-4"><span class="text-primary font-bold text-sm whitespace-nowrap">100 р</span><button class="bg-surface-container-low text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span>В заказ</button></div></div>
+  </div>
+</div>
+
+<script>
+function showCategory(cat) {
+  document.querySelectorAll('.menu-category').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.menu-tab').forEach(el => {
+    el.classList.remove('bg-primary','text-white','shadow-md');
+    el.classList.add('bg-surface-container','text-on-surface-variant');
+  });
+  document.getElementById('cat-' + cat).classList.remove('hidden');
+  var tab = document.getElementById('tab-' + cat);
+  tab.classList.add('bg-primary','text-white','shadow-md');
+  tab.classList.remove('bg-surface-container','text-on-surface-variant');
+}
+</script>
+</section>
+<!-- Delivery Info Banner -->
+<section class="bg-surface-container-highest rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10">
+<div class="flex-1">
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Доставим горячим</h2>
+<p class="text-on-surface-variant mb-8 text-lg font-light">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
+<div class="flex flex-wrap gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">speed</span>
+</div>
+<span class="font-bold text-xs">Быстро</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">takeout_dining</span>
+</div>
+<span class="font-bold text-xs">Термо-боксы</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">payments</span>
+</div>
+<span class="font-bold text-xs">Оплата картой</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl">
+<img alt="delivery" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdIjhMsZ3KlTKDg0neRApUv4TiyfB0a7MzFE6F4HS0MYzgdK5sHCue_OivA6r18OS3ucIQkjBxOXNTFygm_C2_CosM3G0YhGrkpMN-Cof9cjGT7fjMhCDQ16B8xYkibFE7MjHTXPcONHrQxFbJf8ndIiamEqCOPz8yKSWKpRqjobl0VZCH5td98pGIONgp_-OR_Oy3CMLzxbRPQdjspWs6Tp2hUJBpA6LG_TiFamsuN8wX08D_S45umlhT4Wubt1B9u8HEt-taB3I"/>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer Section -->
+<footer class="w-full py-12 mt-20 bg-[#e7e2d8] dark:bg-[#12100f] border-none">
+<div class="flex flex-col items-center justify-center gap-6 px-4 md:ml-[25%]">
+<div class="mb-4 bg-[#fef9ef] p-4 rounded-xl">
+<img alt="Aksai Grill Logo Footer" class="h-24 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0ujAkxYg5jLwVlMD-CcIaf_Us8kaarQUWAV42MlaCimoWX7YI5tU5MWwuVcq6dskDiG0uMG2OopN7HF8AyZkifluMyQt6XaUV2tgRNmRI8m2HC3EfY35M8oQrKSWGbuJz0_MCPZwqXpXdEfG3DX0TEMk49END7YhDiQmwQ0KFWGUedQtIt_nugcYlb8YElwCMWXEN591sc2Sow46ENusSpdKuheadi3wjOsqLvmt0f0AU_HllPsp_D9Ilq4T1pREG7dgBmozO9Oo" style="background-color: transparent; mix-blend-mode: multiply;"/>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-headline text-2xl text-[#9b3f1c] font-[200]">Аксай Гриль</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+<p class="font-body text-sm font-light text-[#56423a] dark:text-[#e7e2d8]">Искусство живого огня.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-8 text-[#56423a] opacity-60">
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Политика конфиденциальности</a>
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Условия использования</a>
+<a class="font-body text-xs font-light hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
+</nav>
+<div class="pt-8 border-t border-outline-variant/20 w-full max-w-lg text-center">
+<p class="font-body text-[10px] text-on-surface-variant opacity-40">© 2024 Аксай Гриль. Все права защищены. <br/> Сделано с любовью к домашней кухне.</p>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 bg-primary text-on-primary w-16 h-16 rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+<div class="absolute -top-1 -right-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
+            0
+        </div>
+</button>
+</body></html>

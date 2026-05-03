@@ -1,0 +1,190 @@
+{% extends "base_public.html" %}
+
+{% block title %}О нас · {{ texts.site_title }}{% endblock %}
+{% block meta_description %}{{ texts.meta_description_about }}{% endblock %}
+{% block og_title %}О нас · {{ texts.site_title }}{% endblock %}
+{% block og_description %}{{ texts.meta_description_about }}{% endblock %}
+
+{% block extra_styles %}
+  .hero-bg {
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.70) 100%),
+                      url('/assets/about.webp');
+    background-size: cover;
+    background-position: center calc(35% - 40px);
+  }
+  .advantage-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .advantage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px -12px rgba(155,63,28,0.22);
+  }
+  .divider {
+    width: 48px;
+    height: 3px;
+    background: #9b3f1c;
+    border-radius: 2px;
+  }
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-bg text-white">
+  <div class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">{{ texts.about_badge }}</span>
+    <h1 class="font-headline text-4xl md:text-6xl mb-5 leading-tight">О нас</h1>
+    <p class="text-lg md:text-xl max-w-2xl opacity-95 leading-relaxed">
+      {{ texts.about_hero_subtitle }}
+    </p>
+  </div>
+</section>
+
+<!-- О предприятии -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Наша история</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-5">{{ texts.about_history_title }}</h2>
+      <div class="divider mb-6"></div>
+      <div class="space-y-4 text-[15px] text-on-surface-variant leading-relaxed">
+        <p>{{ texts.about_history_p1 }}</p>
+        <p>{{ texts.about_history_p2 }}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">schedule</span>
+        <div class="font-semibold text-on-surface mb-1">Более 2 лет</div>
+        <div class="text-xs text-on-surface-variant">Стабильная работа и сотни довольных гостей</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">location_on</span>
+        <div class="font-semibold text-on-surface mb-1">Рынок «Казачий»</div>
+        <div class="text-xs text-on-surface-variant">Удобный подъезд, парковка рядом</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">directions_walk</span>
+        <div class="font-semibold text-on-surface mb-1">Пешая доступность</div>
+        <div class="text-xs text-on-surface-variant">Рядом с микрорайоном Придонье (120 000 жит.)</div>
+      </div>
+      <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-start">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">fork_right</span>
+        <div class="font-semibold text-on-surface mb-1">Перекрёсток трёх дорог</div>
+        <div class="text-xs text-on-surface-variant">Удобно добраться из любой части города</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Кухня -->
+<section class="bg-surface-container-low/60 py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-10">
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Что готовим</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface">Кухня Аксай Гриль</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="advantage-card bg-[#e1ddd5] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">outdoor_grill</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Блюда на гриле</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Шашлык из свинины, говядины, баранины и курицы, люля-кебаб,
+          куриные крылья и бёдра — всё готовится на живом огне.
+        </p>
+      </div>
+      <div class="advantage-card bg-[#e1ddd5] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">soup_kitchen</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Донская кухня</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Наваристый борщ, солянка по-домашнему — традиционные рецепты,
+          которые пахнут детством и теплом.
+        </p>
+      </div>
+      <div class="advantage-card bg-[#e1ddd5] rounded-2xl p-6 border border-outline-variant/30">
+        <span class="material-symbols-outlined text-4xl text-primary mb-3" style="font-variation-settings:'FILL' 1">ramen_dining</span>
+        <h3 class="font-headline text-xl text-on-surface mb-2">Азиатская кухня</h3>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Шурпа из баранины, лагман, плов — насыщенные и ароматные блюда
+          восточной традиции, приготовленные по настоящим рецептам.
+        </p>
+      </div>
+    </div>
+    <!-- Главное преимущество -->
+    <div class="mt-8 bg-primary rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-6">
+      <span class="material-symbols-outlined text-6xl opacity-90 flex-shrink-0" style="font-variation-settings:'FILL' 1">egg_alt</span>
+      <div>
+        <div class="text-xs uppercase tracking-widest opacity-70 mb-2">Наше главное преимущество</div>
+        <h3 class="font-headline text-2xl md:text-3xl mb-2">{{ texts.about_advantage_title }}</h3>
+        <p class="text-sm opacity-90 leading-relaxed max-w-2xl">{{ texts.about_advantage_text }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Услуги -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-3">Что мы предлагаем</div>
+  <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-10">Наши услуги</h2>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">delivery_dining</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Доставка обедов</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Доставляем готовые обеды прямо на предприятия и строительные площадки.
+        Горячее, свежее, вовремя — без лишних хлопот для вашего коллектива.
+      </p>
+      <a href="/" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Заказать доставку <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">celebration</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Банкеты и фуршеты</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Организуем банкеты и фуршеты любой сложности: свадьбы, юбилеи,
+        уютные семейные торжества. Возьмём на себя всё — от меню до сервировки.
+      </p>
+      <a href="/catering" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Узнать подробнее <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+    <div class="advantage-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings:'FILL' 1">event_seat</span>
+      <h3 class="font-headline text-xl text-on-surface mb-2">Мероприятия в зале</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed flex-1">
+        Юбилеи, свадьбы, корпоративы и семейные торжества в зале нашего ресторана.
+        Меню, оформление и сервис — под ваш формат и бюджет.
+      </p>
+      <a href="/events" class="mt-5 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+        Оставить заявку <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Контакты / CTA -->
+<section class="bg-[#b8b4ac] py-14 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Мы рядом</div>
+      <h2 class="font-headline text-2xl md:text-3xl text-on-surface mb-3">Приходите в гости</h2>
+      <div class="space-y-2 text-sm text-on-surface-variant">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+          г. Аксай, рынок «Казачий»
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+          {{ texts.working_hours }}
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">call</span>
+          <a href="tel:{{ texts.contact_phone }}" class="hover:text-primary transition-colors font-medium">{{ texts.contact_phone }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

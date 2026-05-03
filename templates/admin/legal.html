@@ -1,0 +1,116 @@
+{% extends "admin/base.html" %}
+{% block title %}Юридические страницы{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+
+  <div class="flex items-center gap-3">
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="p-2 rounded-lg border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <div>
+      <h1 class="text-3xl font-light text-primary">Юридические страницы</h1>
+      <p class="text-sm text-on-surface-variant mt-0.5">Политика конфиденциальности, публичная оферта, политика cookies</p>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for cat, msg in messages %}
+  <div class="px-5 py-3 rounded-lg text-sm font-medium {{ 'bg-success-container text-success' if cat == 'success' else 'bg-error-container text-error' }}">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="space-y-8">
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-medium text-primary">Политика конфиденциальности</h2>
+            <a href="{{ url_for('privacy') }}" target="_blank"
+               class="text-xs text-primary hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              Открыть страницу
+            </a>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Дата последнего обновления</label>
+            <input name="legal_privacy_last_updated" type="text" maxlength="64"
+                   value="{{ texts.legal_privacy_last_updated }}"
+                   placeholder="26 апреля 2026 г."
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+            <p class="text-xs text-on-surface-variant mt-1">Отображается в строке «Дата последнего обновления» на странице /privacy.html</p>
+          </div>
+        </div>
+
+        <hr class="border-outline/20"/>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-medium text-primary">Публичная оферта</h2>
+            <a href="{{ url_for('offer') }}" target="_blank"
+               class="text-xs text-primary hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              Открыть страницу
+            </a>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Текст оферты (HTML разрешён)</label>
+            <textarea name="legal_offer_html" rows="16" maxlength="65535"
+                      class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-primary resize-y">{{ texts.legal_offer_html }}</textarea>
+            <p class="text-xs text-on-surface-variant mt-1">Поддерживается HTML: <code>&lt;h2&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code>, <code>&lt;strong&gt;</code></p>
+          </div>
+        </div>
+
+        <hr class="border-outline/20"/>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-medium text-primary">Политика cookies</h2>
+            <a href="{{ url_for('cookies') }}" target="_blank"
+               class="text-xs text-primary hover:underline flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              Открыть страницу
+            </a>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Текст политики cookies (HTML разрешён)</label>
+            <textarea name="legal_cookies_html" rows="12" maxlength="65535"
+                      class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-primary resize-y">{{ texts.legal_cookies_html }}</textarea>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit"
+                  class="bg-primary text-on-primary px-8 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+            Сохранить все изменения
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-6">
+    <h2 class="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Ссылки на юридические страницы</h2>
+    <div class="flex flex-wrap gap-4 text-sm">
+      <a href="{{ url_for('privacy') }}" target="_blank" class="text-primary hover:underline flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">shield</span>/privacy.html
+      </a>
+      <a href="{{ url_for('offer') }}" target="_blank" class="text-primary hover:underline flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">description</span>/offer
+      </a>
+      <a href="{{ url_for('cookies') }}" target="_blank" class="text-primary hover:underline flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">cookie</span>/cookies
+      </a>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

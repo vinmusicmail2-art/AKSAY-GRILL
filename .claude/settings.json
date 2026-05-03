@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell Get-ChildItem *)",
+      "Bash(powershell Get-WmiObject *)",
+      "Bash(tasklist *)",
+      "Bash(wmic *)",
+      "Bash(netstat *)"
+    ]
+  }
+}

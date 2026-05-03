@@ -1,0 +1,245 @@
+{% extends "admin/base.html" %}
+{% block title %}Заявки на бизнес-ланчи{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-1">
+          <a href="{{ url_for('admin_dashboard') }}" class="hover:text-primary">← Кабинет</a>
+        </div>
+        <h1 class="text-3xl font-light text-primary">Заявки на бизнес-ланчи</h1>
+        <p class="text-sm text-on-surface-variant mt-1">
+          Корпоративные заказы, отправленные через страницу
+          <a href="/business-lunch" class="underline hover:text-primary" target="_blank">/business-lunch</a>.
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-3 items-end">
+        <!-- Поиск -->
+        <form method="GET" action="{{ url_for('admin_business_lunches') }}" class="flex items-center gap-2">
+          <input type="hidden" name="show" value="{{ show }}"/>
+          <input type="hidden" name="sort" value="{{ sort }}"/>
+          <input type="hidden" name="period" value="{{ period }}"/>
+          <input type="hidden" name="admin" value="{{ admin_filter }}"/>
+          <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border {% if search_q %}border-primary bg-primary/5{% else %}border-outline/30 bg-surface-low{% endif %}">
+            <span class="material-symbols-outlined text-base text-on-surface-variant">search</span>
+            <input type="text" name="q" value="{{ search_q }}" placeholder="Имя, телефон, компания..." class="bg-transparent border-none focus:outline-none text-sm w-44 text-on-surface placeholder-on-surface-variant/50"/>
+            {% if search_q %}<a href="{{ url_for('admin_business_lunches', show=show, sort=sort, period=period, admin=admin_filter) }}" class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm leading-none">close</span></a>{% endif %}
+          </div>
+        </form>
+        <!-- Кнопка экспорта -->
+        <a href="{{ url_for('admin_business_lunches_export', show=show) }}"
+           class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-surface-low text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors border border-outline/20">
+          <span class="material-symbols-outlined text-base leading-none">download</span>
+          Скачать CSV
+        </a>
+        <!-- Фильтр по периоду -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Период:</span>
+          {% set periods = [('', 'Всё время'), ('today', 'Сегодня'), ('week', 'Неделя'), ('month', 'Месяц')] %}
+          {% for value, label in periods %}
+            <a href="{{ url_for('admin_business_lunches', show=show, sort=sort, admin=admin_filter, period=value) }}"
+               class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
+               {% if period == value %}bg-primary text-on-primary
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+        <!-- Фильтр статуса -->
+        <div class="flex flex-wrap gap-2">
+          {% set tabs = [('pending', 'В работе'), ('processed', 'Обработанные'), ('all', 'Все')] %}
+          {% for value, label in tabs %}
+            <a href="{{ url_for('admin_business_lunches', show=value, sort=sort, period=period) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+               {% if show == value %}bg-primary text-on-primary shadow-md
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+        <!-- Сортировка -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Сортировка:</span>
+          {% set sorts = [
+            ('date_desc',    'Дата ↓'),
+            ('date_asc',     'Дата ↑'),
+            ('persons_desc', 'Человек ↓'),
+            ('persons_asc',  'Человек ↑'),
+            ('status_new',   'Новые вверху'),
+            ('status_done',  'Готовые вверху'),
+          ] %}
+          {% for value, label in sorts %}
+            <a href="{{ url_for('admin_business_lunches', show=show, sort=value, admin=admin_filter, period=period) }}"
+               class="px-3 py-1 rounded-lg text-xs font-medium transition-colors
+               {% if sort == value %}bg-primary text-on-primary
+               {% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+        <!-- Фильтр по администратору -->
+        {% if all_admins %}
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-xs text-on-surface-variant mr-1">Обработал:</span>
+          <a href="{{ url_for('admin_business_lunches', show=show, sort=sort, admin='', period=period) }}"
+             class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
+             {% if not admin_filter %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+            Все
+          </a>
+          {% for name in all_admins %}
+          <a href="{{ url_for('admin_business_lunches', show=show, sort=sort, admin=name, period=period) }}"
+             class="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium transition-colors
+             {% if admin_filter == name %}bg-primary text-on-primary{% else %}bg-surface-low text-on-surface-variant hover:bg-surface-lowest{% endif %}">
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full {% if admin_filter == name %}bg-white/30{% else %}bg-primary/20{% endif %} text-[9px] font-bold uppercase">{{ name[0] }}</span>
+            {{ name }}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    {% if orders %}
+      <div class="space-y-4">
+        {% for o in orders %}
+          {% set combos = (o.selected_combos or '').split(',') if o.selected_combos else [] %}
+          <article class="border border-outline/20 rounded-xl p-5
+            {% if o.is_processed %}bg-surface-lowest opacity-80{% else %}bg-white{% endif %}">
+
+            <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-xs font-mono text-on-surface-variant">#{{ o.id }}</span>
+                {% if o.is_processed %}
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-success-container text-success">
+                    Обработана
+                  </span>
+                {% else %}
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-tertiary text-on-surface">
+                    Новая
+                  </span>
+                {% endif %}
+                {% if o.is_processed and o.processed_by %}
+                  <span class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold" title="Обработал: {{ o.processed_by }}{% if o.processed_at %} · {{ o.processed_at.strftime('%d.%m.%Y %H:%M') }}{% endif %}">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-on-primary text-[9px] font-bold uppercase shrink-0">{{ o.processed_by[0] }}</span>
+                    {{ o.processed_by }}
+                  </span>
+                {% endif %}
+                <span class="text-xs text-on-surface-variant">
+                  Создана {{ o.created_at.strftime('%d.%m.%Y %H:%M') }} UTC
+                </span>
+              </div>
+
+              <form method="POST" action="{{ url_for('admin_business_lunch_toggle', order_id=o.id) }}" class="m-0">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% if o.is_processed %}
+                  <button type="submit"
+                    class="px-3 py-1.5 rounded-lg bg-surface-low text-on-surface-variant text-xs font-medium hover:bg-surface-lowest transition-colors">
+                    Вернуть в работу
+                  </button>
+                {% else %}
+                  <button type="submit"
+                    class="px-3 py-1.5 rounded-lg bg-success text-white text-xs font-medium hover:opacity-90 transition-opacity">
+                    Отметить обработанной
+                  </button>
+                {% endif %}
+              </form>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Контактное лицо</div>
+                <div class="font-medium">{{ o.contact_name }}</div>
+                {% if o.company %}<div class="text-xs text-on-surface-variant">{{ o.company }}</div>{% endif %}
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Связь</div>
+                <div class="font-medium">
+                  <a href="tel:{{ o.phone }}" class="hover:text-primary">{{ o.phone }}</a>
+                </div>
+                {% if o.email %}
+                  <div class="text-xs">
+                    <a href="mailto:{{ o.email }}" class="text-on-surface-variant hover:text-primary">{{ o.email }}</a>
+                  </div>
+                {% endif %}
+              </div>
+
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Доставка</div>
+                <div class="font-medium">
+                  {{ o.delivery_date }}{% if o.delivery_time %}, {{ o.delivery_time }}{% endif %}
+                </div>
+                <div class="text-xs text-on-surface-variant">{{ o.delivery_address }}</div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Объём</div>
+                <div class="font-medium">{{ o.persons }} чел.</div>
+              </div>
+            </div>
+
+            {% if combos %}
+              {% set ns = namespace(total=0, count=0) %}
+              {% for key in combos %}
+                {% if key in combo_prices %}
+                  {% set ns.total = ns.total + combo_prices[key] %}
+                  {% set ns.count = ns.count + 1 %}
+                {% endif %}
+              {% endfor %}
+              <div class="mt-4 pt-4 border-t border-outline/15">
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-2">Выбранные комплексы</div>
+                <div class="flex flex-wrap gap-2">
+                  {% for key in combos %}
+                    {% if key in combo_titles %}
+                      <span class="px-3 py-1 rounded-full bg-surface-low text-xs">
+                        {{ combo_titles[key] }} · {{ combo_prices[key] }}₽
+                      </span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                {% if ns.count > 0 %}
+                  {% set avg = (ns.total / ns.count) | round(0, 'floor') | int %}
+                  <div class="text-xs text-on-surface-variant mt-2">
+                    Ориентировочная сумма:
+                    <strong class="text-primary">≈ {{ avg * o.persons }}₽</strong>
+                    (средняя цена комплекса {{ avg }}₽ × {{ o.persons }} чел.)
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            {% if o.comment %}
+              <div class="mt-4 pt-4 border-t border-outline/15">
+                <div class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Комментарий</div>
+                <div class="text-sm whitespace-pre-wrap">{{ o.comment }}</div>
+              </div>
+            {% endif %}
+
+            {% if o.is_processed and o.processed_at %}
+              <div class="mt-4 pt-3 border-t border-outline/15 text-xs text-on-surface-variant">
+                Обработана {{ o.processed_at.strftime('%d.%m.%Y %H:%M') }} UTC
+                {% if o.processed_by %}пользователем <strong>{{ o.processed_by }}</strong>{% endif %}
+              </div>
+            {% endif %}
+
+            {% if o.ip_address %}
+              <div class="mt-2 text-[10px] font-mono text-on-surface-variant/70">IP: {{ o.ip_address }}</div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-sm text-on-surface-variant text-center py-8">
+        {% if show == 'pending' %}Новых заявок нет — отличная работа!
+        {% elif show == 'processed' %}Обработанных заявок пока нет.
+        {% else %}Заявок пока нет.{% endif %}
+      </p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

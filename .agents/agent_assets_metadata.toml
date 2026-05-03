@@ -1,0 +1,547 @@
+uploads = []
+
+[[generated]]
+id = "WYNbJ7gGNXN-nj8PPwKwR"
+uri = "file://assets/logo.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "oLwIMKz7UMAMj2hieKE9N"
+uri = "file://assets/hero-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "IviNupKkATuARcp3D7KCs"
+uri = "file://assets/dishes/solyanka.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "UyjJgVY1Q0H9PDi1qn-EE"
+uri = "file://assets/dishes/lagman.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "860Vu1j2Qce2Yr41o-hwu"
+uri = "file://assets/dishes/gorohovyi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-emyxt6ZYafnCxSF9Gv_O"
+uri = "file://assets/dishes/lapsha-kurinaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w04-Xsc0khVR7SmeP7IpJ"
+uri = "file://assets/dishes/sup-fasol.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "FtTgvA523WBZxCmJDaude"
+uri = "file://assets/dishes/harcho.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "voUVGEnhoZymWTOSahv3X"
+uri = "file://assets/dishes/okroshka.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "k1ewfs2PmJWnTUQagV4h7"
+uri = "file://assets/dishes/kuriniaja-kotleta.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BYwCdMVC_-vEsgFWx6gnw"
+uri = "file://assets/dishes/gulyash-govyadina.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "qUeOVIKL4PJWeEwfISr7S"
+uri = "file://assets/dishes/kotleta-po-kievski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "tK_dtbhp2zQL0sbC0s1xx"
+uri = "file://assets/dishes/medvezhya-lapa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HwrLdSeyDdg6GSkLgNW86"
+uri = "file://assets/dishes/makarony-po-flotski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BVM00Ti_GY1cjhs47DTUn"
+uri = "file://assets/dishes/pelmeni-smetana.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "CpiuvS1a-KWekk9czdUR4"
+uri = "file://assets/dishes/kuritsa-v-slivkah.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "QJCr6Qch4y5as_WXx17RZ"
+uri = "file://assets/dishes/ryba-hek.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "P_ggK3K2ga5_Wxrv5oEuW"
+uri = "file://assets/dishes/otbivnaja-kurinaja.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-wHIyqvUcx-zs7BBnMUDC"
+uri = "file://assets/dishes/vareniki-smetana.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "kRbznQV-GS2imHvyjdCSF"
+uri = "file://assets/dishes/pure-maslo.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "zdzOzoz6tbRsFq8W9cNOW"
+uri = "file://assets/dishes/grechka.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JyPzDLmbJK-VhN_Y-0EG2"
+uri = "file://assets/dishes/makarony-otvar.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "kX2YJfrsCwiPcIPs5ZGuR"
+uri = "file://assets/dishes/ris-ovoshhi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OC7QmelQWbYQONiHvsCVn"
+uri = "file://assets/dishes/kartofel-derevenski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9W0-D_XoAzkwJGPxcSSg-"
+uri = "file://assets/dishes/kapusta-tushenaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "mJCvBvF52K-JorHkqY43d"
+uri = "file://assets/dishes/kasha-pshenichnaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Rwk_IWdcRD3RsrcjKLseX"
+uri = "file://assets/dishes/svekla-chesnok.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iJSET-Z6FUgRuMCDX3kfL"
+uri = "file://assets/dishes/olivie-kolbasa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "x5EAWWxm_FeSt5XkzhrUs"
+uri = "file://assets/dishes/kapusta-gruzinski.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ww04OtbDZAWfZbC7k8Rfa"
+uri = "file://assets/dishes/salat-pomidor-ogurec.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "VMiFu_mzgWQF_LgZuv2T1"
+uri = "file://assets/dishes/kabachki-zharenye.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "n_vFEPnGjdVT4ulipNNqK"
+uri = "file://assets/dishes/kapusta-goroshek.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "9XXZY1nUdBWrSeUG8Kk0M"
+uri = "file://assets/dishes/morkov-chesnok.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ZIQl5TfegGr6VgL1O6pMG"
+uri = "file://assets/dishes/hleb-pshenichnyj.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "L2wMIU0RcoE1OsAtKd0XP"
+uri = "file://assets/dishes/pirozhok-zharenyj.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5oeTS2BkoBkrfXRg-Y27X"
+uri = "file://assets/dishes/sosiska-v-teste.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "1UK-BiTMSoTUI01lQ7o8Z"
+uri = "file://assets/dishes/belyashi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "nVn0K9MKo1-NViG-AQzpB"
+uri = "file://assets/dishes/syrniki.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BgqSI_52qYkCP6K_oSNxE"
+uri = "file://assets/dishes/bulochka-chesnochnaya.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5Qaq-IpxhX2JJvl0gJEYj"
+uri = "file://assets/dishes/blinchiki-myaso.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JD02nQ5O0cdgvedlGtl7v"
+uri = "file://assets/dishes/samsa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "t4NK8vR4LdZLBxvElkWo3"
+uri = "file://assets/dishes/oladi.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "sQHr81RR277A16bXYAN51"
+uri = "file://assets/dishes/kompot.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SBFHhsramBAjIxtNMN1mn"
+uri = "file://assets/dishes/kola-05.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "6ThlhZVnFCslGPB3_lLHA"
+uri = "file://assets/dishes/chay-paket.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "K_qMJPbfKEfdkmR0sR156"
+uri = "file://assets/dishes/kofe-rastvor.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "AvmouPcRX9B29GoMWBEKD"
+uri = "file://assets/dishes/kofe-3v1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EOS8qdhKcXkWxHnVx3Gyc"
+uri = "file://assets/dishes/burn.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "MRsMI3_jX1CaHpNWr7W24"
+uri = "file://assets/dishes/flesh.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "THv8srav1L-adiPHNBKfs"
+uri = "file://assets/dishes/adrenalin.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "cm4VQW2r91tsr4pkGiYi6"
+uri = "file://assets/dishes/voda-05.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Xn-kKSQT8xwse_XxPysR4"
+uri = "file://assets/dishes/kubay.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "rx-w1bCmMf-u6yVN0jK8Q"
+uri = "file://assets/dishes/konteiner.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_qn0PHL8m7eDPRY7Jr4AK"
+uri = "file://assets/dishes/sous.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YD00A2k--BMmbQklYSy3h"
+uri = "file://assets/dishes/lyulya-kuritsa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "dKBg1ZtAgksLKM8A5Lq4I"
+uri = "file://assets/dishes/yaichnitsa-2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "a-O0uO59igBMt2ASPhnf1"
+uri = "file://assets/dishes/krylya-zharenye.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "bznvjGJE7O_DvRXIbYGhR"
+uri = "file://assets/dishes/kola-1l.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "usrmVvSolHlPbIMqZK5If"
+uri = "file://assets/dishes/limonad-steklo.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ZqC-q2ZsCFvbY_Kk7c4gl"
+uri = "file://assets/dishes/shashlyk-mix.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w_JIqKR6JF5DFqN0XgNNt"
+uri = "file://assets/dishes/kurinye-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fTyAkD0j9ebAb0H2xGXxJ"
+uri = "file://assets/dishes/rebryshki-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "uYfw0MuUw9vGwhRKGbQaQ"
+uri = "file://assets/dishes/steiki-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EzIu1rNuKuiiPgQssfL9h"
+uri = "file://assets/dishes/kupaty-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "SmSIQfGH8Jxwyms8Uy5Mw"
+uri = "file://assets/dishes/adzhapsandal.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_Ye2HDJJBBFS_65bB6EbA"
+uri = "file://assets/dishes/ovoshi-shpazhki.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "KrTAhbTjDo01r2lPpIKp_"
+uri = "file://assets/dishes/perci-baklazhany.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "IcqofDhT-OfOBn2BIGcSv"
+uri = "file://assets/dishes/ovoshnaya-ikra.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3XjAPzW5nO_nuELb1EqPM"
+uri = "file://assets/dishes/griby-grill.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Y6TU2cXMpeILcmozcPaVb"
+uri = "file://attached_assets/generated_images/generated_image.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iV0g63d0pzb1ApoP6CsT1"
+uri = "file://assets/catering.png"
+type = "image"
+title = "catering buffet"
+
+[[generated]]
+id = "fdGzTG15uc1D_NUkydW_7"
+uri = "file://assets/events.png"
+type = "image"
+title = "restaurant banquet hall events"
+
+[[generated]]
+id = "Rw8JfYIrIRUuJgI-OA7Bp"
+uri = "file://assets/dishes/borshch_new.png"
+type = "image"
+title = "borscht dark bowl"
+
+[[generated]]
+id = "9esuoGxDIPPzTN2OVs1xa"
+uri = "file://assets/dishes/shurpa_new.png"
+type = "image"
+title = "shurpa dark bowl"
+
+[[outputs]]
+id = "DUSJMa7Gleml8PLrLKvQ0"
+uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
+type = "image"
+title = "chicken lyulya kebab grilled skewers"
+
+[[outputs]]
+id = "8YEdee7jGZlfoKSpF6wfH"
+uri = "file://attached_assets/stock_images/kurinoe-bedro.jpg"
+type = "image"
+title = "roasted chicken thigh crispy"
+
+[[outputs]]
+id = "fnR46qAWCK19OqxSQSrzE"
+uri = "file://attached_assets/stock_images/yaichnitsa-glazunja.jpg"
+type = "image"
+title = "sunny side up fried eggs"
+
+[[outputs]]
+id = "t9pUIdU1D9Tk6UKxjAsVL"
+uri = "file://attached_assets/stock_images/yaichnitsa-2.jpg"
+type = "image"
+title = "scrambled eggs plate"
+
+[[outputs]]
+id = "aH3IKwvyaTEfAS5UbGLHP"
+uri = "file://attached_assets/stock_images/krylya-zharenye.jpg"
+type = "image"
+title = "fried chicken wings plate"
+
+[[outputs]]
+id = "GkmkGKzSdhjzZWeWXPNii"
+uri = "file://attached_assets/stock_images/kola-1l.jpg"
+type = "image"
+title = "cola plastic bottle 1 liter"
+
+[[outputs]]
+id = "AKG4ucT5-dN509iODBGeF"
+uri = "file://attached_assets/stock_images/limonad-steklo.jpg"
+type = "image"
+title = "lemonade glass bottle homemade"
+
+[[outputs]]
+id = "5qkRGvmTvmrMSMbKimkEj"
+uri = "file://attached_assets/stock_images/voda-5l.jpg"
+type = "image"
+title = "water large plastic bottle 5 liter"
+
+[[outputs]]
+id = "g4WYVQrqSV5yI-q39AE_b"
+uri = "file://attached_assets/stock_images/ice-tea.jpg"
+type = "image"
+title = "iced tea bottle cold drink"
+
+[[outputs]]
+id = "Vpo_hhhFMhr6naNTVHAk3"
+uri = "file://attached_assets/stock_images/chaynik-chay.jpg"
+type = "image"
+title = "teapot black tea ceramic"
+
+[[outputs]]
+id = "OsYof1LGLbkrexZSCnkn7"
+uri = "file://CHANGELOG_FOR_CLIENT.txt"
+type = "text"
+title = "Отчёт для заказчика — этапы 1–3"
+
+[[outputs]]
+id = "nG1pdo81eqXuGO02shuFd"
+uri = "file://CHANGES.txt"
+type = "text"
+title = "Все изменения сайта"
+
+[[outputs]]
+id = "BthmrkNW1_8BvwAo2cz07"
+uri = "file://CHANGELOG.md"
+type = "text"
+title = "Журнал изменений — Аксай Гриль"
+
+[[outputs]]
+id = "J8sdoj3pJxpNW_5jrRDWB"
+uri = "file://GUIDE.md"
+type = "text"
+title = "Руководство + инструкция по деплою — Аксай Гриль"
+
+[[outputs]]
+id = "86BVdY7kvfWpQW1LiVVC7"
+uri = "file://GUIDE.pdf"
+type = "pdf"
+title = "Руководство пользователя — PDF"
+
+[[outputs]]
+id = "jFNnalhLrwrV-g3MuYefd"
+uri = "file://GUIDE.txt"
+type = "text"
+title = "Руководство пользователя — TXT"
+
+[[outputs]]
+id = "SJpL1CoEjUENwDRY4aMOj"
+uri = "file://aksay-gril_2026-05-02_13-54-27_UTC.tar.gz"
+type = "unspecified"
+title = "Аксай Гриль — архив сайта 2026-05-02 13:54 UTC"

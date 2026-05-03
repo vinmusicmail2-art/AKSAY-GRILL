@@ -1,0 +1,136 @@
+{% extends "admin/base.html" %}
+{% block title %}Архив журнала входов{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-light text-primary mb-1">Архив журнала входов</h1>
+        <p class="text-on-surface-variant">
+          Дублирование журнала входов: локально в CSV и/или по email при каждом входе.
+        </p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}"
+         class="text-sm text-on-surface-variant hover:text-primary">← в кабинет</a>
+    </div>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <h2 class="text-xl font-light text-primary mb-1">Состояние</h2>
+
+    <div class="grid sm:grid-cols-3 gap-4 mt-4">
+      <div class="rounded-xl p-4 {{ 'bg-success-container text-success' if enabled else 'bg-surface-low text-on-surface-variant' }}">
+        <div class="text-xs uppercase tracking-wider mb-1">CSV-архив</div>
+        <div class="font-semibold">{{ 'включён' if enabled else 'выключен' }}</div>
+      </div>
+      <div class="rounded-xl p-4 {{ 'bg-success-container text-success' if notify else 'bg-surface-low text-on-surface-variant' }}">
+        <div class="text-xs uppercase tracking-wider mb-1">Email-уведомления</div>
+        <div class="font-semibold">{{ 'включены' if notify else 'выключены' }}</div>
+      </div>
+      <div class="rounded-xl p-4 {{ 'bg-success-container text-success' if csv_exists else 'bg-surface-low text-on-surface-variant' }}">
+        <div class="text-xs uppercase tracking-wider mb-1">Файл архива</div>
+        <div class="font-semibold">{{ 'существует' if csv_exists else 'ещё не создан' }}</div>
+        {% if csv_size %}<div class="text-xs mt-0.5">{{ csv_size }}</div>{% endif %}
+      </div>
+    </div>
+
+    {% if csv_path %}
+    <div class="mt-4 p-3 bg-surface-low rounded-lg text-xs font-mono text-on-surface-variant break-all">
+      {{ csv_path }}
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <h2 class="text-xl font-light text-primary mb-6">Настройки</h2>
+
+    <form method="POST" class="space-y-6">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="action" value="save"/>
+
+      <div>
+        <label class="block text-sm font-medium mb-1" for="archive_dir">
+          Папка для сохранения (на сервере)
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="archive_dir" name="archive_dir"
+                 value="{{ archive_dir }}"
+                 placeholder="/home/user  или  /var/data"
+                 class="flex-1 px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-mono text-sm"/>
+          <button type="button" onclick="openDirBrowser('archive_dir')"
+                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-outline/40 text-sm text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+            <span class="material-icons text-base">folder_open</span>
+            Выбрать
+          </button>
+        </div>
+        <p class="text-xs text-on-surface-variant mt-1">
+          Внутри папки создастся подпапка <code class="font-mono bg-surface-low px-1 rounded">login_archive/login_log.csv</code>.
+          Оставьте пустым, чтобы отключить CSV.
+        </p>
+      </div>
+
+      <label class="flex items-center gap-3 select-none cursor-pointer">
+        <input type="checkbox" name="enabled" value="yes"
+               {% if enabled %}checked{% endif %}
+               class="w-5 h-5 rounded border-outline/40 text-primary focus:ring-primary/30"/>
+        <div>
+          <span class="text-sm font-medium">Включить локальное CSV-сохранение</span>
+          <p class="text-xs text-on-surface-variant mt-0.5">Каждый вход (успех и отказ) добавляется в файл.</p>
+        </div>
+      </label>
+
+      <label class="flex items-center gap-3 select-none cursor-pointer">
+        <input type="checkbox" name="notify" value="yes"
+               {% if notify %}checked{% endif %}
+               class="w-5 h-5 rounded border-outline/40 text-primary focus:ring-primary/30"/>
+        <div>
+          <span class="text-sm font-medium">Email-уведомление при каждом входе</span>
+          <p class="text-xs text-on-surface-variant mt-0.5">
+            Письмо отправляется через SMTP, настроенный в разделе
+            <a href="{{ url_for('admin_email_settings') }}" class="text-primary underline">«Уведомления»</a>.
+            Адрес получателя — тот же, что для заявок.
+          </p>
+        </div>
+      </label>
+
+      <div class="pt-2 flex gap-3">
+        <button type="submit"
+          class="px-6 py-3 rounded-lg bg-primary text-on-primary font-medium hover:bg-primary-container transition-colors shadow-md">
+          Сохранить
+        </button>
+        <a href="{{ url_for('admin_dashboard') }}"
+          class="px-6 py-3 rounded-lg border border-outline/40 text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+          Отмена
+        </a>
+      </div>
+    </form>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-6">
+    <h2 class="text-base font-medium text-primary mb-3">Как устроено хранение</h2>
+    <div class="grid sm:grid-cols-2 gap-4 text-sm">
+      <div class="rounded-lg bg-surface-low p-4 space-y-2">
+        <div class="font-medium">Локальный CSV (этот сервер)</div>
+        <ul class="text-xs text-on-surface-variant space-y-1 list-disc ml-4">
+          <li>Файл на диске. Открывается в Excel, LibreOffice, Google Sheets.</li>
+          <li>Колонки: дата, логин, результат, IP, User-Agent.</li>
+          <li>Дополняется при каждом входе — строки не перезаписываются.</li>
+          <li>Не требует интернета и SMTP.</li>
+        </ul>
+      </div>
+      <div class="rounded-lg bg-surface-low p-4 space-y-2">
+        <div class="font-medium">Облако — email</div>
+        <ul class="text-xs text-on-surface-variant space-y-1 list-disc ml-4">
+          <li>Письмо на ваш ящик при каждом входе (и при неудаче).</li>
+          <li>Хранится у почтового провайдера — независимо от сервера.</li>
+          <li>Позволяет мгновенно заметить несанкционированный доступ.</li>
+          <li>Требует настроенного SMTP в разделе «Уведомления».</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

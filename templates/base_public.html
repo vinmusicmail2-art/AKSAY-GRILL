@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="light" lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{% block title %}{{ texts.site_title }}{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}{{ texts.meta_description_main }}{% endblock %}"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="{{ request.url }}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="{% block og_title %}{{ texts.site_title }}{% endblock %}"/>
+<meta property="og:description" content="{% block og_description %}{{ texts.meta_description_main }}{% endblock %}"/>
+<meta property="og:image" content="{{ texts.og_image }}"/>
+<meta property="og:url" content="{{ request.url }}"/>
+<meta property="og:locale" content="ru_RU"/>
+<meta property="og:site_name" content="Аксай Гриль"/>
+<link rel="icon" type="image/webp" href="/assets/logo.webp"/>
+<link rel="stylesheet" href="/assets/css/fonts.css"/>
+<link rel="stylesheet" href="/assets/css/main.css"/>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: "Montserrat", sans-serif; background: #e1ddd5; color: #1d1c16; }
+  h1, h2, h3, .font-headline { font-weight: 200; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .field-input {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(137,114,105,0.35);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #1d1c16;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: #9b3f1c;
+    box-shadow: 0 0 0 3px rgba(155,63,28,0.15);
+  }
+  .field-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #56423a;
+    margin-bottom: 0.4rem;
+  }
+  {% block extra_styles %}{% endblock %}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-[rgba(225,221,213,0.92)] backdrop-blur sticky top-0 z-30 border-b border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-3">
+      <div class="bg-[#e1ddd5] p-2 rounded-lg">
+        <img src="/assets/logo.webp" alt="Аксай Гриль" class="h-10 w-auto object-contain"
+             style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.32);"/>
+      </div>
+      <div>
+        <div class="font-headline text-xl text-[#9b3f1c]">Аксай Гриль</div>
+        <div class="text-[11px] text-on-surface-variant">{{ texts.tagline }}</div>
+      </div>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm">
+      <a href="/" class="text-on-surface-variant hover:text-primary transition-colors">На главную</a>
+      <a href="tel:{{ texts.contact_phone }}" class="font-bold text-primary">{{ texts.contact_phone }}</a>
+    </nav>
+    <a href="/" class="sm:hidden text-on-surface-variant hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+  </div>
+</header>
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer class="bg-[#b0aca4] py-8 border-t border-outline-variant/30">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant">
+    <div>{{ texts.operator_name }} · ИНН {{ texts.operator_inn }}</div>
+    <div class="flex items-center gap-4">
+      <span>Напишите нам на <a href="mailto:{{ texts.contact_email }}" class="hover:text-primary transition-colors">{{ texts.contact_email }}</a></span>
+      <a href="/" class="hover:text-primary transition-colors">На главную</a>
+      <a href="/privacy.html" class="hover:text-primary transition-colors">Политика конфиденциальности</a>
+    </div>
+  </div>
+</footer>
+
+{% if texts.yandex_metrika_id %}
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+ym({{ texts.yandex_metrika_id }},"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/{{ texts.yandex_metrika_id }}" style="position:absolute;left:-9999px;" alt=""/></div></noscript>
+{% endif %}
+</body>
+</html>

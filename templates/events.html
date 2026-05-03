@@ -1,0 +1,231 @@
+{% extends "base_public.html" %}
+
+{% block title %}Мероприятия в зале · {{ texts.site_title }}{% endblock %}
+{% block meta_description %}{{ texts.meta_description_events }}{% endblock %}
+{% block og_title %}Мероприятия в зале · {{ texts.site_title }}{% endblock %}
+{% block og_description %}{{ texts.meta_description_events }}{% endblock %}
+
+{% block extra_styles %}
+  .hero-bg {
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.70) 100%),
+                      url('/assets/hall.webp');
+    background-size: cover;
+    background-position: center 30%;
+  }
+  .type-card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .type-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -12px rgba(155,63,28,0.25);
+  }
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f8f5ef;
+    border: 1px solid rgba(137,114,105,0.2);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .check-row:hover { background: #f1ece2; border-color: rgba(155,63,28,0.4); }
+  .check-row input[type="checkbox"] {
+    margin-top: 0.2rem; accent-color: #9b3f1c; width: 1rem; height: 1rem;
+  }
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-bg text-white">
+  <div class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">{{ texts.events_hero_badge }}</span>
+    <h1 class="font-headline text-4xl md:text-6xl mb-4">Мероприятия в зале</h1>
+    <p class="text-lg md:text-xl max-w-2xl opacity-95 leading-relaxed">
+      {{ texts.events_hero_subtitle }}
+    </p>
+
+    <div class="grid sm:grid-cols-3 gap-4 mt-10 max-w-3xl">
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">groups</div>
+        <div class="font-semibold mt-2">До 50 гостей</div>
+        <div class="text-xs opacity-80 mt-1">Зал на небольшую компанию — от семейного ужина до большого торжества.</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">restaurant_menu</div>
+        <div class="font-semibold mt-2">Меню под событие</div>
+        <div class="text-xs opacity-80 mt-1">Поможем составить меню под формат, бюджет и предпочтения гостей.</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-xl p-4 border border-white/20">
+        <div class="material-symbols-outlined text-3xl text-tertiary-container">celebration</div>
+        <div class="font-semibold mt-2">Оформление</div>
+        <div class="text-xs opacity-80 mt-1">Шары, цветы, баннер и тематический декор — по запросу.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="max-w-6xl mx-auto px-6 mt-8 space-y-2">
+      {% for category, msg in messages %}
+        <div class="rounded-lg px-4 py-3 text-sm
+          {% if category == 'success' %}bg-tertiary-container text-on-tertiary-container
+          {% elif category == 'error' %}bg-error-container text-on-error-container
+          {% else %}bg-surface-container text-on-surface{% endif %}">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Event types -->
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <div class="flex items-end justify-between gap-4 flex-wrap mb-8">
+    <div>
+      <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Какие события проводим</div>
+      <h2 class="font-headline text-3xl md:text-4xl text-on-surface">Типы мероприятий</h2>
+    </div>
+    <p class="text-sm text-on-surface-variant max-w-md">
+      Не нашли свой формат? Выберите «Другое» и опишите событие в комментарии —
+      подготовим индивидуальное предложение.
+    </p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% set type_meta = {
+      'birthday':  ('celebration',   'Семейный или дружеский день рождения в уютной обстановке.'),
+      'wedding':   ('favorite',      'Свадебный банкет с торжественной сервировкой и тематическим оформлением.'),
+      'corporate': ('handshake',     'Корпоративы, тимбилдинги, новогодние праздники для компании.'),
+      'funeral':   ('local_florist', 'Поминальный обед — тактично, традиционно, по всем православным канонам.'),
+      'other':     ('more_horiz',    'Любое другое событие — обсудим формат и подготовим предложение.'),
+    } %}
+    {% for t in event_types %}
+      {% set icon_name, desc = type_meta.get(t.key, ('event', '')) %}
+    <article class="type-card bg-surface-container-low rounded-2xl p-6 border border-outline-variant/40 flex flex-col">
+      <div class="material-symbols-outlined text-4xl text-primary mb-3">{{ icon_name }}</div>
+      <h3 class="font-headline text-2xl text-on-surface mb-2">{{ t.title }}</h3>
+      <p class="text-sm text-on-surface-variant flex-1">{{ desc }}</p>
+      <a href="#order-form"
+         onclick="document.getElementById('event_type').value = '{{ t.key }}';"
+         class="mt-5 inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition">
+        Забронировать
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Reservation form -->
+<section id="order-form" class="bg-surface-container-low/50 py-16 scroll-mt-20">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+      <div class="mb-8">
+        <div class="text-xs uppercase tracking-widest text-on-surface-variant mb-2">Бронирование</div>
+        <h2 class="font-headline text-3xl md:text-4xl text-on-surface mb-2">Забронировать зал</h2>
+        <p class="text-sm text-on-surface-variant">
+          Заполните форму — менеджер свяжется в течение часа в рабочее время,
+          чтобы подтвердить дату, обсудить меню и оформление.
+        </p>
+      </div>
+
+      <form method="post" action="{{ url_for('events') }}" class="space-y-5">
+        {{ form.hidden_tag() }}
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="contact_name">{{ form.contact_name.label.text }} *</label>
+            {{ form.contact_name(id="contact_name", class_="field-input", placeholder="Иван Иванов") }}
+            {% for err in form.contact_name.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="company">{{ form.company.label.text }}</label>
+            {{ form.company(id="company", class_="field-input", placeholder="ООО «Ромашка» / частное лицо") }}
+            {% for err in form.company.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="phone">{{ form.phone.label.text }} *</label>
+            {{ form.phone(id="phone", class_="field-input", placeholder="+7 (___) ___-__-__") }}
+            {% for err in form.phone.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="email">{{ form.email.label.text }}</label>
+            {{ form.email(id="email", class_="field-input", type="email", placeholder="ivan@company.ru") }}
+            {% for err in form.email.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="event_type">{{ form.event_type.label.text }} *</label>
+          {{ form.event_type(id="event_type", class_="field-input") }}
+          {% for err in form.event_type.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-5">
+          <div>
+            <label class="field-label" for="guests">{{ form.guests.label.text }} *</label>
+            {{ form.guests(id="guests", class_="field-input", type="number", min="2", max="300", placeholder="40") }}
+            {% for err in form.guests.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="event_date">{{ form.event_date.label.text }} *</label>
+            {{ form.event_date(id="event_date", class_="field-input", type="date") }}
+            {% for err in form.event_date.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="event_time">{{ form.event_time.label.text }} *</label>
+            {{ form.event_time(id="event_time", class_="field-input", type="time") }}
+            {% for err in form.event_time.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="field-label" for="duration_hours">{{ form.duration_hours.label.text }}</label>
+            {{ form.duration_hours(id="duration_hours", class_="field-input", type="number", min="1", max="12", placeholder="4") }}
+            {% for err in form.duration_hours.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-3">
+          <label class="check-row" for="needs_decor">
+            {{ form.needs_decor(id="needs_decor") }}
+            <div>
+              <div class="text-sm font-medium text-on-surface">Оформление зала</div>
+              <div class="text-xs text-on-surface-variant">Шары, цветы, тематический декор, баннер</div>
+            </div>
+          </label>
+          <label class="check-row" for="needs_menu_help">
+            {{ form.needs_menu_help(id="needs_menu_help") }}
+            <div>
+              <div class="text-sm font-medium text-on-surface">Помощь с меню</div>
+              <div class="text-xs text-on-surface-variant">Подберём блюда под формат и бюджет</div>
+            </div>
+          </label>
+        </div>
+
+        <div>
+          <label class="field-label" for="comment">{{ form.comment.label.text }}</label>
+          {{ form.comment(id="comment", class_="field-input", rows="4",
+              placeholder="Особые пожелания: тематика, аллергены, музыка, рассадка, торт и т. п.") }}
+          {% for err in form.comment.errors %}<p class="text-xs text-error mt-1">{{ err }}</p>{% endfor %}
+        </div>
+
+        <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p class="text-xs text-on-surface-variant max-w-md">
+            Отправляя форму, вы соглашаетесь с
+            <a href="/privacy.html" class="underline hover:text-primary">политикой обработки персональных данных</a>.
+          </p>
+          {{ form.submit(class_="bg-primary text-on-primary px-8 py-3.5 rounded-lg font-bold text-sm uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-primary/20 cursor-pointer") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

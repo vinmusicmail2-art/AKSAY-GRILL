@@ -1,0 +1,117 @@
+{% extends "admin/base.html" %}
+{% block title %}SEO{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-3xl font-light text-primary mb-1">SEO</h1>
+      <p class="text-sm text-on-surface-variant">
+        Meta description, Яндекс.Метрика и Open Graph. Изменения применяются сразу после сохранения.
+      </p>
+    </div>
+    <a href="{{ url_for('admin_dashboard') }}" class="text-sm text-on-surface-variant hover:text-primary">← в кабинет</a>
+  </div>
+
+  <form method="POST" class="space-y-6">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <!-- Яндекс.Метрика -->
+    <section class="bg-surface-card rounded-xl shadow-lg p-8 space-y-4">
+      <header class="border-b border-outline/20 pb-3">
+        <h2 class="text-xl font-semibold text-primary">Яндекс.Метрика</h2>
+        <p class="text-xs text-on-surface-variant/70 mt-1">
+          Счётчик активируется автоматически, как только вы введёте номер и сохраните.
+          Если поле пустое — счётчик не подключён.
+        </p>
+      </header>
+      <div>
+        <label for="f_yandex_metrika_id" class="block text-sm font-medium mb-1">
+          Номер счётчика (только цифры)
+        </label>
+        <input type="text" id="f_yandex_metrika_id" name="yandex_metrika_id"
+               value="{{ values.yandex_metrika_id }}"
+               placeholder="Например: 98765432"
+               class="w-full px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-mono"/>
+        <p class="text-xs text-on-surface-variant/60 mt-1">
+          Найти номер: Яндекс.Метрика → Настройки счётчика → поле «Номер счётчика».
+        </p>
+      </div>
+    </section>
+
+    <!-- Meta Description -->
+    <section class="bg-surface-card rounded-xl shadow-lg p-8 space-y-6">
+      <header class="border-b border-outline/20 pb-3">
+        <h2 class="text-xl font-semibold text-primary">Meta Description</h2>
+        <p class="text-xs text-on-surface-variant/70 mt-1">
+          Описание страницы в результатах поиска Яндекса. Рекомендуемая длина — до 160 символов.
+          Для Яндекс.Директ важно, чтобы в тексте были ключевые слова и телефон.
+        </p>
+      </header>
+      {% set desc_fields = [
+        ('meta_description_main',          'Главная страница (/)'),
+        ('meta_description_about',         'О нас (/about)'),
+        ('meta_description_catering',      'Кейтеринг (/catering)'),
+        ('meta_description_events',        'Мероприятия (/events)'),
+        ('meta_description_business_lunch','Бизнес-ланчи (/business-lunch)'),
+      ] %}
+      {% for key, label in desc_fields %}
+      <div>
+        <label for="f_{{ key }}" class="block text-sm font-medium mb-1">{{ label }}</label>
+        <textarea id="f_{{ key }}" name="{{ key }}" rows="3"
+                  class="w-full px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
+                  oninput="countChars(this)">{{ values[key] }}</textarea>
+        <p class="text-xs text-on-surface-variant/60 mt-1 flex justify-between">
+          <span>ключ: <code class="font-mono">{{ key }}</code></span>
+          <span id="count_{{ key }}" class="font-mono">{{ values[key]|length }} / 160</span>
+        </p>
+      </div>
+      {% endfor %}
+    </section>
+
+    <!-- Open Graph -->
+    <section class="bg-surface-card rounded-xl shadow-lg p-8 space-y-4">
+      <header class="border-b border-outline/20 pb-3">
+        <h2 class="text-xl font-semibold text-primary">Open Graph (og:image)</h2>
+        <p class="text-xs text-on-surface-variant/70 mt-1">
+          Картинка, которая показывается при репосте ссылки в соцсетях и мессенджерах.
+          Рекомендуемый размер — 1200×630px. Укажите путь от корня сайта или полный URL.
+        </p>
+      </header>
+      <div>
+        <label for="f_og_image" class="block text-sm font-medium mb-1">URL картинки</label>
+        <input type="text" id="f_og_image" name="og_image"
+               value="{{ values.og_image }}"
+               placeholder="/assets/about-hero.webp"
+               class="w-full px-4 py-3 rounded-lg border border-outline/40 bg-surface-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-mono text-sm"/>
+        {% if values.og_image %}
+        <div class="mt-3">
+          <img src="{{ values.og_image }}" alt="og:image preview"
+               class="rounded-lg border border-outline/20 max-h-40 object-cover"/>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <div class="flex justify-end">
+      <button type="submit"
+              class="px-8 py-3 rounded-lg bg-primary text-on-primary font-medium hover:bg-primary-container transition-colors shadow-lg">
+        Сохранить SEO-настройки
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function countChars(el) {
+  var key = el.name;
+  var counter = document.getElementById('count_' + key);
+  if (counter) {
+    var len = el.value.length;
+    counter.textContent = len + ' / 160';
+    counter.style.color = len > 160 ? '#ba1a1a' : '';
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ru"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{ texts.site_title }}</title>
+<meta name="description" content="{{ texts.meta_description_main }}"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="{{ request.url }}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="{{ texts.site_title }}"/>
+<meta property="og:description" content="{{ texts.meta_description_main }}"/>
+<meta property="og:image" content="{{ texts.og_image }}"/>
+<meta property="og:url" content="{{ request.url }}"/>
+<meta property="og:locale" content="ru_RU"/>
+<meta property="og:site_name" content="Аксай Гриль"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Аксай Гриль",
+  "description": "Кафе-гриль в г. Аксай — шашлык, кейтеринг, доставка обедов на предприятия.",
+  "url": "{{ request.url_root }}",
+  "telephone": "{{ texts.contact_phone }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ texts.map_address_text }}",
+    "addressLocality": "Аксай",
+    "addressRegion": "Ростовская область",
+    "addressCountry": "RU"
+  },
+  "openingHours": "Mo-Su 10:00-22:00",
+  "servesCuisine": ["Русская кухня", "Кавказская кухня", "Гриль"],
+  "priceRange": "₽₽",
+  "image": "{{ request.url_root }}assets/about-hero.webp"
+}
+</script>
+<link rel="icon" type="image/webp" href="/assets/logo.webp"/>
+<link rel="stylesheet" href="/assets/css/fonts.css"/>
+<link rel="stylesheet" href="/assets/css/main.css"/>
+<style>
+      html { scroll-behavior: smooth; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .brand-glow {
+        background: radial-gradient(circle at center, #bb5732 0%, #9b3f1c 100%);
+      }
+      .glass-nav {
+        background: rgba(203, 199, 191, 0.8);
+        backdrop-filter: blur(24px);
+      }
+      /* Apply specific weights for the request */
+      h1, h2, .font-headline {
+        font-weight: 200; /* Montserrat Thin-ish for headings */
+      }
+      /* Опустить подзаголовки-описания под названиями категорий на 40px */
+      h2.dish-heading + p {
+        margin-top: 40px;
+      }
+      html {
+        overflow-x: clip;
+        overflow-y: scroll; /* всегда резервировать место под скроллбар — без сдвигов */
+      }
+      body {
+        font-weight: 400; /* Montserrat Regular for body */
+        overflow-x: hidden;
+      }
+      /* Equalize dish card heights so "Добавить в заказ" buttons line up */
+      section[id] .grid > .group {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      /* Reserve consistent space for title (up to 2 lines) and description (up to 3 lines)
+         so buttons line up across rows, not only within a single row. */
+      section[id] .grid > .group > h3 {
+        min-height: 3.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      section[id] .grid > .group > p {
+        min-height: 3.6rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      section[id] .grid > .group > button:last-child {
+        margin-top: auto;
+      }
+      .dish-heading {
+        font-family: 'Yanone Kaffeesatz', sans-serif !important;
+        font-optical-sizing: auto;
+        font-weight: 400 !important;
+        font-style: normal;
+        color: #56423A !important;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(86, 66, 58, 0.25);
+        margin-top: 25px;
+      }
+      .wood-bg {
+        background-color: #a87548;
+        background-image:
+          linear-gradient(180deg, rgba(255,230,195,0.12) 0%, rgba(40,20,8,0.25) 100%),
+          url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><filter id='w'><feTurbulence type='turbulence' baseFrequency='0.012 0.85' numOctaves='4' seed='7'/><feColorMatrix values='0 0 0 0 0.22  0 0 0 0 0.11  0 0 0 0 0.04  0 0 0 0.85 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>"),
+          url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><filter id='k'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.09  0 0 0 0 0.03  0 0 0 0.3 0'/></filter><rect width='100%25' height='100%25' filter='url(%23k)'/></svg>"),
+          repeating-linear-gradient(180deg, rgba(50,25,10,0.18) 0px, rgba(50,25,10,0.18) 1px, transparent 1px, transparent 28px),
+          repeating-linear-gradient(180deg, rgba(255,220,180,0.07) 0px, rgba(255,220,180,0.07) 1px, transparent 1px, transparent 11px);
+        background-size: auto, 800px 800px, 400px 400px, auto, auto;
+      }
+      .wood-bg-light {
+        background-color: #6b4623;
+        background-image:
+          linear-gradient(rgba(255,235,205,0.1), rgba(255,235,205,0.1)),
+          url("/assets/wood.webp");
+        background-size: auto, 320px auto;
+        background-repeat: repeat, repeat;
+      }
+      @keyframes attention-blink {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(0.78); }
+      }
+      .attention-blink {
+        animation: attention-blink 3.2s ease-in-out infinite;
+      }
+      aside nav a {
+        height: 52px;
+      }
+      aside nav a.nav-active {
+        background-color: #7a3015;
+        background-image: linear-gradient(rgba(255,235,205,0.15), rgba(255,235,205,0.15)), url("/assets/wood.webp");
+        background-size: auto, 320px auto;
+        background-repeat: repeat, repeat;
+        border-left-color: #FDC39A;
+        box-shadow: 0 4px 16px -4px rgba(155,63,28,0.35);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased" data-mode="connect">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 w-full z-50 bg-[#e1ddd5] dark:bg-[#1a1614] backdrop-blur-md shadow-sm shadow-[#56423a]/5 border-none">
+<div class="relative flex justify-end items-center gap-6 pl-8 pr-4 py-6 w-full max-w-[1440px] mx-auto" style="padding-right: 0.5rem;">
+<!-- Contact strip (широкие экраны ≥1536px) — в одной строке с навигацией;
+     position:absolute + inset-y-0 + items-center => вертикально по центру.
+     НЕ влияет на высоту шапки и ничего не сдвигает -->
+<div class="hidden 2xl:flex flex-col absolute inset-y-0 items-center justify-center text-[26px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none" style="left: 230px; right: 700px; transform: translateY(-15px);">
+<div class="flex items-center justify-center gap-x-4">
+<a href="#map"
+   class="flex items-center gap-1.5 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">location_on</span>
+<span class="font-semibold">{{ texts.contact_address }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1.5 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">call</span>
+<span>{{ texts.contact_phone }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<span class="flex items-center gap-1.5 pointer-events-auto">
+<span class="material-symbols-outlined text-[36px] text-[#9b3f1c]">schedule</span>
+<span class="font-semibold">{{ texts.contact_hours }}</span>
+</span>
+</div>
+<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm" target="_blank" rel="noopener" class="font-semibold text-[#56423a] text-center pointer-events-auto hover:text-[#9b3f1c] hover:scale-105 transition-all duration-200 inline-block" style="font-size: 15px; margin-left: -45px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</a>
+</div>
+<!-- Contact strip (средние экраны md..xl) — компактная полоса снизу шапки.
+     position:absolute + bottom-1 => тоже не влияет на высоту шапки -->
+<div class="hidden md:flex 2xl:hidden flex-col absolute items-center justify-center text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none bg-[#e1ddd5] dark:bg-[#1a1614] rounded-l-lg shadow-sm shadow-[#56423a]/10" style="left: 370px; right: 0; top: calc(100% - 15px); padding: 4px 16px 6px;">
+<div class="flex items-center justify-center gap-x-4">
+<a href="#map"
+   class="flex items-center gap-1 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
+<span class="font-semibold">{{ texts.contact_address }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">call</span>
+<span>{{ texts.contact_phone }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<span class="flex items-center gap-1 pointer-events-auto">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">schedule</span>
+<span class="font-semibold">{{ texts.contact_hours }}</span>
+</span>
+</div>
+<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm" target="_blank" rel="noopener" class="font-semibold text-[#56423a] text-center pointer-events-auto hover:text-[#9b3f1c] hover:scale-105 transition-all duration-200 inline-block" style="font-size: 13px; margin-left: -45px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</a>
+</div>
+<nav class="hidden md:flex items-center gap-6 text-sm tracking-wide font-medium">
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#dostavka">Доставка</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#business-lunch">Бизнес-ланчи</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#catering">Кейтеринг</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#events">Мероприятия</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#" onclick="openContactModal(); return false;">Контакты</a>
+<a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="/about">О нас</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-[#e3dfd6] px-4 py-2 rounded-full border border-outline-variant/15" style="transform: translateX(-15px) scale(0.85); transform-origin: right center;">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input id="dish-search" class="bg-transparent border-none focus:ring-0 text-sm w-40 p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+</div>
+<button onclick="openCart()" style="transform: translateX(-15px) scale(0.85); transform-origin: right center;" class="bg-primary text-on-primary px-4 md:px-5 py-2.5 rounded-lg font-medium hover:opacity-90 hover:scale-105 scale-95 active:opacity-80 transition-all duration-300 text-sm md:text-base flex items-center gap-2">
+<span class="material-symbols-outlined text-xl leading-none">shopping_basket</span>
+<span id="cart-header-summary">Заказать</span>
+</button>
+<button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-surface-container-low text-primary" aria-label="Меню" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+<!-- Mobile dropdown menu -->
+<div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/15 bg-[#e1ddd5] dark:bg-[#1a1614] max-h-[80vh] overflow-y-auto">
+<nav class="flex flex-col px-6 py-4 text-sm font-medium" onclick="if(event.target.tagName==='A'){document.getElementById('mobile-menu').classList.add('hidden')}">
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#dostavka">Доставка</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#business-lunch">Бизнес-ланчи</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#catering">Кейтеринг</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#events">Мероприятия</a>
+<a class="py-3 text-[#56423a] border-b border-outline-variant/10 hover:text-[#9b3f1c]" href="#" onclick="openContactModal(); return false;">Контакты</a>
+<a class="py-3 text-[#9b3f1c] font-semibold" href="/about">О нас</a>
+<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}"
+   class="flex items-center gap-2 py-3 mt-1 mb-1 text-white font-bold bg-[#9b3f1c] rounded-lg px-4 justify-center text-base tracking-wide shadow-md active:opacity-80">
+  <span class="material-symbols-outlined text-xl">call</span>
+  {{ texts.contact_phone }}
+</a>
+<div class="mt-3 mb-2 text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">Меню</div>
+{% for cat in menu_categories if cat.show_in_nav %}
+<a class="flex items-center gap-3 py-3 text-[#56423a] {{ 'border-b border-outline-variant/10' if not loop.last }}" href="#{{ cat.slug }}">
+<span class="material-symbols-outlined text-lg">{{ cat.nav_icon }}</span>{{ cat.name }}
+</a>
+{% endfor %}
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/15 mt-4">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input id="dish-search-mobile" class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
+</div>
+</nav>
+</div>
+</header>
+<div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative pt-[72px]">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-1/4 border-r border-[#dcc1b6]/15 bg-[#dcd8d0] dark:bg-[#25211e] hidden md:block z-[60]">
+<div class="flex flex-col pt-4 pb-12 w-full h-full">
+<div class="px-8 mb-2 bg-[#e1ddd5] flex justify-center -mt-[19px]">
+<img alt="Aksai Grill Logo" class="w-1/2 h-auto" src="/assets/logo.webp" style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.32); margin-left: -20px;"/>
+</div>
+<nav class="flex-1 space-y-2 pr-4 mt-2">
+{% for cat in menu_categories if cat.show_in_nav %}
+<a class="flex items-center gap-4 wood-bg-light dark:bg-[#1a1614] text-[#FEF9EF] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300 hover:brightness-110 hover:shadow-md hover:shadow-primary/20" href="#{{ cat.slug }}">
+<span class="material-symbols-outlined">{{ cat.nav_icon }}</span>
+<span class="font-body font-medium uppercase tracking-wide text-[10px] whitespace-nowrap overflow-hidden min-w-0 flex-1">{{ cat.name }}</span>
+</a>
+{% endfor %}
+</nav>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="w-full md:ml-[25%] p-8 lg:p-16">
+<!-- Hero Section -->
+<section class="relative mb-20 overflow-hidden rounded-xl bg-surface-container-low min-h-[480px] py-10 flex items-center">
+<div class="absolute inset-0 z-0">
+<img alt="meat skewers grilling over charcoal" class="w-full h-full object-cover opacity-70" src="/assets/hero-grill.webp"/>
+<div class="absolute inset-0 bg-black/60"></div>
+</div>
+<div class="relative z-10 px-12 max-w-5xl">
+<span class="attention-blink inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6" style="position:relative; top:-20px;">{{ texts.hero_badge }}</span>
+<h1 class="font-normal text-2xl md:text-3xl text-[#FEF9EF] leading-tight mb-6 whitespace-nowrap" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">{{ texts.hero_title }}</h1>
+<p class="font-normal text-[1.15rem] md:text-[1.29rem] text-[#FEF9EF] leading-relaxed mb-8" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">
+{{ texts.hero_meat_text|safe }}<br/>
+<span style="display:inline-block;width:100%;height:1px;background:#FEF9EF;opacity:0.5;vertical-align:middle;"></span><br/>
+{{ texts.hero_veg_text|safe }}
+</p>
+<div class="flex gap-4" style="position:relative; top:15px;">
+<button onclick="openCart()" class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
+<span class="material-symbols-outlined">delivery_dining</span>
+                            {{ texts.hero_cta_primary }}
+                        </button>
+<a href="#reviews" class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm inline-block">
+                            {{ texts.hero_cta_secondary }}
+                        </a>
+</div>
+</div>
+</section>
+<!-- Menu Content (DB-driven) -->
+{% for cat in menu_categories %}
+<section id="{{ cat.slug }}" class="{{ 'mt-32' if loop.first else 'mt-16' }} mb-16 scroll-mt-32">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="dish-heading font-headline text-4xl text-on-surface mb-2 font-[200]">{{ cat.heading }}</h2>
+<p class="text-on-surface-variant max-w-md text-sm whitespace-nowrap">{{ cat.description }}</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+{% for dish in cat.dishes %}{% if dish.is_available %}
+<div class="group wood-bg rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
+<div class="relative aspect-square overflow-hidden rounded-lg mb-4">
+{% if dish.image_src %}<img alt="{{ dish.name | e }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ dish.image_src }}" onerror="this.style.visibility='hidden'"/>{% else %}<div class="w-full h-full bg-[#7a4a1e]/30 rounded-lg flex items-center justify-center"><span class="material-symbols-outlined text-[#FEF9EF]/40 text-5xl">restaurant</span></div>{% endif %}
+<div class="absolute top-3 right-3">
+<span class="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs">{{ dish.price }}р</span>
+</div>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-2 font-medium">{{ dish.name }}</h3>
+<p class="text-xs mb-6 leading-relaxed text-[#FEF9EF]">{{ dish.description }}</p>
+<button class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs mt-auto">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                            Добавить в заказ
+                        </button>
+</div>
+{% endif %}{% endfor %}
+</div>
+</section>
+{% endfor %}
+
+<!-- Delivery Info Banner -->
+<section id="dostavka" class="mb-16 scroll-mt-32 rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10" style="background-color: #9B3F1C;">
+<div class="flex-1">
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Доставим горячим</h2>
+<p class="mb-8 text-lg font-light" style="color: #FEF9EF;">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
+<div class="flex flex-wrap gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">speed</span>
+</div>
+<span class="font-bold text-xs">Быстро</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">takeout_dining</span>
+</div>
+<span class="font-bold text-xs">Термо-боксы</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl">payments</span>
+</div>
+<span class="font-bold text-xs">Оплата картой</span>
+</div>
+</div>
+<button onclick="document.getElementById('quick-request-modal').classList.remove('hidden')" type="button" class="mt-8 px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm" style="background-color: #FDC39A; color: #56423A;">Оставить заявку</button>
+</div>
+<div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl">
+<img alt="delivery" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdIjhMsZ3KlTKDg0neRApUv4TiyfB0a7MzFE6F4HS0MYzgdK5sHCue_OivA6r18OS3ucIQkjBxOXNTFygm_C2_CosM3G0YhGrkpMN-Cof9cjGT7fjMhCDQ16B8xYkibFE7MjHTXPcONHrQxFbJf8ndIiamEqCOPz8yKSWKpRqjobl0VZCH5td98pGIONgp_-OR_Oy3CMLzxbRPQdjspWs6Tp2hUJBpA6LG_TiFamsuN8wX08D_S45umlhT4Wubt1B9u8HEt-taB3I"/>
+</div>
+</section>
+<!-- Бизнес-ланчи -->
+<section id="business-lunch" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/business-lunch.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Для офисов</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Бизнес-ланчи</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Сытные и сбалансированные комплексные обеды для вашей команды. Доставка к назначенному времени, удобные форматы порций и фиксированная цена.</p>
+<a href="{{ url_for('business_lunch') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Узнать подробнее</a>
+</div>
+</section>
+<!-- Кейтеринг -->
+<section id="catering" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/catering.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Под ключ</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Кейтеринг</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Полное обслуживание мероприятий: меню под формат и бюджет, сервировка, посуда и персонал. Возьмём заботу о гостях на себя.</p>
+<a href="{{ url_for('catering') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Оставить заявку</a>
+</div>
+</section>
+<!-- Мероприятия -->
+<section id="events" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/hall.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Праздники и банкеты</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Мероприятия</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Юбилеи, корпоративы, семейные торжества и поминальные обеды. Зал, меню и оформление под ваше событие.</p>
+<a href="{{ url_for('events') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Обсудить событие</a>
+</div>
+</section>
+<!-- Signature Feature Card — Яндекс-карта с адресом ресторана -->
+<section id="map" class="mb-16 mt-[20px] scroll-mt-24">
+<div class="bg-primary text-on-primary rounded-xl overflow-hidden shadow-2xl shadow-primary/20">
+<div class="px-8 pt-6 pb-4 text-center">
+<p class="opacity-80 text-xs leading-relaxed mt-[32px]">{{ texts.map_address_text }}</p>
+<p class="font-semibold text-center mt-1" style="font-size: 15px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</p>
+</div>
+<div class="w-full" style="height: 380px;">
+<iframe
+  src="https://yandex.ru/map-widget/v1/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm&l=map"
+  width="100%" height="100%" frameborder="0" allowfullscreen="true"
+  style="border:0; display:block;"
+  title="Аксай Гриль на Яндекс-картах"></iframe>
+</div>
+<div class="px-8 pb-4 text-center" style="padding-top: 31px;">
+<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm"
+   target="_blank" rel="noopener"
+   class="inline-block bg-white text-primary px-6 py-2 rounded-lg font-bold text-xs hover:scale-105 transition-transform">
+  Открыть в Яндекс-картах
+</a>
+</div>
+</div>
+</section>
+
+<!-- Reviews Section -->
+<section id="reviews" class="py-20 scroll-mt-24 bg-[#f5f0e8]">
+<div class="max-w-5xl mx-auto">
+  <div class="relative flex items-center justify-center mb-12">
+    <div class="text-center">
+      <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Наши гости говорят</p>
+      <h2 class="font-headline text-3xl md:text-4xl text-[#3a2c26]" style="font-family:'Yanone Kaffeesatz',sans-serif; font-weight:300;">Отзывы</h2>
+    </div>
+    <div class="absolute right-0 flex gap-3">
+      <button id="rev-prev" aria-label="Назад" class="w-11 h-11 rounded-full border border-outline-variant/40 bg-white text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-xl">chevron_left</span>
+      </button>
+      <button id="rev-next" aria-label="Вперёд" class="w-11 h-11 rounded-full border border-outline-variant/40 bg-white text-primary flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-xl">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-hidden">
+    <div id="reviews-track" class="flex gap-6 transition-transform duration-500 ease-in-out">
+
+      <!-- Review 1 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Были с семьёй в пятницу вечером — шашлык из баранины просто восхитительный! Мясо нежное, хорошо промаринованное. Дети были в восторге от куриных крылышек. Обязательно вернёмся!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">А</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Алина К.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · апрель 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Заказывали доставку на день рождения — всё привезли горячим и в срок. Люля-кебаб и аджапсандал просто огонь! Порции большие, цены адекватные. Спасибо команде Аксай Гриль!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">М</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Максим Т.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · март 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Бизнес-ланч — это что-то с чем-то. Суп, второе и напиток за копейки, и всё вкусное. Хожу туда почти каждый день уже полгода. Единственное пожелание — добавить больше вариантов гарнира.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Е</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Елена В.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · февраль 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 4 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Организовывали корпоратив на 30 человек — кейтеринг на высшем уровне. Мангал прямо на площадке, всё свежее, горячее. Гости были в восторге. Отдельное спасибо менеджеру за помощь в организации!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">С</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Сергей Л.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · январь 2025</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 5 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Стейк из говядины — это нечто особенное. Прожарка medium как по учебнику, соус фирменный. Попробовала ещё запечённые грибы — тоже отлично. Атмосфера уютная, персонал внимательный.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Н</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Наталья О.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · декабрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 6 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Очень вкусные купаты! Взяли на вынос — доехали горячими, упакованы аккуратно. Овощи-гриль на шпажках тоже хороши. Немного долго ждали, но оно того стоило.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Д</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Дмитрий Ш.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Новочеркасск · ноябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 7 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Свиные рёбрышки — это моё всё. Побывал в десятках мест, но здесь делают их лучше всего. Маринад чувствуется, корочка хрустящая. Буду рекомендовать всем знакомым.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">Р</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Роман Г.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · октябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 8 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Заезжаем сюда каждые выходные всей семьёй уже год. Дети обожают пышки со сгущёнкой, муж берёт шашлык из свинины, я — салат из свежих овощей. Всегда одинаково вкусно — это редкость!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">И</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Ирина Б.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · сентябрь 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 9 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★☆</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Мероприятие на природе организовали с кейтерингом от Аксай Гриль. Приехали вовремя, привезли весь инвентарь. Шашлык готовили прямо на месте. Гости остались довольны, никто не ушёл голодным.»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">О</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Ольга М.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Ростов-на-Дону · август 2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review 10 -->
+      <div class="review-card flex-shrink-0 w-full md:w-[calc(33.333%-1rem)] bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col gap-4">
+        <div class="flex gap-1 text-amber-400">★★★★★</div>
+        <p class="text-sm text-[#56423a] leading-relaxed flex-1">«Попробовал харчо — густой, ароматный, настоящий! Порция большая, хлеб в комплекте. На второе взял рис с мясом — тоже отлично. Цены очень приятные для такого качества. Аксай Гриль — теперь моё любимое место!»</p>
+        <div class="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+          <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">В</div>
+          <div>
+            <p class="text-sm font-semibold text-[#3a2c26]">Виктор П.</p>
+            <p class="text-[11px] text-on-surface-variant opacity-60">Аксай · июль 2024</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /reviews-track -->
+  </div>
+
+  <!-- Dots indicator -->
+  <div id="reviews-dots" class="flex justify-center gap-2 mt-8"></div>
+
+  <!-- Наверх -->
+  <div class="flex justify-center mt-10">
+    <a href="#" aria-label="Наверх" class="flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-widest hover:opacity-70 transition-opacity group">
+      <span class="w-9 h-9 rounded-full border border-primary/30 bg-white flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-xl">arrow_upward</span>
+      </span>
+      Наверх
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var track = document.getElementById('reviews-track');
+  var dots  = document.getElementById('reviews-dots');
+  var cards = track.querySelectorAll('.review-card');
+  var perPage = 3;
+  var current = 0;
+
+  function getPerPage(){
+    return window.innerWidth < 768 ? 1 : 3;
+  }
+
+  function pages(){
+    return Math.ceil(cards.length / getPerPage());
+  }
+
+  function buildDots(){
+    dots.innerHTML = '';
+    for(var i = 0; i < pages(); i++){
+      var d = document.createElement('button');
+      d.className = 'w-2 h-2 rounded-full transition-all duration-300 ' + (i === current ? 'bg-primary w-6' : 'bg-primary/25');
+      d.setAttribute('aria-label', 'Страница ' + (i+1));
+      (function(idx){ d.addEventListener('click', function(){ go(idx); }); })(i);
+      dots.appendChild(d);
+    }
+  }
+
+  function go(idx){
+    var pp = getPerPage();
+    var p  = pages();
+    current = Math.max(0, Math.min(idx, p - 1));
+    var cardWidth = cards[0].getBoundingClientRect().width;
+    var gap = 24;
+    track.style.transform = 'translateX(-' + (current * pp * (cardWidth + gap)) + 'px)';
+    buildDots();
+    document.getElementById('rev-prev').disabled = current === 0;
+    document.getElementById('rev-next').disabled = current >= p - 1;
+  }
+
+  document.getElementById('rev-prev').addEventListener('click', function(){ go(current - 1); });
+  document.getElementById('rev-next').addEventListener('click', function(){ go(current + 1); });
+  window.addEventListener('resize', function(){ go(0); });
+
+  buildDots();
+  go(0);
+})();
+</script>
+</section>
+</main>
+</div>
+
+<!-- Footer Section -->
+<footer id="main-footer" class="w-full md:ml-[25%] md:w-[75%] py-5 mt-[15px] border-none md:rounded-tl-xl">
+<div class="flex flex-col items-center justify-center gap-3 px-4">
+<p class="font-body text-xl text-[#56423a] font-medium">Напишите нам на <a href="mailto:{{ texts.contact_email }}" class="text-[#9b3f1c] hover:underline transition-colors">{{ texts.contact_email }}</a></p>
+<div class="flex items-center gap-3">
+<span class="font-headline text-2xl text-[#9b3f1c] font-[200]">Аксай Гриль</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary/60"></span>
+<p class="font-body text-sm font-medium text-[#3a2c26] dark:text-[#e7e2d8]">{{ texts.tagline }}</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-8 text-[#3a2c26]">
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="/privacy.html">Политика конфиденциальности</a>
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="{{ url_for('offer') }}">Условия использования</a>
+<a class="font-body text-xs font-medium hover:text-[#9b3f1c] underline-offset-4 hover:underline transition-colors" href="#">Вакансии</a>
+</nav>
+<div class="pt-3 border-t border-outline-variant/40 w-full max-w-lg text-center space-y-1">
+<p class="font-body text-[10px] text-[#3a2c26] leading-relaxed">
+{{ texts.operator_name }} · ИНН {{ texts.operator_inn }} · ОГРНИП {{ texts.operator_ogrnip }}
+</p>
+<p class="font-body text-[10px] text-[#56423a]">{{ texts.footer_copyright|safe }}</p>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button -->
+<button onclick="openCart()" class="hidden md:flex fixed bottom-8 right-8 bg-primary text-on-primary w-16 h-16 rounded-full items-center justify-center shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+<div id="cart-badge-fab" class="absolute -top-1 -right-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
+            0
+        </div>
+</button>
+<!-- Contact Modal -->
+<div id="contact-modal-overlay" class="hidden fixed inset-0 bg-black/50 z-[80] flex items-center justify-center p-4" onclick="if(event.target===this)closeContactModal()">
+  <div class="bg-[#f5f1e8] dark:bg-[#1a1614] rounded-2xl shadow-2xl w-full max-w-md p-7 relative">
+    <button onclick="closeContactModal()" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/10 text-[#56423a]">
+      <span class="material-symbols-outlined text-xl">close</span>
+    </button>
+    <h2 class="font-headline text-2xl text-[#9b3f1c] font-[200] mb-1">Задать вопрос</h2>
+    <p class="font-body text-sm text-[#56423a] mb-5">Напишите нам на почту <a href="mailto:{{ texts.contact_email }}" class="text-[#9b3f1c] hover:underline">{{ texts.contact_email }}</a></p>
+    <div id="contact-modal-success" class="hidden flex-col items-center text-center py-6 gap-3">
+      <span class="material-symbols-outlined text-5xl text-[#9b3f1c]" style="font-variation-settings:'FILL' 1;">check_circle</span>
+      <p class="font-headline text-xl text-[#3a2c26] font-[200]">Вопрос отправлен!</p>
+      <p class="font-body text-sm text-[#56423a]">Мы свяжемся с вами в ближайшее время.</p>
+      <button onclick="closeContactModal()" class="mt-2 px-6 py-2.5 bg-primary text-on-primary rounded-lg font-medium text-sm hover:opacity-90 transition-opacity">Закрыть</button>
+    </div>
+    <form id="contact-modal-form" onsubmit="submitContactForm(event)">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="space-y-4">
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Ваше имя *</label>
+          <input id="contact-name" name="name" type="text" required maxlength="100"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+            placeholder="Как к вам обращаться?"/>
+        </div>
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Телефон *</label>
+          <input id="contact-phone" name="phone" type="tel" required maxlength="30"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+            placeholder="+7 (___) ___-__-__"/>
+        </div>
+        <div>
+          <label class="font-body text-xs font-medium text-[#56423a] uppercase tracking-wider mb-1 block">Ваш вопрос *</label>
+          <textarea id="contact-message" name="message" required maxlength="1000" rows="4"
+            class="w-full bg-white dark:bg-[#12100f] border border-outline-variant/30 rounded-lg px-4 py-2.5 font-body text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition resize-none"
+            placeholder="Опишите ваш вопрос..."></textarea>
+        </div>
+        <div id="contact-error" class="hidden text-red-600 text-sm font-body"></div>
+        <button type="submit" id="contact-submit-btn"
+          class="w-full bg-primary text-on-primary py-3 rounded-lg font-medium text-sm hover:opacity-90 active:opacity-80 transition-opacity flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-lg leading-none">send</span>
+          Отправить вопрос
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Cart Drawer -->
+<div id="cart-overlay" class="hidden fixed inset-0 bg-black/40 z-[60]" onclick="closeCart()"></div>
+<aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#e1ddd5] z-[70] shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+<header class="flex items-center justify-between px-6 py-5 border-b border-outline-variant/20">
+<h2 class="font-headline text-2xl font-[200] text-on-surface">Ваша корзина</h2>
+<button onclick="closeCart()" class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<div id="cart-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+<div id="cart-empty-state" class="flex flex-col items-center justify-center py-12 gap-6">
+  <span class="material-symbols-outlined text-5xl text-on-surface-variant/40">shopping_basket</span>
+  <p class="text-center text-on-surface-variant text-sm">Корзина пуста.<br/>Добавьте блюда из меню.</p>
+  <a href="#mangal" onclick="closeCart()" class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm hover:opacity-90 transition-all">
+    <span class="material-symbols-outlined text-lg">restaurant_menu</span>
+    Перейти в меню
+  </a>
+</div>
+</div>
+<footer class="px-6 py-5 border-t border-outline-variant/20 bg-surface-container-low">
+<div id="cart-footer-full" class="hidden">
+  <div class="flex items-center justify-between mb-4">
+    <span class="text-sm text-on-surface-variant uppercase tracking-widest">Итого</span>
+    <span id="cart-total" class="text-2xl font-bold text-primary">0₽</span>
+  </div>
+  <button id="cart-checkout-btn" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Оформить заказ</button>
+</div>
+<div id="cart-footer-empty" class="flex flex-col gap-2">
+  <button onclick="closeCart()" class="w-full border border-outline-variant/30 text-on-surface-variant py-3 rounded-lg font-medium text-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2">
+    <span class="material-symbols-outlined text-lg">close</span>
+    Закрыть
+  </button>
+</div>
+</footer>
+</aside>
+<!-- Checkout Modal -->
+<div id="checkout-overlay" class="hidden fixed inset-0 bg-black/50 z-[80] items-center justify-center p-4">
+<div class="bg-[#e1ddd5] rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+<header class="flex items-center justify-between px-6 py-5 border-b border-outline-variant/20">
+<h2 class="font-headline text-2xl font-[200] text-on-surface">Оформление заказа</h2>
+<button onclick="closeCheckout()" class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<form id="checkout-form" class="px-6 py-5 space-y-4">
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Имя *</label>
+<input name="name" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Телефон *</label>
+<input name="phone" type="tel" required placeholder="+7 (___) ___-__-__" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">E-mail <span class="opacity-60 normal-case tracking-normal">(необязательно)</span></label>
+<input name="email" type="email" placeholder="example@mail.ru" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Адрес доставки *</label>
+<input name="address" required class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary"/>
+</div>
+<div>
+<label class="block text-xs uppercase tracking-widest text-on-surface-variant mb-2">Комментарий <span class="opacity-60 normal-case tracking-normal">(необязательно)</span></label>
+<textarea name="comment" rows="2" class="w-full bg-white border border-outline-variant/30 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none"></textarea>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low rounded-lg px-4 py-3">
+<span class="text-sm text-on-surface-variant uppercase tracking-widest">К оплате</span>
+<span id="checkout-total" class="text-xl font-bold text-primary">0₽</span>
+</div>
+<label class="flex items-start gap-3 text-xs text-on-surface-variant leading-snug cursor-pointer">
+<input id="checkout-consent" name="consent" type="checkbox" required class="mt-0.5 w-4 h-4 accent-[#9b3f1c] flex-shrink-0"/>
+<span>Я согласен на <a href="/privacy.html" target="_blank" class="text-[#9b3f1c] underline">обработку персональных данных</a> в соответствии с 152-ФЗ.</span>
+</label>
+<button type="submit" class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Подтвердить заказ</button>
+</form>
+<div id="checkout-success" class="hidden px-6 py-10 text-center">
+<div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</div>
+<h3 class="font-headline text-2xl font-[200] text-on-surface mb-2">Спасибо за заказ!</h3>
+<p class="text-on-surface-variant text-sm mb-6">Мы свяжемся с вами в течение 5 минут для подтверждения.</p>
+<button onclick="closeCheckout()" class="bg-primary text-on-primary px-8 py-3 rounded-lg font-medium text-sm">Закрыть</button>
+</div>
+</div>
+</div>
+<script>
+(function(){
+  const cart = {};
+  function fmt(n){ return n + '₽'; }
+  function plural(n, forms){ const n10 = n % 10, n100 = n % 100; if(n10===1 && n100!==11) return forms[0]; if(n10>=2 && n10<=4 && (n100<10||n100>=20)) return forms[1]; return forms[2]; }
+  function totalQty(){ return Object.values(cart).reduce((s,i)=>s+i.qty,0); }
+  function totalSum(){ return Object.values(cart).reduce((s,i)=>s+i.qty*i.price,0); }
+  function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  function render(){
+    const qty = totalQty();
+    const sum = totalSum();
+    document.querySelectorAll('#cart-badge-mobile, #cart-badge-fab').forEach(b => b.textContent = qty);
+    const cartTotal = document.getElementById('cart-total');
+    if(cartTotal) cartTotal.textContent = fmt(sum);
+    const hdr = document.getElementById('cart-header-summary');
+    if(hdr){
+      hdr.textContent = qty > 0 ? `${qty} ${plural(qty,['блюдо','блюда','блюд'])} · ${fmt(sum)}` : 'Заказать';
+    }
+    const list = document.getElementById('cart-items');
+    const emptyState = document.getElementById('cart-empty-state');
+    const footerFull = document.getElementById('cart-footer-full');
+    const footerEmpty = document.getElementById('cart-footer-empty');
+    const items = Object.values(cart);
+    if(items.length){
+      if(emptyState) emptyState.classList.add('hidden');
+      if(footerFull) footerFull.classList.remove('hidden');
+      if(footerEmpty) footerEmpty.classList.add('hidden');
+      const existing = list.querySelectorAll('.cart-item-row');
+      existing.forEach(el => el.remove());
+      items.forEach(i => {
+        const div = document.createElement('div');
+        div.className = 'cart-item-row flex items-center justify-between bg-white rounded-lg p-3 shadow-sm';
+        div.innerHTML = `
+          <div class="flex-1 min-w-0 pr-3">
+            <div class="font-medium text-on-surface text-sm truncate">${esc(i.name)}</div>
+            <div class="text-xs text-on-surface-variant">${esc(String(i.price))}₽ × ${esc(String(i.qty))}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-act="dec" data-name="${esc(i.name)}" class="w-7 h-7 rounded-full bg-surface-container-low text-primary flex items-center justify-center">−</button>
+            <span class="w-6 text-center text-sm font-bold">${esc(String(i.qty))}</span>
+            <button data-act="inc" data-name="${esc(i.name)}" class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">+</button>
+          </div>`;
+        list.appendChild(div);
+      });
+    } else {
+      if(emptyState) emptyState.classList.remove('hidden');
+      if(footerFull) footerFull.classList.add('hidden');
+      if(footerEmpty) footerEmpty.classList.remove('hidden');
+      list.querySelectorAll('.cart-item-row').forEach(el => el.remove());
+    }
+    renderDishActions();
+  }
+  function renderDishActions(){
+    document.querySelectorAll('.dish-action-slot').forEach(slot => {
+      const name = slot.dataset.dishName;
+      const price = parseInt(slot.dataset.dishPrice, 10) || 0;
+      const inCart = cart[name];
+      if(inCart && inCart.qty > 0){
+        slot.innerHTML = `
+          <div class="w-full flex items-center justify-between bg-primary text-on-primary py-2 px-3 rounded-lg">
+            <button data-act="dec" data-name="${esc(name)}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">−</button>
+            <span class="font-bold text-sm">В заказе: ${esc(String(inCart.qty))}</span>
+            <button data-act="inc" data-name="${esc(name)}" data-price="${esc(String(price))}" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg font-bold transition-all">+</button>
+          </div>`;
+      } else {
+        slot.innerHTML = `
+          <button data-act="add" data-name="${esc(name)}" data-price="${esc(String(price))}" class="w-full bg-surface-container-low text-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all text-xs mt-auto">
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Добавить в заказ
+          </button>`;
+      }
+    });
+  }
+  function initDishCards(){
+    document.querySelectorAll('section[id].scroll-mt-32 .group').forEach(card => {
+      const btn = Array.from(card.querySelectorAll('button')).find(b => /Добавить в заказ/i.test(b.textContent));
+      if(!btn) return;
+      const name = card.querySelector('h3')?.textContent.trim();
+      const priceEl = card.querySelector('span.bg-white\\/90, .price-badge');
+      const price = parseInt((priceEl?.textContent || '0').replace(/\D/g,''), 10) || 0;
+      if(!name) return;
+      const slot = document.createElement('div');
+      slot.className = 'dish-action-slot';
+      slot.dataset.dishName = name;
+      slot.dataset.dishPrice = price;
+      btn.replaceWith(slot);
+    });
+  }
+  window.lockScroll = function(){
+    const sw = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = sw + 'px';
+    document.documentElement.style.overflow = 'hidden';
+  }
+  window.unlockScroll = function(){
+    document.documentElement.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+  window.openCart = function(){
+    document.getElementById('cart-overlay').classList.remove('hidden');
+    const d = document.getElementById('cart-drawer');
+    d.classList.remove('translate-x-full');
+    lockScroll();
+  };
+  window.closeCart = function(){
+    document.getElementById('cart-overlay').classList.add('hidden');
+    document.getElementById('cart-drawer').classList.add('translate-x-full');
+    unlockScroll();
+  };
+  function add(name, price){
+    if(!cart[name]) cart[name] = { name, price, qty: 0 };
+    cart[name].qty++;
+    render();
+  }
+  function dec(name){
+    if(!cart[name]) return;
+    cart[name].qty--;
+    if(cart[name].qty <= 0) delete cart[name];
+    render();
+  }
+  window.openCheckout = function(){
+    if(!totalQty()) return;
+    document.getElementById('checkout-total').textContent = fmt(totalSum());
+    document.getElementById('checkout-form').classList.remove('hidden');
+    document.getElementById('checkout-success').classList.add('hidden');
+    document.getElementById('checkout-form').reset();
+    const ov = document.getElementById('checkout-overlay');
+    ov.classList.remove('hidden'); ov.classList.add('flex');
+    lockScroll();
+  };
+  window.closeCheckout = function(){
+    const ov = document.getElementById('checkout-overlay');
+    ov.classList.add('hidden'); ov.classList.remove('flex');
+    unlockScroll();
+  };
+  document.getElementById('cart-checkout-btn').addEventListener('click', function(){
+    closeCart();
+    setTimeout(openCheckout, 200);
+  });
+  // === Заготовка для отправки заказа ===
+  // Подключить позже: Telegram-бот, e-mail или CRM заказчика.
+  // Конфигурация будет храниться здесь:
+  const ORDER_DELIVERY_CONFIG = {
+    channel: 'none', // 'telegram' | 'email' | 'webhook'
+    telegram: { botToken: '', chatId: '' },
+    email:    { to: '', from: '' },
+    webhook:  { url: '' }
+  };
+  async function sendOrder(order){
+    // TODO: реализовать после получения данных от заказчика.
+    // Сейчас заказ только сохраняется локально (см. ниже).
+    return { ok: true, channel: ORDER_DELIVERY_CONFIG.channel };
+  }
+
+  document.getElementById('checkout-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const origText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправляем...';
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    const payload = {
+      name: data.name,
+      phone: data.phone,
+      email: data.email || '',
+      address: data.address,
+      comment: data.comment || '',
+      items: Object.values(cart),
+      total: totalSum()
+    };
+    try {
+      const resp = await fetch('/order/delivery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await resp.json();
+      if(result.ok){
+        Object.keys(cart).forEach(k => delete cart[k]);
+        render();
+        document.getElementById('checkout-form').classList.add('hidden');
+        document.getElementById('checkout-success').classList.remove('hidden');
+      } else {
+        alert(result.error || 'Ошибка при отправке заказа. Попробуйте ещё раз.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = origText;
+      }
+    } catch(err) {
+      alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = origText;
+    }
+  });
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    if(btn.dataset.act === 'add'){ add(btn.dataset.name, parseInt(btn.dataset.price,10) || 0); return; }
+    if(btn.dataset.act === 'inc'){
+      const name = btn.dataset.name;
+      const price = (cart[name] && cart[name].price) || parseInt(btn.dataset.price,10) || 0;
+      add(name, price); return;
+    }
+    if(btn.dataset.act === 'dec'){ dec(btn.dataset.name); return; }
+    if(/Добавить в заказ/i.test(btn.textContent)){
+      const card = btn.closest('div.group') || btn.parentElement;
+      const name = card.querySelector('h3')?.textContent.trim();
+      const priceEl = card.querySelector('span.bg-white\\/90, .price-badge');
+      const priceText = priceEl?.textContent || '0';
+      const price = parseInt(priceText.replace(/\D/g,''), 10) || 0;
+      if(name) add(name, price);
+    }
+  });
+  initDishCards();
+  render();
+
+  // Live dish search
+  const searchInput = document.getElementById('dish-search');
+  if(searchInput){
+    const sectionIds = {{ menu_categories | map(attribute='slug') | list | tojson }};
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    let emptyMsg = null;
+    function applyFilter(){
+      const q = searchInput.value.trim().toLowerCase();
+      let totalShown = 0;
+      sections.forEach(sec => {
+        const cards = sec.querySelectorAll('.group');
+        let shown = 0;
+        cards.forEach(card => {
+          const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+          const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
+          const match = !q || title.includes(q) || desc.includes(q);
+          card.style.display = match ? '' : 'none';
+          if(match) shown++;
+        });
+        sec.style.display = shown ? '' : 'none';
+        totalShown += shown;
+      });
+      if(q && totalShown === 0){
+        if(!emptyMsg){
+          emptyMsg = document.createElement('div');
+          emptyMsg.id = 'search-empty';
+          emptyMsg.className = 'text-center text-on-surface-variant py-12 text-sm';
+          emptyMsg.textContent = 'Ничего не найдено. Попробуйте изменить запрос.';
+          sections[0]?.parentNode?.insertBefore(emptyMsg, sections[0]);
+        }
+        emptyMsg.style.display = '';
+      } else if(emptyMsg){
+        emptyMsg.style.display = 'none';
+      }
+    }
+    searchInput.addEventListener('input', applyFilter);
+    const mobileSearch = document.getElementById('dish-search-mobile');
+    if(mobileSearch){
+      mobileSearch.addEventListener('input', function(){
+        searchInput.value = this.value;
+        applyFilter();
+      });
+    }
+  }
+})();
+</script>
+<!-- Mobile bottom action bar -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#e1ddd5]/95 backdrop-blur-md border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(155,63,28,0.08)]">
+<div class="grid grid-cols-3 gap-1 px-2 py-2">
+<button onclick="document.getElementById('mobile-menu').classList.toggle('hidden'); window.scrollTo({top:0,behavior:'smooth'})" class="flex flex-col items-center justify-center py-2 gap-1 text-on-surface-variant active:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">menu</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Меню</span>
+</button>
+<button onclick="openCart()" class="flex flex-col items-center justify-center py-2 gap-1 text-on-surface-variant active:text-primary transition-colors relative">
+<span class="material-symbols-outlined text-2xl">shopping_basket</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Корзина</span>
+<span id="cart-badge-mobile" class="absolute top-1 right-6 bg-primary text-on-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+</button>
+<button onclick="openCart()" class="flex flex-col items-center justify-center py-2 gap-1 bg-primary text-on-primary rounded-lg shadow-md shadow-primary/20 active:opacity-80 transition-all">
+<span class="material-symbols-outlined text-2xl">delivery_dining</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Заказать</span>
+</button>
+</div>
+</nav>
+<div class="md:hidden h-20"></div>
+<script>
+(function () {
+  document.querySelectorAll('section[id] .flex.gap-2 button').forEach(function (btn) {
+    var icon = btn.querySelector('.material-symbols-outlined');
+    if (!icon) return;
+    var name = icon.textContent.trim();
+    if (name !== 'chevron_left' && name !== 'chevron_right') return;
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('click', function () {
+      var dir = name === 'chevron_right' ? 1 : -1;
+      window.scrollBy({ top: dir * window.innerHeight, left: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+
+<!-- Cookie consent banner -->
+<div id="cookie-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-[90] bg-[#56423a] text-[#FEF9EF] rounded-xl shadow-2xl p-5 border border-[#9b3f1c]/40">
+  <p class="text-sm leading-snug mb-4">Сайт использует cookies для работы и аналитики. Продолжая просмотр, вы соглашаетесь с <a href="/privacy.html" target="_blank" class="underline text-[#FDC39A]">Политикой конфиденциальности</a>.</p>
+  <div class="flex gap-2">
+    <button id="cookie-accept" class="flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-90" style="background-color: #FDC39A; color: #56423A;">Принять</button>
+    <a href="/privacy.html" target="_blank" class="px-4 py-2 rounded-lg font-medium text-sm border border-[#FEF9EF]/40 hover:bg-white/10 transition-all flex items-center">Подробнее</a>
+  </div>
+</div>
+<script>
+(function(){
+  try {
+    if (!localStorage.getItem('cookie-consent')) {
+      document.getElementById('cookie-banner').classList.remove('hidden');
+    }
+    document.getElementById('cookie-accept').addEventListener('click', function(){
+      localStorage.setItem('cookie-consent', '1');
+      document.getElementById('cookie-banner').classList.add('hidden');
+    });
+  } catch(e){}
+})();
+</script>
+
+<!-- Flash-уведомления от маршрута /quick-request -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="flash-bar" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-full max-w-md px-4">
+  {% for category, message in messages %}
+  <div class="flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg text-sm font-medium
+    {% if category == 'success' %}bg-[#9b3f1c] text-white{% else %}bg-[#ba1a1a] text-white{% endif %}">
+    <span class="material-symbols-outlined text-xl">
+      {% if category == 'success' %}check_circle{% else %}error{% endif %}
+    </span>
+    <span>{{ message }}</span>
+    <button onclick="this.parentElement.remove()" class="ml-auto opacity-70 hover:opacity-100 transition">
+      <span class="material-symbols-outlined text-base">close</span>
+    </button>
+  </div>
+  {% endfor %}
+</div>
+<script>setTimeout(function(){var b=document.getElementById('flash-bar');if(b)b.remove();},6000);</script>
+{% endif %}
+{% endwith %}
+
+<!-- Модальное окно «Оставить заявку» (доставка) -->
+<div id="quick-request-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);">
+  <div class="bg-[#f5f1e8] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+    <!-- Шапка -->
+    <div class="flex items-center justify-between px-7 py-5" style="background:#9b3f1c;">
+      <div>
+        <div class="text-[10px] uppercase tracking-widest text-white/70 mb-0.5">Аксай Гриль · доставка</div>
+        <div class="text-white font-semibold text-xl">Оставить заявку</div>
+      </div>
+      <button type="button" onclick="document.getElementById('quick-request-modal').classList.add('hidden')"
+        class="text-white/70 hover:text-white transition">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+    </div>
+    <!-- Форма -->
+    <form method="POST" action="{{ url_for('quick_request') }}" class="px-7 py-6 flex flex-col gap-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div>
+        <label class="block text-xs font-semibold text-[#56423a] uppercase tracking-wide mb-1.5" for="qr-name">Ваше имя *</label>
+        <input id="qr-name" name="contact_name" type="text" required autocomplete="name"
+          placeholder="Иван Иванов"
+          class="w-full rounded-lg border border-[#dcc1b6] bg-white px-4 py-3 text-sm text-[#1d1c16] placeholder-[#897269] focus:outline-none focus:ring-2 focus:ring-[#9b3f1c]/40"/>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-[#56423a] uppercase tracking-wide mb-1.5" for="qr-phone">Телефон *</label>
+        <input id="qr-phone" name="phone" type="tel" required autocomplete="tel"
+          placeholder="+7 (900) 000-00-00"
+          class="w-full rounded-lg border border-[#dcc1b6] bg-white px-4 py-3 text-sm text-[#1d1c16] placeholder-[#897269] focus:outline-none focus:ring-2 focus:ring-[#9b3f1c]/40"/>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-[#56423a] uppercase tracking-wide mb-1.5" for="qr-address">Адрес доставки *</label>
+        <input id="qr-address" name="address" type="text" required autocomplete="street-address"
+          placeholder="ул. Ленина, д. 1, кв. 5"
+          class="w-full rounded-lg border border-[#dcc1b6] bg-white px-4 py-3 text-sm text-[#1d1c16] placeholder-[#897269] focus:outline-none focus:ring-2 focus:ring-[#9b3f1c]/40"/>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-[#56423a] uppercase tracking-wide mb-1.5" for="qr-comment">Комментарий</label>
+        <textarea id="qr-comment" name="comment" rows="2"
+          placeholder="Что хотите заказать, пожелания..."
+          class="w-full rounded-lg border border-[#dcc1b6] bg-white px-4 py-3 text-sm text-[#1d1c16] placeholder-[#897269] focus:outline-none focus:ring-2 focus:ring-[#9b3f1c]/40 resize-none"></textarea>
+      </div>
+      <div class="flex gap-3 pt-1">
+        <button type="submit"
+          class="flex-1 bg-[#9b3f1c] text-white py-3 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity">
+          Отправить заявку
+        </button>
+        <button type="button" onclick="document.getElementById('quick-request-modal').classList.add('hidden')"
+          class="px-5 py-3 rounded-lg border border-[#dcc1b6] text-[#56423a] text-sm font-medium hover:bg-[#dcc1b6]/30 transition">
+          Отмена
+        </button>
+      </div>
+      <p class="text-[10px] text-[#897269] text-center">Нажимая «Отправить», вы соглашаетесь с <a href="/privacy.html" class="underline hover:text-[#9b3f1c]">политикой конфиденциальности</a></p>
+    </form>
+  </div>
+</div>
+<script>
+document.getElementById('quick-request-modal').addEventListener('click', function(e){
+  if(e.target === this) this.classList.add('hidden');
+});
+</script>
+
+<!-- Кнопка «Наверх» — появляется при прокрутке к подвалу -->
+<button id="back-to-top" type="button" aria-label="Наверх"
+  class="fixed right-8 z-50 w-12 h-12 rounded-full bg-[#9b3f1c] text-white shadow-lg shadow-black/20 flex items-center justify-center opacity-100 transition-all duration-300 hover:scale-110 hover:bg-[#7a3015]"
+  style="bottom: 112px; margin-right: 8px;">
+  <span class="material-symbols-outlined text-[28px]">arrow_upward</span>
+</button>
+<script>
+(function(){
+  var btn = document.getElementById('back-to-top');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+<script>
+/* ── Scroll-spy: подсвечиваем активный пункт бокового меню ── */
+(function(){
+  var navLinks = document.querySelectorAll('aside nav a[href^="#"]');
+  if (!navLinks.length) return;
+  var sectionMap = [];
+  navLinks.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if (sec) sectionMap.push({ link: a, sec: sec });
+  });
+  if (!sectionMap.length) return;
+
+  function activate(idx){
+    sectionMap.forEach(function(item, i){
+      if (i === idx) item.link.classList.add('nav-active');
+      else item.link.classList.remove('nav-active');
+    });
+  }
+
+  function onScroll(){
+    var scrollY = window.scrollY + 160;
+    var active = 0;
+    sectionMap.forEach(function(item, i){
+      if (item.sec.offsetTop <= scrollY) active = i;
+    });
+    activate(active);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+
+function openContactModal() {
+  var overlay = document.getElementById('contact-modal-overlay');
+  var form = document.getElementById('contact-modal-form');
+  var success = document.getElementById('contact-modal-success');
+  var err = document.getElementById('contact-error');
+  if (form) { form.reset(); form.classList.remove('hidden'); }
+  if (success) success.classList.add('hidden');
+  if (err) { err.classList.add('hidden'); err.textContent = ''; }
+  overlay.classList.remove('hidden');
+  lockScroll();
+}
+function closeContactModal() {
+  document.getElementById('contact-modal-overlay').classList.add('hidden');
+  unlockScroll();
+}
+function submitContactForm(e) {
+  e.preventDefault();
+  var btn = document.getElementById('contact-submit-btn');
+  var err = document.getElementById('contact-error');
+  err.classList.add('hidden'); err.textContent = '';
+  btn.disabled = true; btn.textContent = 'Отправляем...';
+  var form = document.getElementById('contact-modal-form');
+  var data = new FormData(form);
+  fetch('/contact', { method: 'POST', body: data })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if (res.ok) {
+        form.classList.add('hidden');
+        var s = document.getElementById('contact-modal-success');
+        s.classList.remove('hidden'); s.classList.add('flex');
+      } else {
+        err.textContent = res.error || 'Ошибка отправки. Попробуйте ещё раз.';
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg leading-none">send</span> Отправить вопрос';
+      }
+    })
+    .catch(function(){
+      err.textContent = 'Ошибка сети. Попробуйте ещё раз.';
+      err.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg leading-none">send</span> Отправить вопрос';
+    });
+}
+</script>
+</body></html>

@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %}
+{% block title %}Реквизиты{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+
+  <div class="flex items-center gap-3">
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="p-2 rounded-lg border border-outline/30 text-on-surface-variant hover:bg-surface-container transition-all">
+      <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <div>
+      <h1 class="text-3xl font-light text-primary">Реквизиты оператора</h1>
+      <p class="text-sm text-on-surface-variant mt-0.5">Данные ИП — используются в политике конфиденциальности, подвале сайта и оферте.</p>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for cat, msg in messages %}
+  <div class="px-5 py-3 rounded-lg text-sm font-medium {{ 'bg-success-container text-success' if cat == 'success' else 'bg-error-container text-error' }}">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-8">
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="space-y-5">
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Наименование оператора *</label>
+          <input name="operator_name" type="text" required maxlength="256"
+                 value="{{ texts.operator_name }}"
+                 placeholder="ИП Иванов Иван Иванович"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">ИНН *</label>
+            <input name="operator_inn" type="text" required maxlength="20"
+                   value="{{ texts.operator_inn }}"
+                   placeholder="614200356558"
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">ОГРНИП *</label>
+            <input name="operator_ogrnip" type="text" required maxlength="20"
+                   value="{{ texts.operator_ogrnip }}"
+                   placeholder="324619600091280"
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:border-primary"/>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Дата регистрации ИП</label>
+            <input name="operator_reg_date" type="text" maxlength="20"
+                   value="{{ texts.operator_reg_date }}"
+                   placeholder="17.04.2024"
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Контактный телефон</label>
+            <input name="operator_phone" type="text" maxlength="30"
+                   value="{{ texts.operator_phone }}"
+                   placeholder="+7 (908) 513-78-80"
+                   class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Контактный e-mail (для политики конфиденциальности)</label>
+          <input name="operator_email" type="email" maxlength="120"
+                 value="{{ texts.operator_email }}"
+                 placeholder="info@aksaygryl.ru"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Публичный e-mail (отображается в подвале сайта)</label>
+          <input name="contact_email" type="email" maxlength="120"
+                 value="{{ texts.contact_email }}"
+                 placeholder="aksaygryl@mail.ru"
+                 class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Налоговый орган</label>
+          <textarea name="operator_tax_authority" rows="2" maxlength="512"
+                    class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary resize-none">{{ texts.operator_tax_authority }}</textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-on-surface-variant mb-1">Адрес для корреспонденции</label>
+          <textarea name="operator_address" rows="2" maxlength="512"
+                    class="w-full bg-white border border-outline/30 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary resize-none">{{ texts.operator_address }}</textarea>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit"
+                  class="bg-primary text-on-primary px-8 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+            Сохранить реквизиты
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </section>
+
+  <section class="bg-surface-card rounded-xl shadow-lg p-6">
+    <h2 class="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Где используются реквизиты</h2>
+    <ul class="text-sm text-on-surface-variant space-y-1.5 list-disc list-inside">
+      <li>Подвал главной страницы (оператор · ИНН · ОГРНИП)</li>
+      <li>Политика конфиденциальности — раздел «Оператор персональных данных»</li>
+      <li>Публичная оферта — раздел реквизитов исполнителя</li>
+    </ul>
+  </section>
+
+</div>
+{% endblock %}
