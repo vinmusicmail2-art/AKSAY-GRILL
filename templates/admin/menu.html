@@ -240,11 +240,20 @@
             <td class="py-2 pr-3 text-center">
               <form method="POST" action="{{ url_for('admin_menu_dish_toggle', dish_id=dish.id) }}" class="inline">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <button type="submit"
-                        class="text-xs px-2 py-1 rounded-full font-medium hover:opacity-80 transition-opacity
-                        {{ 'bg-success-container text-success' if dish.is_available else 'bg-error-container text-error' }}">
-                  {{ 'в наличии' if dish.is_available else 'нет' }}
-                </button>
+                <label class="inline-flex flex-col items-center gap-0.5 cursor-pointer select-none"
+                       title="{{ 'Скрыть блюдо' if dish.is_available else 'Показать блюдо' }}"
+                       onclick="this.closest('form').submit()">
+                  <div class="relative w-9 h-5">
+                    <div class="w-9 h-5 rounded-full transition-colors duration-200
+                                {{ 'bg-success' if dish.is_available else 'bg-outline/40' }}"></div>
+                    <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200
+                                {{ 'translate-x-4' if dish.is_available else 'translate-x-0' }}"></div>
+                  </div>
+                  <span class="text-[10px] font-medium leading-none
+                               {{ 'text-success' if dish.is_available else 'text-on-surface-variant/60' }}">
+                    {{ 'есть' if dish.is_available else 'нет' }}
+                  </span>
+                </label>
               </form>
             </td>
             <td class="py-2">
