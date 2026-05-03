@@ -892,6 +892,69 @@ def admin_menu():
         session.close()
 
 
+@app.route("/admin/menu/stats")
+@login_required
+def admin_menu_stats():
+    from models import Dish, MenuCategory
+
+    session = SessionLocal()
+    try:
+        categories = (
+            session.query(MenuCategory)
+            .order_by(MenuCategory.sort_order)
+            .all()
+        )
+
+        all_dishes = session.query(Dish).all()
+        total = len(all_dishes)
+        available = sum(1 for d in all_dishes if d.is_available)
+        hidden = total - available
+        no_photo = sum(1 for d in all_dishes if not d.image_src)
+        prices = [d.price for d in all_dishes if d.price > 0]
+        global_min = min(prices) if prices else 0
+        global_max = max(prices) if prices else 0
+        global_avg = round(sum(prices) / len(prices)) if prices else 0
+
+        cat_stats = []
+        for cat in categories:
+            dishes = cat.dishes
+            cnt = len(dishes)
+            avail = sum(1 for d in dishes if d.is_available)
+            hid = cnt - avail
+            no_ph = sum(1 for d in dishes if not d.image_src)
+            cat_prices = [d.price for d in dishes if d.price > 0]
+            cat_stats.append({
+                "cat": cat,
+                "total": cnt,
+                "available": avail,
+                "hidden": hid,
+                "no_photo": no_ph,
+                "min_price": min(cat_prices) if cat_prices else 0,
+                "max_price": max(cat_prices) if cat_prices else 0,
+                "avg_price": round(sum(cat_prices) / len(cat_prices)) if cat_prices else 0,
+                "all_hidden": cnt > 0 and avail == 0,
+            })
+
+        cheapest = min(all_dishes, key=lambda d: d.price, default=None)
+        priciest = max(all_dishes, key=lambda d: d.price, default=None)
+
+        return render_template(
+            "admin/menu_stats.html",
+            cat_stats=cat_stats,
+            total=total,
+            available=available,
+            hidden=hidden,
+            no_photo=no_photo,
+            global_min=global_min,
+            global_max=global_max,
+            global_avg=global_avg,
+            cheapest=cheapest,
+            priciest=priciest,
+        )
+    finally:
+        session.close()
+
+
 @app.route("/admin/menu/category/add", methods=["POST"])
 @login_required
 def admin_menu_category_add():

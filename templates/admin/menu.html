@@ -10,11 +10,18 @@
         <h1 class="text-3xl font-light text-primary mb-1">Управление меню</h1>
         <p class="text-on-surface-variant text-sm">{{ total_dishes }} блюд в {{ categories|length }} категориях</p>
       </div>
-      <button onclick="document.getElementById('add-cat-panel').classList.toggle('hidden')"
-              class="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
-        <span class="material-symbols-outlined text-base">add</span>
-        Новая категория
-      </button>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="{{ url_for('admin_menu_stats') }}"
+           class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-low border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-all text-sm font-medium">
+          <span class="material-symbols-outlined text-base">bar_chart</span>
+          Статистика
+        </a>
+        <button onclick="document.getElementById('add-cat-panel').classList.toggle('hidden')"
+                class="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">add</span>
+          Новая категория
+        </button>
+      </div>
     </div>
 
     <div id="add-cat-panel" class="hidden mt-6 p-6 bg-surface-lowest rounded-xl border border-outline/20">
