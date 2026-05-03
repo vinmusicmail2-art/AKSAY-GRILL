@@ -1183,6 +1183,32 @@ def admin_menu_category_reorder_dishes(cat_id: int):
     return redirect(url_for("admin_menu"))
 
 
+@app.route("/admin/menu/dish/<int:dish_id>/upload-image", methods=["POST"])
+@login_required
+def admin_menu_dish_upload_image(dish_id: int):
+    from models import Dish
+
+    session = SessionLocal()
+    try:
+        dish = session.get(Dish, dish_id)
+        if dish is None:
+            abort(404)
+        uploaded = _save_dish_image(request.files.get("image_file"), dish.name)
+        if uploaded:
+            dish.image_src = uploaded
+            session.commit()
+            flash(f"Фото блюда «{dish.name}» обновлено.", "success")
+        else:
+            flash("Не удалось загрузить файл. Проверьте формат (JPG, PNG, WebP) и размер (до 5 МБ).", "error")
+    except Exception as exc:
+        session.rollback()
+        logger.exception("Error uploading image for dish %d: %s", dish_id, exc)
+        flash("Ошибка при загрузке фото.", "error")
+    finally:
+        session.close()
+    return redirect(url_for("admin_menu"))
+
+
 @app.route("/admin/menu/dish/<int:dish_id>/toggle", methods=["POST"])
 @login_required
 def admin_menu_dish_toggle(dish_id: int):

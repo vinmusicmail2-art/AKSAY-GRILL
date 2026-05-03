@@ -178,14 +178,31 @@
                     title="Перетащить для изменения порядка">drag_indicator</span>
             </td>
             <td class="py-2 pr-3">
-              {% if dish.image_src %}
-              <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
-                   class="w-12 h-12 object-cover rounded-lg" onerror="this.style.display='none'"/>
-              {% else %}
-              <div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-on-surface-variant/40 text-xl">image</span>
-              </div>
-              {% endif %}
+              <form method="POST"
+                    action="{{ url_for('admin_menu_dish_upload_image', dish_id=dish.id) }}"
+                    enctype="multipart/form-data"
+                    id="img-form-{{ dish.id }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="file" name="image_file" id="img-file-{{ dish.id }}"
+                       accept="image/*" class="hidden"
+                       onchange="this.form.submit()"/>
+                <label for="img-file-{{ dish.id }}"
+                       class="group relative block w-12 h-12 rounded-lg overflow-hidden cursor-pointer"
+                       title="Кликните, чтобы заменить фото">
+                  {% if dish.image_src %}
+                  <img src="{{ dish.image_src }}" alt="{{ dish.name }}"
+                       class="w-full h-full object-cover"
+                       onerror="this.parentElement.classList.add('bg-surface-container'); this.style.display='none'"/>
+                  {% else %}
+                  <div class="w-full h-full bg-surface-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-surface-variant/40 text-xl">image</span>
+                  </div>
+                  {% endif %}
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-all flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity">photo_camera</span>
+                  </div>
+                </label>
+              </form>
             </td>
             <td class="py-2 pr-3">
               <div class="font-medium text-on-surface leading-tight">{{ dish.name }}</div>
