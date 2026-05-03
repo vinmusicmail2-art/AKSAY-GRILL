@@ -56,7 +56,7 @@ def init_db() -> None:
     """
     import models  # noqa: F401
 
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
 
     with engine.begin() as conn:
         try:
