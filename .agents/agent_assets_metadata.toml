@@ -432,6 +432,18 @@ uri = "file://assets/events.png"
 type = "image"
 title = "restaurant banquet hall events"
 
+[[generated]]
+id = "Rw8JfYIrIRUuJgI-OA7Bp"
+uri = "file://assets/dishes/borshch_new.png"
+type = "image"
+title = "borscht dark bowl"
+
+[[generated]]
+id = "9esuoGxDIPPzTN2OVs1xa"
+uri = "file://assets/dishes/shurpa_new.png"
+type = "image"
+title = "shurpa dark bowl"
+
 [[outputs]]
 id = "DUSJMa7Gleml8PLrLKvQ0"
 uri = "file://attached_assets/stock_images/lyulya-kuritsa.jpg"
