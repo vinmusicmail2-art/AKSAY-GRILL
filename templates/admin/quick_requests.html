@@ -1,0 +1,177 @@
+{% extends "admin/base.html" %}
+{% block title %}Быстрые заявки{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <h1 class="text-3xl font-light text-primary mb-1">Быстрые заявки с главной</h1>
+      <p class="text-sm text-on-surface-variant">
+        Заявки из кнопки «Заказать доставку» на главной странице сайта.
+      </p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <a href="{{ url_for('admin_quick_requests_csv') }}"
+         class="flex items-center gap-2 px-4 py-2 rounded-lg border border-outline/30 text-on-surface-variant hover:text-primary hover:border-primary transition-colors text-sm">
+        <span class="material-symbols-outlined text-base">download</span>
+        CSV
+      </a>
+      <a href="{{ url_for('admin_dashboard') }}"
+         class="text-sm text-on-surface-variant hover:text-primary">← в кабинет</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+    <div class="px-5 py-3 rounded-lg text-sm font-medium {{ 'bg-success-container text-success' if cat == 'success' else 'bg-error-container text-error' }}">
+      {{ msg }}
+    </div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <!-- Фильтры -->
+  <form method="GET" class="bg-surface-card rounded-xl shadow p-5 flex flex-wrap gap-3 items-end">
+    <div class="flex flex-col gap-1">
+      <label class="text-xs text-on-surface-variant uppercase tracking-wide">Статус</label>
+      <select name="show" onchange="this.form.submit()"
+              class="px-3 py-2 rounded-lg border border-outline/30 bg-surface-lowest text-sm focus:outline-none focus:border-primary">
+        <option value="pending"   {% if show == 'pending' %}selected{% endif %}>Новые</option>
+        <option value="processed" {% if show == 'processed' %}selected{% endif %}>Обработанные</option>
+        <option value="all"       {% if show == 'all' %}selected{% endif %}>Все</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-xs text-on-surface-variant uppercase tracking-wide">Период</label>
+      <select name="period" onchange="this.form.submit()"
+              class="px-3 py-2 rounded-lg border border-outline/30 bg-surface-lowest text-sm focus:outline-none focus:border-primary">
+        <option value=""      {% if not period %}selected{% endif %}>Все время</option>
+        <option value="today" {% if period == 'today' %}selected{% endif %}>Сегодня</option>
+        <option value="week"  {% if period == 'week' %}selected{% endif %}>7 дней</option>
+        <option value="month" {% if period == 'month' %}selected{% endif %}>30 дней</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-xs text-on-surface-variant uppercase tracking-wide">Сортировка</label>
+      <select name="sort" onchange="this.form.submit()"
+              class="px-3 py-2 rounded-lg border border-outline/30 bg-surface-lowest text-sm focus:outline-none focus:border-primary">
+        <option value="date_desc"  {% if sort == 'date_desc' %}selected{% endif %}>Сначала новые</option>
+        <option value="date_asc"   {% if sort == 'date_asc' %}selected{% endif %}>Сначала старые</option>
+        <option value="status_new"  {% if sort == 'status_new' %}selected{% endif %}>Статус: новые первыми</option>
+        <option value="status_done" {% if sort == 'status_done' %}selected{% endif %}>Статус: выполненные первыми</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1 flex-1 min-w-[180px]">
+      <label class="text-xs text-on-surface-variant uppercase tracking-wide">Поиск</label>
+      <div class="flex gap-2">
+        <input type="text" name="q" value="{{ search_q }}" placeholder="Имя, телефон, адрес…"
+               class="flex-1 px-3 py-2 rounded-lg border border-outline/30 bg-surface-lowest text-sm focus:outline-none focus:border-primary"/>
+        <button type="submit"
+                class="px-3 py-2 rounded-lg bg-primary text-on-primary text-sm hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-base leading-none">search</span>
+        </button>
+      </div>
+    </div>
+    {% if search_q or period or show != 'pending' %}
+    <a href="{{ url_for('admin_quick_requests') }}"
+       class="px-3 py-2 rounded-lg border border-outline/30 text-on-surface-variant hover:text-error hover:border-error transition-colors text-sm self-end">
+      Сбросить
+    </a>
+    {% endif %}
+  </form>
+
+  <!-- Таблица -->
+  <div class="bg-surface-card rounded-xl shadow-lg overflow-hidden">
+    {% if requests %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-surface-low text-xs uppercase tracking-wide text-on-surface-variant border-b border-outline/20">
+          <tr>
+            <th class="px-4 py-3 text-left">№</th>
+            <th class="px-4 py-3 text-left">Имя</th>
+            <th class="px-4 py-3 text-left">Телефон</th>
+            <th class="px-4 py-3 text-left">Адрес</th>
+            <th class="px-4 py-3 text-left">Комментарий</th>
+            <th class="px-4 py-3 text-left">Дата</th>
+            <th class="px-4 py-3 text-center">Статус</th>
+            <th class="px-4 py-3 text-center">Действие</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline/10">
+          {% for r in requests %}
+          <tr class="hover:bg-surface-low/50 transition-colors {{ 'opacity-50' if r.is_processed }}">
+            <td class="px-4 py-3 text-on-surface-variant text-xs font-mono">#{{ r.id }}</td>
+            <td class="px-4 py-3 font-medium whitespace-nowrap">{{ r.contact_name }}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <a href="tel:{{ r.phone }}" class="text-primary hover:underline">{{ r.phone }}</a>
+            </td>
+            <td class="px-4 py-3 text-on-surface-variant max-w-[200px] truncate" title="{{ r.address }}">{{ r.address }}</td>
+            <td class="px-4 py-3 text-on-surface-variant max-w-[180px] truncate text-xs" title="{{ r.comment or '' }}">
+              {{ r.comment or '—' }}
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap text-xs text-on-surface-variant">
+              {{ r.created_at.strftime('%d.%m.%Y %H:%M') if r.created_at else '—' }}
+            </td>
+            <td class="px-4 py-3 text-center">
+              {% if r.is_processed %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success-container text-success text-xs">
+                  <span class="material-symbols-outlined text-xs leading-none">check_circle</span>
+                  готово
+                </span>
+                {% if r.processed_by %}
+                  <div class="text-xs text-on-surface-variant mt-0.5">{{ r.processed_by }}</div>
+                {% endif %}
+              {% else %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                  <span class="material-symbols-outlined text-xs leading-none">schedule</span>
+                  новая
+                </span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-center">
+              <form method="POST"
+                    action="{{ url_for('admin_quick_request_toggle', request_id=r.id) }}"
+                    class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% if r.is_processed %}
+                  <button type="submit"
+                          class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                    <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                    вернуть
+                  </button>
+                {% else %}
+                  <button type="submit"
+                          class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                    <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                    готово
+                  </button>
+                {% endif %}
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="px-6 py-12 text-center">
+      <span class="material-symbols-outlined text-4xl text-on-surface-variant/40 block mb-3">inbox</span>
+      <p class="text-on-surface-variant text-sm italic">
+        {% if show == 'pending' %}Новых быстрых заявок нет.
+        {% elif show == 'processed' %}Обработанных заявок нет.
+        {% else %}Заявок нет.{% endif %}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+
+  <p class="text-xs text-on-surface-variant/60">
+    Показано: {{ requests|length }} заявок (максимум 200 за раз).
+    Быстрые заявки приходят с кнопки «Заказать доставку» на главной странице — без выбора блюд,
+    только имя, телефон и адрес.
+  </p>
+
+</div>
+{% endblock %}

@@ -174,7 +174,7 @@ def admin_profile():
 @app.route("/admin/")
 @login_required
 def admin_dashboard():
-    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation, LoginLog
+    from models import BusinessLunchOrder, CateringRequest, DeliveryOrder, HallReservation, LoginLog, QuickRequest
 
     session = SessionLocal()
     try:
@@ -204,6 +204,11 @@ def admin_dashboard():
             .filter(DeliveryOrder.is_processed.is_(False))
             .count()
         )
+        pending_quick = (
+            session.query(QuickRequest)
+            .filter(QuickRequest.is_processed.is_(False))
+            .count()
+        )
         all_delivery = (
             session.query(DeliveryOrder)
             .order_by(DeliveryOrder.is_processed.asc(), DeliveryOrder.created_at.desc())
@@ -228,7 +233,13 @@ def admin_dashboard():
             .limit(50)
             .all()
         )
-        total_new = pending_delivery + pending_orders + pending_catering + pending_events
+        all_quick = (
+            session.query(QuickRequest)
+            .order_by(QuickRequest.is_processed.asc(), QuickRequest.created_at.desc())
+            .limit(30)
+            .all()
+        )
+        total_new = pending_delivery + pending_orders + pending_catering + pending_events + pending_quick
         return render_template(
             "admin/dashboard.html",
             recent_logs=recent_logs,
@@ -236,10 +247,12 @@ def admin_dashboard():
             pending_catering=pending_catering,
             pending_events=pending_events,
             pending_delivery=pending_delivery,
+            pending_quick=pending_quick,
             all_delivery=all_delivery,
             all_lunch=all_lunch,
             all_catering=all_catering,
             all_events=all_events,
+            all_quick=all_quick,
             total_new=total_new,
         )
     finally:
@@ -726,6 +739,123 @@ def admin_events_toggle(request_id: int):
         session.close()
 
     return redirect(_safe_referrer(url_for("admin_events")))
+
+
+@app.route("/admin/quick-requests")
+@login_required
+def admin_quick_requests():
+    from models import QuickRequest
+
+    show     = request.args.get("show", "pending")
+    sort     = request.args.get("sort", "date_desc")
+    period   = (request.args.get("period") or "").strip()
+    search_q = (request.args.get("q") or "").strip()
+
+    session = SessionLocal()
+    try:
+        q = session.query(QuickRequest)
+        if show == "pending":
+            q = q.filter(QuickRequest.is_processed.is_(False))
+        elif show == "processed":
+            q = q.filter(QuickRequest.is_processed.is_(True))
+        now = datetime.utcnow()
+        if period == "today":
+            q = q.filter(QuickRequest.created_at >= now.replace(hour=0, minute=0, second=0, microsecond=0))
+        elif period == "week":
+            q = q.filter(QuickRequest.created_at >= now - timedelta(days=7))
+        elif period == "month":
+            q = q.filter(QuickRequest.created_at >= now - timedelta(days=30))
+        if search_q:
+            like = f"%{search_q}%"
+            from sqlalchemy import or_
+            q = q.filter(or_(
+                QuickRequest.contact_name.like(like),
+                QuickRequest.phone.like(like),
+                QuickRequest.address.like(like),
+                QuickRequest.comment.like(like),
+            ))
+        _QR_SORT = {
+            "date_desc":  [QuickRequest.is_processed.asc(), QuickRequest.created_at.desc()],
+            "date_asc":   [QuickRequest.is_processed.asc(), QuickRequest.created_at.asc()],
+            "status_new":  [QuickRequest.is_processed.asc(), QuickRequest.created_at.desc()],
+            "status_done": [QuickRequest.is_processed.desc(), QuickRequest.created_at.desc()],
+        }
+        for col in _QR_SORT.get(sort, _QR_SORT["date_desc"]):
+            q = q.order_by(col)
+        requests_list = q.limit(200).all()
+
+        return render_template(
+            "admin/quick_requests.html",
+            requests=requests_list,
+            show=show,
+            sort=sort,
+            period=period,
+            search_q=search_q,
+        )
+    finally:
+        session.close()
+
+
+@app.route("/admin/quick-requests/<int:request_id>/toggle", methods=["POST"])
+@login_required
+def admin_quick_request_toggle(request_id: int):
+    from models import QuickRequest
+
+    session = SessionLocal()
+    try:
+        req = session.get(QuickRequest, request_id)
+        if req is None:
+            abort(404)
+        if req.is_processed:
+            req.is_processed = False
+            req.processed_at = None
+            req.processed_by = None
+            flash(f"Заявка #{req.id} возвращена в работу.", "success")
+        else:
+            req.is_processed = True
+            req.processed_at = datetime.utcnow()
+            req.processed_by = current_user.username
+            flash(f"Заявка #{req.id} отмечена как обработанная.", "success")
+        session.commit()
+    finally:
+        session.close()
+
+    return redirect(_safe_referrer(url_for("admin_quick_requests")))
+
+
+@app.route("/admin/quick-requests/export-csv")
+@login_required
+def admin_quick_requests_csv():
+    from models import QuickRequest
+
+    session = SessionLocal()
+    try:
+        rows = session.query(QuickRequest).order_by(QuickRequest.created_at.desc()).all()
+    finally:
+        session.close()
+
+    buf = io.StringIO()
+    buf.write("\ufeff")
+    w = csv.writer(buf)
+    w.writerow(["ID", "Имя", "Телефон", "Адрес", "Комментарий", "Дата", "Обработана", "Кем", "Когда"])
+    for r in rows:
+        w.writerow([
+            r.id,
+            r.contact_name,
+            r.phone,
+            r.address,
+            r.comment or "",
+            r.created_at.strftime("%d.%m.%Y %H:%M") if r.created_at else "",
+            "Да" if r.is_processed else "Нет",
+            r.processed_by or "",
+            r.processed_at.strftime("%d.%m.%Y %H:%M") if r.processed_at else "",
+        ])
+
+    return Response(
+        buf.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=quick_requests.csv"},
+    )
 
 
 @app.route("/admin/delivery-orders")

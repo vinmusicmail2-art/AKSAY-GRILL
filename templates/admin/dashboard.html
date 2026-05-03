@@ -222,8 +222,69 @@
 
       </div><!-- /топ -->
 
-      <!-- НИЗ: два малых раздела -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- НИЗ: три малых раздела -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Малый раздел: Быстрые заявки -->
+        <div class="bg-surface-card rounded-xl shadow border border-outline/20 overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-3 bg-surface-low border-b border-outline/20">
+            <span class="material-symbols-outlined text-primary text-base">flash_on</span>
+            <span class="font-semibold text-sm text-primary">Быстрые заявки</span>
+            {% if pending_quick > 0 %}
+              <span class="ml-auto px-2 py-0.5 rounded-full bg-primary text-on-primary text-xs font-bold">{{ pending_quick }}</span>
+            {% endif %}
+          </div>
+          {% if all_quick %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="text-xs uppercase tracking-wide text-on-surface-variant border-b border-outline/10">
+                <tr>
+                  <th class="px-4 py-2 text-left">Имя</th>
+                  <th class="px-4 py-2 text-left">Телефон</th>
+                  <th class="px-4 py-2 text-left">Дата</th>
+                  <th class="px-4 py-2 text-center">Действие</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-outline/10">
+                {% for r in all_quick %}
+                <tr class="hover:bg-surface-low/50 transition-colors {{ 'opacity-40' if r.is_processed }}">
+                  <td class="px-4 py-2 font-medium whitespace-nowrap">{{ r.contact_name }}</td>
+                  <td class="px-4 py-2 whitespace-nowrap">
+                    <a href="tel:{{ r.phone }}" class="text-primary hover:underline">{{ r.phone }}</a>
+                  </td>
+                  <td class="px-4 py-2 whitespace-nowrap text-xs text-on-surface-variant">{{ r.created_at.strftime('%d.%m %H:%M') }}</td>
+                  <td class="px-4 py-2 text-center">
+                    <form method="POST"
+                          action="{{ url_for('admin_quick_request_toggle', request_id=r.id) }}"
+                          class="inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                      {% if r.is_processed %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-outline/30 text-on-surface-variant hover:border-primary hover:text-primary transition-colors whitespace-nowrap">
+                          <span class="material-symbols-outlined text-sm leading-none">undo</span>
+                          вернуть
+                        </button>
+                      {% else %}
+                        <button type="submit"
+                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-primary/10 border border-primary/30 text-primary hover:bg-primary hover:text-on-primary transition-colors whitespace-nowrap font-medium">
+                          <span class="material-symbols-outlined text-sm leading-none">check_circle</span>
+                          готово
+                        </button>
+                      {% endif %}
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="px-5 py-6 text-center text-sm text-on-surface-variant italic">Заявок пока нет</div>
+          {% endif %}
+          <div class="px-4 py-2 border-t border-outline/10 text-right">
+            <a href="{{ url_for('admin_quick_requests') }}" class="text-xs text-primary hover:underline">Все заявки →</a>
+          </div>
+        </div>
 
         <!-- Малый раздел: Кейтеринг -->
         <div class="bg-surface-card rounded-xl shadow border border-outline/20 overflow-hidden">
@@ -448,6 +509,23 @@
         <div class="text-xs text-success mt-2">
           {% if pending_delivery and pending_delivery > 0 %}
             {{ pending_delivery }} в работе
+          {% else %}доступно{% endif %}
+        </div>
+      </a>
+      <a href="{{ url_for('admin_quick_requests') }}"
+         class="p-5 rounded-lg bg-surface-lowest border border-outline/20 hover:border-primary hover:shadow-md transition-all block relative">
+        {% if pending_quick and pending_quick > 0 %}
+          <span class="absolute top-3 right-3 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-2 rounded-full bg-primary text-on-primary text-xs font-bold">
+            {{ pending_quick }}
+          </span>
+        {% endif %}
+        <div class="font-medium text-primary">Быстрые заявки</div>
+        <div class="text-xs text-on-surface-variant mt-1">
+          Заявки с кнопки «Заказать» — без корзины, только имя и адрес
+        </div>
+        <div class="text-xs text-success mt-2">
+          {% if pending_quick and pending_quick > 0 %}
+            {{ pending_quick }} в работе
           {% else %}доступно{% endif %}
         </div>
       </a>

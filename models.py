@@ -922,3 +922,6 @@ class QuickRequest(Base):
     comment = Column(Text, nullable=True)
     ip_address = Column(String(64), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    is_processed = Column(Boolean, default=False, nullable=False)
+    processed_at = Column(DateTime, nullable=True)
+    processed_by = Column(String(64), nullable=True)

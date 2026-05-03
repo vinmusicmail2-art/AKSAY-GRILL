@@ -59,6 +59,9 @@ CSS is pre-built to `assets/css/main.css`. To rebuild Tailwind CSS, install node
 | `/admin/catering` | Управление заявками на кейтеринг |
 | `/admin/events` | Управление бронированием зала |
 | `/admin/delivery-orders` | Управление заказами доставки |
+| `/admin/quick-requests` | Управление быстрыми заявками с главной страницы |
+| `/admin/quick-requests/<id>/toggle` | Отметить быструю заявку как обработанную / вернуть |
+| `/admin/quick-requests/export-csv` | Экспорт быстрых заявок в CSV |
 | `/admin/stats` | Статистика обработки по администраторам + CSV-экспорт |
 | `/admin/journal` | Журнал действий (кто/когда/что обработал) + CSV-экспорт |
 | `/admin/texts` | Редактор текстов сайта |
@@ -111,4 +114,12 @@ CSS is pre-built to `assets/css/main.css`. To rebuild Tailwind CSS, install node
 ## Known Technical Debt
 - Inline ALTER TABLE миграции в `app.py:init_db()` — SQLite-specific, не масштабируется; при росте схемы нужен Alembic
 - `inject_site_texts()` context_processor открывает сессию БД на КАЖДЫЙ запрос
-- `send_contact_question()` использует захардкоженный адрес `aksaygryl@mail.ru` вместо настраиваемого через БД
+
+## Recent Changes (2026-05-03)
+- **Bug fix:** `base_public.html` — убран hardcode `aksaygryl@mail.ru` в подвале подстраниц; теперь `{{ texts.contact_email }}`
+- **Bug fix:** `catering.html` — исправлены ключи `format_meta` (приведены в соответствие с `CATERING_FORMATS`: `corporate`, `birthday`, `outdoor`, `wedding`, `other`)
+- **Bug fix:** `events.html` — добавлен ключ `funeral` в `type_meta` (соответствует `EVENT_TYPES`)
+- **Bug fix:** `mailer.send_contact_question()` — убран hardcode получателя; теперь использует `notify_email_recipient` из БД через `_get_recipient_and_toggle()`
+- **Feature:** Добавлен раздел «Быстрые заявки» в админке (`/admin/quick-requests`) — список, фильтры, отметка обработки, CSV-экспорт
+- **Feature:** `QuickRequest` — добавлены колонки `is_processed`, `processed_at`, `processed_by`; inline-миграция в `init_db()`
+- **Feature:** Дашборд — быстрые заявки добавлены в модальное окно и счётчик `total_new`

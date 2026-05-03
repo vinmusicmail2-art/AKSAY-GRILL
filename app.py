@@ -89,6 +89,23 @@ def init_db() -> None:
             logging.getLogger(__name__).warning(
                 "menu_categories migration skipped: %s", exc)
 
+    with engine.begin() as conn:
+        try:
+            cols = {row[1] for row in conn.exec_driver_sql(
+                "PRAGMA table_info(quick_requests)").fetchall()}
+            if cols:
+                for col, definition in (
+                    ("is_processed", "BOOLEAN NOT NULL DEFAULT 0"),
+                    ("processed_at",  "DATETIME"),
+                    ("processed_by",  "VARCHAR(64)"),
+                ):
+                    if col not in cols:
+                        conn.exec_driver_sql(
+                            f"ALTER TABLE quick_requests ADD COLUMN {col} {definition}")
+        except Exception as exc:
+            logging.getLogger(__name__).warning(
+                "quick_requests migration skipped: %s", exc)
+
     session = SessionLocal()
     try:
         models.seed_site_texts(session)
