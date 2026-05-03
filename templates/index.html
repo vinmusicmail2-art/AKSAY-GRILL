@@ -126,13 +126,15 @@
       .attention-blink {
         animation: attention-blink 3.2s ease-in-out infinite;
       }
+      aside nav a {
+        height: 52px;
+      }
       aside nav a.nav-active {
         background-color: #7a3015;
         background-image: linear-gradient(rgba(255,235,205,0.15), rgba(255,235,205,0.15)), url("/assets/wood.webp");
         background-size: auto, 320px auto;
         background-repeat: repeat, repeat;
         border-left-color: #FDC39A;
-        transform: scaleX(1.04);
         box-shadow: 0 4px 16px -4px rgba(155,63,28,0.35);
       }
     </style>
@@ -244,7 +246,7 @@
 </div>
 <nav class="flex-1 space-y-2 pr-4 mt-2">
 {% for cat in menu_categories if cat.show_in_nav %}
-<a class="flex items-center gap-4 wood-bg-light dark:bg-[#1a1614] text-[#FEF9EF] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300 origin-left hover:scale-105 hover:shadow-md hover:shadow-primary/20" href="#{{ cat.slug }}">
+<a class="flex items-center gap-4 wood-bg-light dark:bg-[#1a1614] text-[#FEF9EF] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300 hover:brightness-110 hover:shadow-md hover:shadow-primary/20" href="#{{ cat.slug }}">
 <span class="material-symbols-outlined">{{ cat.nav_icon }}</span>
 <span class="font-body font-medium uppercase tracking-wide text-[10px] whitespace-nowrap overflow-hidden min-w-0 flex-1">{{ cat.name }}</span>
 </a>
