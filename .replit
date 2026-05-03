@@ -28,7 +28,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node_modules/.bin/tailwindcss -i assets/css/input.css -o assets/css/main.css --minify && .pythonlibs/bin/gunicorn --bind 0.0.0.0:5000 --reuse-port --reload --workers 2 --threads 2 --timeout 60 main:app"
+args = ".pythonlibs/bin/gunicorn --bind 0.0.0.0:5000 --reuse-port --reload --workers 2 --threads 2 --timeout 60 main:app"
 waitForPort = 5000
 
 [[ports]]

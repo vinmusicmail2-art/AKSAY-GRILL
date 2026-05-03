@@ -41,9 +41,9 @@ app.py                   → Flask app factory + bootstrap
 
 ## Running the App
 ```
-node_modules/.bin/tailwindcss -i assets/css/input.css -o assets/css/main.css --minify
-gunicorn --bind 0.0.0.0:5000 --reuse-port --reload --workers 2 --threads 2 --timeout 60 main:app
+.pythonlibs/bin/gunicorn --bind 0.0.0.0:5000 --reuse-port --reload --workers 2 --threads 2 --timeout 60 main:app
 ```
+CSS is pre-built to `assets/css/main.css`. To rebuild Tailwind CSS, install node_modules first (`npm install`) then run `npm run build:css`.
 
 ## Environment Variables / Secrets
 - `SESSION_SECRET` — секретный ключ Flask-сессии (обязателен в продакшене; без него — предупреждение в логах)

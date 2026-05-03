@@ -692,8 +692,8 @@ _MENU_SEED: list[dict] = [
 
 def seed_menu(session: Session) -> None:
     """Создать категории и блюда меню при первом запуске."""
-    existing_slugs = {c.slug for c in session.query(MenuCategory.slug).all()}
-    if existing_slugs:
+    existing_count = session.query(MenuCategory).count()
+    if existing_count > 0:
         return
     for i, cat_data in enumerate(_MENU_SEED):
         cat = MenuCategory(
