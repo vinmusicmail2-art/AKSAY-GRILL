@@ -166,28 +166,6 @@
 </div>
 <a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm" target="_blank" rel="noopener" class="font-semibold text-[#56423a] text-center pointer-events-auto hover:text-[#9b3f1c] hover:scale-105 transition-all duration-200 inline-block" style="font-size: 15px; margin-left: -45px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</a>
 </div>
-<!-- Contact strip (средние экраны md..xl) — компактная полоса снизу шапки.
-     position:absolute + bottom-1 => тоже не влияет на высоту шапки -->
-<div class="hidden md:flex 2xl:hidden flex-col absolute items-center justify-center text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none bg-[#e1ddd5] dark:bg-[#1a1614] rounded-l-lg shadow-sm shadow-[#56423a]/10" style="left: 370px; right: 0; top: calc(100% - 15px); padding: 4px 16px 6px;">
-<div class="flex items-center justify-center gap-x-4">
-<a href="#map"
-   class="flex items-center gap-1 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
-<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
-<span class="font-semibold">{{ texts.contact_address }}</span>
-</a>
-<span class="opacity-30 pointer-events-auto">•</span>
-<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
-<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">call</span>
-<span>{{ texts.contact_phone }}</span>
-</a>
-<span class="opacity-30 pointer-events-auto">•</span>
-<span class="flex items-center gap-1 pointer-events-auto">
-<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">schedule</span>
-<span class="font-semibold">{{ texts.contact_hours }}</span>
-</span>
-</div>
-<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm" target="_blank" rel="noopener" class="font-semibold text-[#56423a] text-center pointer-events-auto hover:text-[#9b3f1c] hover:scale-105 transition-all duration-200 inline-block" style="font-size: 13px; margin-left: -45px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</a>
-</div>
 <nav class="hidden md:flex items-center gap-6 text-sm tracking-wide font-medium">
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#dostavka">Доставка</a>
 <a class="inline-block text-[#56423a] opacity-80 hover:text-[#9b3f1c] hover:scale-110 transition-all duration-300" style="text-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 2px rgba(255,255,255,0.9);" href="#business-lunch">Бизнес-ланчи</a>
@@ -235,6 +213,26 @@
 <input id="dish-search-mobile" class="bg-transparent border-none focus:ring-0 text-sm w-full p-0 text-on-surface-variant font-body" placeholder="Поиск блюд..." type="text"/>
 </div>
 </nav>
+</div>
+<!-- Contact strip (средние экраны md..xl) — позиционирована относительно header (full-width) -->
+<div class="hidden md:flex 2xl:hidden flex-col absolute items-center justify-center text-[24px] whitespace-nowrap text-[#56423a] z-[1] pointer-events-none bg-[#e1ddd5] dark:bg-[#1a1614] rounded-l-lg shadow-sm shadow-[#56423a]/10" style="left: 370px; right: 0; top: calc(100% - 15px); padding: 4px 16px 6px;">
+<div class="flex items-center justify-center gap-x-4">
+<a href="#map" class="flex items-center gap-1 pointer-events-auto hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">location_on</span>
+<span class="font-semibold">{{ texts.contact_address }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<a href="tel:{{ texts.contact_phone | replace(' ', '') | replace('(', '') | replace(')', '') | replace('-', '') }}" class="flex items-center gap-1 pointer-events-auto font-bold hover:text-[#9b3f1c] transition-colors">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">call</span>
+<span>{{ texts.contact_phone }}</span>
+</a>
+<span class="opacity-30 pointer-events-auto">•</span>
+<span class="flex items-center gap-1 pointer-events-auto">
+<span class="material-symbols-outlined text-[30px] text-[#9b3f1c]">schedule</span>
+<span class="font-semibold">{{ texts.contact_hours }}</span>
+</span>
+</div>
+<a href="https://yandex.ru/maps/?ll={{ texts.map_lng }}%2C{{ texts.map_lat }}&z={{ texts.map_zoom }}&pt={{ texts.map_lng }}%2C{{ texts.map_lat }}%2Cpm2rdm" target="_blank" rel="noopener" class="font-semibold text-[#56423a] text-center pointer-events-auto hover:text-[#9b3f1c] hover:scale-105 transition-all duration-200 inline-block" style="font-size: 13px; margin-left: -45px;">г. Аксай, Улица Авиаторов, зд.16, стр. 32</a>
 </div>
 </header>
 <div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative" style="padding-top:128px;">
