@@ -239,43 +239,43 @@
 </header>
 <div class="flex min-h-[1024px] max-w-[1440px] mx-auto relative pt-[72px]">
 <!-- Side Navigation Bar -->
-<aside class="fixed left-0 top-0 h-screen border-r border-[#dcc1b6]/30 bg-[#f5f1e8] dark:bg-[#25211e] hidden md:block z-[60]" style="width:200px;">
-<div class="flex flex-col pt-4 pb-12 w-full h-full overflow-y-auto">
-<div class="px-4 mb-3 flex justify-center -mt-[19px]">
-<img alt="Aksai Grill Logo" class="w-3/4 h-auto" src="/assets/logo.webp" style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.1);"/>
+<aside class="fixed left-0 top-0 h-screen w-1/4 border-r border-[#dcc1b6]/15 bg-[#dcd8d0] dark:bg-[#25211e] hidden md:block z-[60]">
+<div class="flex flex-col pt-4 pb-12 w-full h-full">
+<div class="px-8 mb-2 bg-[#e1ddd5] flex justify-center -mt-[19px]">
+<img alt="Aksai Grill Logo" class="w-1/2 h-auto" src="/assets/logo.webp" style="background-color: transparent; mix-blend-mode: multiply; filter: brightness(1.32); margin-left: -20px;"/>
 </div>
-<nav class="flex-1 space-y-1 px-2 mt-2">
+<nav class="flex-1 space-y-2 pr-4 mt-2">
 {% for cat in menu_categories if cat.show_in_nav %}
-<a class="flex items-center gap-3 text-[#56423a] rounded-lg py-2.5 px-3 border-l-2 border-[#9b3f1c]/30 hover:bg-[#9b3f1c]/10 hover:border-[#9b3f1c] transition-all duration-200" href="#{{ cat.slug }}">
-<span class="material-symbols-outlined text-[#9b3f1c] text-lg">{{ cat.nav_icon }}</span>
-<span class="font-body font-medium text-[11px] uppercase tracking-wide truncate">{{ cat.name }}</span>
+<a class="flex items-center gap-4 wood-bg-light dark:bg-[#1a1614] text-[#FEF9EF] rounded-r-full py-4 pl-8 border-l-4 border-[#9b3f1c] shadow-sm transition-all duration-300 hover:brightness-110 hover:shadow-md hover:shadow-primary/20" href="#{{ cat.slug }}">
+<span class="material-symbols-outlined">{{ cat.nav_icon }}</span>
+<span class="font-body font-medium uppercase tracking-wide text-[10px] whitespace-nowrap overflow-hidden min-w-0 flex-1">{{ cat.name }}</span>
 </a>
 {% endfor %}
 </nav>
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="w-full p-4 lg:p-6" style="margin-left:200px;">
+<main class="w-full md:ml-[25%] p-8 lg:p-16">
 <!-- Hero Section -->
-<section class="relative mb-6 overflow-hidden rounded-xl bg-surface-container-low min-h-[220px] py-6 flex items-center">
+<section class="relative mb-20 overflow-hidden rounded-xl bg-surface-container-low min-h-[480px] py-10 flex items-center">
 <div class="absolute inset-0 z-0">
 <img alt="meat skewers grilling over charcoal" class="w-full h-full object-cover opacity-70" src="/assets/hero-grill.webp"/>
-<div class="absolute inset-0 bg-black/55"></div>
+<div class="absolute inset-0 bg-black/60"></div>
 </div>
-<div class="relative z-10 px-8 max-w-3xl">
-<span class="attention-blink inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-4">{{ texts.hero_badge }}</span>
-<h1 class="font-normal text-3xl md:text-4xl text-[#FEF9EF] leading-tight mb-4" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">{{ texts.hero_title }}</h1>
-<p class="font-normal text-sm text-[#FEF9EF] leading-relaxed mb-4" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">
+<div class="relative z-10 px-12 max-w-5xl">
+<span class="attention-blink inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6" style="position:relative; top:-20px;">{{ texts.hero_badge }}</span>
+<h1 class="font-normal text-2xl md:text-3xl text-[#FEF9EF] leading-tight mb-6 whitespace-nowrap" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">{{ texts.hero_title }}</h1>
+<p class="font-normal text-[1.15rem] md:text-[1.29rem] text-[#FEF9EF] leading-relaxed mb-8" style="font-family:'Yanone Kaffeesatz',sans-serif;text-shadow:0 1px 2px #56423A, 0 1px 2px rgba(86,66,58,0.2), 0 1px 2px rgba(86,66,58,0.3);">
 {{ texts.hero_meat_text|safe }}<br/>
-<span style="display:inline-block;width:100%;height:1px;background:#FEF9EF;opacity:0.5;vertical-align:middle;margin:4px 0;"></span><br/>
+<span style="display:inline-block;width:100%;height:1px;background:#FEF9EF;opacity:0.5;vertical-align:middle;"></span><br/>
 {{ texts.hero_veg_text|safe }}
 </p>
-<div class="flex gap-3 mt-2">
-<button onclick="openCart()" class="bg-primary text-on-primary px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
-<span class="material-symbols-outlined text-base">delivery_dining</span>
+<div class="flex gap-4" style="position:relative; top:15px;">
+<button onclick="openCart()" class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all text-sm">
+<span class="material-symbols-outlined">delivery_dining</span>
                             {{ texts.hero_cta_primary }}
                         </button>
-<a href="#reviews" class="bg-white border border-outline-variant/30 text-primary px-5 py-2.5 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm inline-block">
+<a href="#reviews" class="bg-white border border-outline-variant/30 text-primary px-8 py-4 rounded-lg font-bold hover:bg-surface-container-low transition-all text-sm inline-block">
                             {{ texts.hero_cta_secondary }}
                         </a>
 </div>
@@ -283,11 +283,11 @@
 </section>
 <!-- Menu Content (DB-driven) -->
 {% for cat in menu_categories %}
-<section id="{{ cat.slug }}" class="{{ 'mt-8' if loop.first else 'mt-8' }} mb-8 scroll-mt-24">
-<div class="flex justify-between items-end mb-5">
+<section id="{{ cat.slug }}" class="{{ 'mt-32' if loop.first else 'mt-16' }} mb-16 scroll-mt-32">
+<div class="flex justify-between items-end mb-12">
 <div>
-<h2 class="dish-heading font-headline text-3xl text-on-surface mb-1 font-[200]">{{ cat.heading }}</h2>
-<p class="text-on-surface-variant max-w-md text-sm">{{ cat.description }}</p>
+<h2 class="dish-heading font-headline text-4xl text-on-surface mb-2 font-[200]">{{ cat.heading }}</h2>
+<p class="text-on-surface-variant max-w-md text-sm whitespace-nowrap">{{ cat.description }}</p>
 </div>
 <div class="flex gap-2">
 <button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-all">
@@ -298,7 +298,7 @@
 </button>
 </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 {% for dish in cat.dishes %}{% if dish.is_available %}
 <div class="group wood-bg rounded-xl p-4 transition-all hover:shadow-xl hover:shadow-primary/5 border border-outline-variant/10">
 <div class="relative aspect-square overflow-hidden rounded-lg mb-4">
@@ -320,11 +320,11 @@
 {% endfor %}
 
 <!-- Delivery Info Banner -->
-<section id="dostavka" class="mb-8 scroll-mt-24 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-8 border border-outline-variant/10" style="background-color: #9B3F1C;">
+<section id="dostavka" class="mb-16 scroll-mt-32 rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-outline-variant/10" style="background-color: #9B3F1C;">
 <div class="flex-1">
-<h2 class="font-headline text-3xl text-on-surface mb-3 font-[200]">Доставим горячим</h2>
-<p class="mb-5 text-base font-light" style="color: #FEF9EF;">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
-<div class="flex flex-wrap gap-4">
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Доставим горячим</h2>
+<p class="mb-8 text-lg font-light" style="color: #FEF9EF;">Привезем ваш заказ в течение 45 минут в любую точку города. При заказе от 1500р — доставка бесплатная.</p>
+<div class="flex flex-wrap gap-6">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
 <span class="material-symbols-outlined text-xl">speed</span>
@@ -344,36 +344,36 @@
 <span class="font-bold text-xs">Оплата картой</span>
 </div>
 </div>
-<button onclick="document.getElementById('quick-request-modal').classList.remove('hidden')" type="button" class="mt-4 px-5 py-2.5 rounded-lg font-medium hover:opacity-90 transition-all text-sm" style="background-color: #FDC39A; color: #56423A;">Оставить заявку</button>
+<button onclick="document.getElementById('quick-request-modal').classList.remove('hidden')" type="button" class="mt-8 px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm" style="background-color: #FDC39A; color: #56423A;">Оставить заявку</button>
 </div>
 <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden shadow-xl">
 <img alt="delivery" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdIjhMsZ3KlTKDg0neRApUv4TiyfB0a7MzFE6F4HS0MYzgdK5sHCue_OivA6r18OS3ucIQkjBxOXNTFygm_C2_CosM3G0YhGrkpMN-Cof9cjGT7fjMhCDQ16B8xYkibFE7MjHTXPcONHrQxFbJf8ndIiamEqCOPz8yKSWKpRqjobl0VZCH5td98pGIONgp_-OR_Oy3CMLzxbRPQdjspWs6Tp2hUJBpA6LG_TiFamsuN8wX08D_S45umlhT4Wubt1B9u8HEt-taB3I"/>
 </div>
 </section>
 <!-- Бизнес-ланчи -->
-<section id="business-lunch" class="mb-8 scroll-mt-24">
-<div class="rounded-xl bg-surface-container-low p-6 lg:p-8" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/business-lunch.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
-<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-4">Для офисов</span>
-<h2 class="font-headline text-3xl text-on-surface mb-3 font-[200]">Бизнес-ланчи</h2>
-<p class="text-on-surface-variant text-sm max-w-2xl mb-4">Сытные и сбалансированные комплексные обеды для вашей команды. Доставка к назначенному времени, удобные форматы порций и фиксированная цена.</p>
+<section id="business-lunch" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/business-lunch.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Для офисов</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Бизнес-ланчи</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Сытные и сбалансированные комплексные обеды для вашей команды. Доставка к назначенному времени, удобные форматы порций и фиксированная цена.</p>
 <a href="{{ url_for('business_lunch') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Узнать подробнее</a>
 </div>
 </section>
 <!-- Кейтеринг -->
-<section id="catering" class="mb-8 scroll-mt-24">
-<div class="rounded-xl bg-surface-container-low p-6 lg:p-8" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/catering.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
-<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-4">Под ключ</span>
-<h2 class="font-headline text-3xl text-on-surface mb-3 font-[200]">Кейтеринг</h2>
-<p class="text-on-surface-variant text-sm max-w-2xl mb-4">Полное обслуживание мероприятий: меню под формат и бюджет, сервировка, посуда и персонал. Возьмём заботу о гостях на себя.</p>
+<section id="catering" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/catering.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Под ключ</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Кейтеринг</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Полное обслуживание мероприятий: меню под формат и бюджет, сервировка, посуда и персонал. Возьмём заботу о гостях на себя.</p>
 <a href="{{ url_for('catering') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Оставить заявку</a>
 </div>
 </section>
 <!-- Мероприятия -->
-<section id="events" class="mb-8 scroll-mt-24">
-<div class="rounded-xl bg-surface-container-low p-6 lg:p-8" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/hall.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
-<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-4">Праздники и банкеты</span>
-<h2 class="font-headline text-3xl text-on-surface mb-3 font-[200]">Мероприятия</h2>
-<p class="text-on-surface-variant text-sm max-w-2xl mb-4">Юбилеи, корпоративы, семейные торжества и поминальные обеды. Зал, меню и оформление под ваше событие.</p>
+<section id="events" class="mb-16 scroll-mt-32">
+<div class="rounded-xl bg-surface-container-low p-10 lg:p-14" style="background-image: linear-gradient(to right, var(--md-sys-color-surface-container-low, #efeae0) 0%, var(--md-sys-color-surface-container-low, #efeae0) 45%, rgba(239,234,224,0.85) 60%, rgba(239,234,224,0) 100%), url('/assets/hall.webp'); background-repeat: no-repeat, no-repeat; background-position: center, right center; background-size: cover, contain;">
+<span class="inline-block px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold tracking-widest uppercase mb-6">Праздники и банкеты</span>
+<h2 class="font-headline text-4xl text-on-surface mb-4 font-[200]">Мероприятия</h2>
+<p class="text-on-surface-variant text-base max-w-2xl mb-6">Юбилеи, корпоративы, семейные торжества и поминальные обеды. Зал, меню и оформление под ваше событие.</p>
 <a href="{{ url_for('events') }}" class="inline-block bg-primary text-on-primary px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all text-sm">Обсудить событие</a>
 </div>
 </section>
@@ -621,7 +621,7 @@
 </div>
 
 <!-- Footer Section -->
-<footer id="main-footer" class="w-full py-5 mt-[15px] border-none md:rounded-tl-xl" style="margin-left:200px;width:calc(100% - 200px);">
+<footer id="main-footer" class="w-full md:ml-[25%] md:w-[75%] py-5 mt-[15px] border-none md:rounded-tl-xl">
 <div class="flex flex-col items-center justify-center gap-3 px-4">
 <p class="font-body text-xl text-[#56423a] font-medium">Напишите нам на <a href="mailto:{{ texts.contact_email }}" class="text-[#9b3f1c] hover:underline transition-colors">{{ texts.contact_email }}</a></p>
 <div class="flex items-center gap-3">
